@@ -17,3 +17,6 @@ Concluída: velocidade global e por legenda de 0,1× a 8×, pausa e reinício. O
 
 ## 5 — Centralização
 Concluída: canvas centralizado na área de edição, ajuste à tela e botão Centralizar. Teste em Chromium cobriu abertura, redimensionamento da janela, zoom 100% e retorno ao ajuste automático.
+
+## 6 — Tabelas
+Concluída: presets SQL, NoSQL e Schema; 1–12 colunas, 0–40 linhas de dados, edição das células/cabeçalhos, cor e tipografia. Testes cobriram troca dos três modelos, expansão, conteúdo Unicode, zero linhas, JSON e desfazer a remoção de dados.
