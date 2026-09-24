@@ -29,3 +29,6 @@ Concluída: Ctrl/Cmd + scroll com interpolação, ancoragem no cursor e limites 
 
 ## 9 — Mover canvas
 Concluída: arraste com botão esquerdo no fundo, botão do meio sobre qualquer região, Espaço + arraste e modo Mover canvas. Testes de mouse em Chromium confirmaram os quatro modos sem alterar as coordenadas dos componentes.
+
+## 10 — Conexões por arraste
+Concluída: quatro portas por componente, arraste para porta ou borda do destino, várias entradas/saídas na mesma porta, pares repetidos e reconexão das duas pontas. Testes cobriram fan-in/fan-out, duplicatas, posições de âncora, reconexão de origem/destino, undo/redo e rejeição de auto-conexão.

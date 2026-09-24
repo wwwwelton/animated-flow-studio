@@ -1,6 +1,19 @@
 // Run exactly one UI acceptance task: node tests/editor-task.js 4
 const {chromium}=require('playwright'),assert=require('node:assert/strict'),path=require('node:path');
 const tasks={
+ 10:async page=>{
+  await page.evaluate(()=>setProject({width:1050,height:500,nodes:[F.systemNode('client',{id:'a',x:50,y:60}),F.systemNode('server',{id:'b',x:730,y:60}),F.systemNode('cache',{id:'c',x:390,y:310})],edges:[]}));
+  async function drag(from,to){const a=await from.boundingBox(),b=await to.boundingBox();await page.mouse.move(a.x+a.width/2,a.y+a.height/2);await page.mouse.down();await page.mouse.move(b.x+b.width/2,b.y+b.height/2,{steps:12});await page.mouse.up();}
+  const port=(id,side)=>page.locator(`[data-node="${id}"] [data-port="${side}"]`);
+  for(const [a,side,b,dest]of [['a','right','b','left'],['a','bottom','c','top'],['c','right','b','bottom'],['a','right','b','left']])await drag(port(a,side),port(b,dest));
+  assert.equal(await page.evaluate(()=>project.edges.length),4);
+  assert.equal(await page.evaluate(()=>project.edges.filter(e=>e.target==='b').length),3);
+  await drag(page.locator('[data-reconnect][data-end="target"]'),port('c','left'));assert.equal(await page.evaluate(()=>project.edges.at(-1).target),'c');
+  await page.click('#undo');assert.equal(await page.evaluate(()=>project.edges.at(-1).target),'b');await page.click('#redo');assert.equal(await page.evaluate(()=>project.edges.at(-1).target),'c');
+  await page.evaluate(()=>{selected={type:'edge',id:project.edges.at(-1).id};draw();inspect();});
+  await drag(page.locator('[data-reconnect][data-end="source"]'),port('b','right'));assert.equal(await page.evaluate(()=>project.edges.at(-1).source),'b');
+  await drag(port('a','right'),port('a','bottom'));assert.equal(await page.evaluate(()=>project.edges.length),4);
+ },
  9:async page=>{
   const original=await page.evaluate(()=>JSON.stringify(project.nodes));
   for(const mode of ['background','middle','space','button']){
