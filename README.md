@@ -83,7 +83,7 @@ Detalhes de tabelas, efeitos, conectores, eventos e exportações estão em [doc
 
 ## 4. Desenvolvimento e testes
 
-Requer Python 3.10+ e Node.js 18+. Execute os comandos na raiz `animated_flow`.
+Requer Python 3.10+ e Node.js 20+. Execute os comandos na raiz `animated_flow`.
 
 ### Build e testes sem navegador
 

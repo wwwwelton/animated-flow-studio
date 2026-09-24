@@ -41,3 +41,8 @@ Documentação e exemplos atualizados. Verificação final: 38 testes Node, 7 te
 
 ## Correção 3.0.1 — tarefa 1: documentação
 README reorganizado para uma única versão, com execução por arquivo/HTTP, exemplos prontos, exemplo Python completo, desenvolvimento e recuperação do histórico antigo. Detalhes de uso separados em docs/GUIA_DO_EDITOR.md. Os comandos de distribuição/teste descrevem o contrato da correção 3.0.1, implementado na tarefa 2 seguinte.
+
+## Correção 3.0.1 — tarefa 2: execução e distribuição
+Corrigidos os três problemas reportados: distribuição com repositório .git completo; fonte TTF de teste incluída com licença, independente do sistema; runner sem argumentos executando tarefas 4–11 em ordem e com --help/validação de entrada. Adicionados package.json/package-lock.json para npm ci, Node 20+ compatível com a dependência fixada, URLs de arquivo portáveis e fechamento do navegador também em caso de erro. O empacotador cria um clone independente sem remotes/configurações pessoais e mantém history.bundle como cópia portátil.
+
+Validação: npm ci; 40 testes Node; 7 testes Python; editor-typography.js; editor-browser.js; editor-task.js sem argumentos (oito tarefas); --help e argumentos inválidos; fonte incluída, override válido e override inválido; exemplo Python do README. Todos aprovados. Os testes de navegador usaram Chromium disponível neste ambiente; o CachyOS do usuário não foi executado aqui.

@@ -1,0 +1,18 @@
+{
+  "name": "animated-flow-studio",
+  "version": "3.0.1",
+  "private": true,
+  "description": "Offline SVG diagram editor; npm dependencies are for development only",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test tests/*.cjs",
+    "test:typography": "node tests/editor-typography.js",
+    "test:browser": "node tests/editor-browser.js",
+    "test:tasks": "node tests/editor-task.js"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}

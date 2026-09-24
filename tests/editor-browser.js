@@ -5,8 +5,9 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
 const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir(),'afs-browser-test-'));
 (async()=>{
  const browser=await chromium.launch({headless:true,...(process.env.AFS_BROWSER_PATH?{executablePath:process.env.AFS_BROWSER_PATH}:{}),args:['--no-sandbox','--disable-gpu']});
+ try{
  const page=await browser.newPage({viewport:{width:1600,height:1050}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto('file://'+root+'/editor.html');
+ await page.goto(require('node:url').pathToFileURL(path.join(root,'editor.html')).href);
  assert.equal(await page.locator('[data-node]').count(),5);
  const centered=await page.evaluate(()=>{const v=viewport.getBoundingClientRect(),b=board.getBoundingClientRect();return Math.abs(v.x+v.width/2-b.x-b.width/2)<2&&Math.abs(v.y+v.height/2-b.y-b.height/2)<2;});assert.ok(centered);
  console.log('PASS load and centered canvas');
@@ -72,9 +73,10 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  assert.equal(fs.readFileSync(png).subarray(1,4).toString(),'PNG');
  await page.setInputFiles('#import',json);assert.equal(await page.evaluate(()=>project.nodes[1].reactive.enterText),'In');
  await page.reload();assert.equal(await page.evaluate(()=>project.nodes[1].reactive.exitText),'Out');
- const exported=await browser.newPage();exported.on('pageerror',e=>errors.push(e.message));await exported.goto('file://'+html);assert.equal(await exported.locator('[data-node]').count(),3);await exported.evaluate(()=>{const s=document.querySelector('svg');s.pauseAnimations();s.setCurrentTime(2.1);});await exported.waitForFunction(()=>document.querySelector('[data-node="b"]').textContent.includes('In'));
- await exported.goto('file://'+svg);assert.equal(await exported.locator('parsererror').count(),0);await exported.evaluate(()=>{document.documentElement.pauseAnimations();document.documentElement.setCurrentTime(2.1);});await exported.waitForFunction(()=>document.querySelector('[data-node="b"]').textContent.includes('In'));
+ const exported=await browser.newPage();exported.on('pageerror',e=>errors.push(e.message));await exported.goto(require('node:url').pathToFileURL(html).href);assert.equal(await exported.locator('[data-node]').count(),3);await exported.evaluate(()=>{const s=document.querySelector('svg');s.pauseAnimations();s.setCurrentTime(2.1);});await exported.waitForFunction(()=>document.querySelector('[data-node="b"]').textContent.includes('In'));
+ await exported.goto(require('node:url').pathToFileURL(svg).href);assert.equal(await exported.locator('parsererror').count(),0);await exported.evaluate(()=>{document.documentElement.pauseAnimations();document.documentElement.setCurrentTime(2.1);});await exported.waitForFunction(()=>document.querySelector('[data-node="b"]').textContent.includes('In'));
  assert.deepEqual(errors,[]);console.log('PASS JSON roundtrip/persistence, PNG, animated standalone SVG and HTML export; no browser errors');
  await page.evaluate(()=>setProject(F.featureTemplate()));await page.screenshot({path:path.join(out,'editor.png')});
- await browser.close();console.log('Browser artifacts:',out);
-})().catch(e=>{console.error(e);process.exit(1);});
+ console.log('Browser artifacts:',out);
+ }finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exitCode=1;});

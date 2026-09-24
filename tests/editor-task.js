@@ -1,5 +1,5 @@
-// Run exactly one UI acceptance task: node tests/editor-task.js 4
-const {chromium}=require('playwright'),assert=require('node:assert/strict'),path=require('node:path');
+// Run all tasks in order, or select one: node tests/editor-task.js [4..11|--all|--help]
+const assert=require('node:assert/strict'),path=require('node:path');
 const tasks={
  11:async page=>{
   await page.selectOption('#paletteMode','custom');assert.equal(await page.locator('#palette [data-shape="reactive"]').count(),1);
@@ -75,8 +75,25 @@ const tasks={
   await page.click('#restartTraffic');assert.ok(await page.evaluate(()=>currentTime()<.2));
  },
 };
-(async()=>{
- const task=process.argv[2];assert.ok(tasks[task],'Choose an available task number');
- const browser=await chromium.launch({headless:true,executablePath:process.env.AFS_BROWSER_PATH,args:['--no-sandbox','--disable-gpu']});
- try{const page=await browser.newPage({viewport:{width:1600,height:1050}});const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('file://'+path.resolve(__dirname,'../editor.html'));await tasks[task](page);assert.deepEqual(errors,[]);console.log('PASS UI task '+task);}finally{await browser.close();}
-})().catch(e=>{console.error(e);process.exitCode=1;});
+const usage=`Uso: node tests/editor-task.js [4|5|6|7|8|9|10|11|--all|--help]
+Sem argumento ou com --all: executa todas as tarefas em sequência.
+Com um número: executa somente a tarefa escolhida.
+`;
+async function main(args){
+ if(args.length===1&&['--help','-h'].includes(args[0])){console.log(usage);return;}
+ if(args.length>1||(args.length===1&&args[0]!=='--all'&&!Object.hasOwn(tasks,args[0]))){console.error('Tarefa inválida.\n'+usage);process.exitCode=2;return;}
+ const selected=args.length===0||args[0]==='--all'?Object.keys(tasks).sort((a,b)=>Number(a)-Number(b)):[args[0]];
+ const {chromium}=require('playwright');
+ const browser=await chromium.launch({headless:true,executablePath:process.env.AFS_BROWSER_PATH||undefined,args:['--no-sandbox','--disable-gpu']});
+ try{
+  for(const task of selected){
+   const context=await browser.newContext({viewport:{width:1600,height:1050}});
+   try{
+    const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.goto(require('node:url').pathToFileURL(path.resolve(__dirname,'../editor.html')).href);
+    await tasks[task](page);assert.deepEqual(errors,[]);console.log('PASS UI task '+task);
+   }finally{await context.close();}
+  }
+ }finally{await browser.close();}
+}
+main(process.argv.slice(2)).catch(e=>{console.error(e);process.exitCode=1;});

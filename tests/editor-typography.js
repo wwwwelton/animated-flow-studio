@@ -2,7 +2,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.AFS_BROWSER_PATH,args:['--no-sandbox','--disable-gpu']});
  try{
- const page=await browser.newPage({viewport:{width:1600,height:1050}});await page.goto('file://'+path.resolve(__dirname,'../editor.html'));
+ const page=await browser.newPage({viewport:{width:1600,height:1050}});await page.goto(require('node:url').pathToFileURL(path.resolve(__dirname,'../editor.html')).href);
  const requests=await require('./font-fixture')(page);
  await page.locator('[data-node="client"]').click();
  for(const [label,value]of [['Fonte (Google Fonts ou local)','Inter'],['Tamanho da fonte (px)','21']]){const input=page.getByLabel(label,{exact:true});await input.fill(value);await input.dispatchEvent('change');}
