@@ -38,3 +38,6 @@ Concluída: categoria Custom separada, ícone à esquerda, texto à direita e bo
 
 ## Entrega 3.0
 Documentação e exemplos atualizados. Verificação final: 38 testes Node, 7 testes Python, tarefas de navegador isoladas 4–11, tipografia em navegador e cenário integrado com exportações reabertas, todos aprovados. SVGs de exemplo analisados como XML e interface/figura 3.0 revisadas visualmente. Fontes externas testadas com fixture de rede, não como prova de disponibilidade do Google. Pacote inclui histórico completo em history.bundle.
+
+## Correção 3.0.1 — tarefa 1: documentação
+README reorganizado para uma única versão, com execução por arquivo/HTTP, exemplos prontos, exemplo Python completo, desenvolvimento e recuperação do histórico antigo. Detalhes de uso separados em docs/GUIA_DO_EDITOR.md. Os comandos de distribuição/teste descrevem o contrato da correção 3.0.1, implementado na tarefa 2 seguinte.
