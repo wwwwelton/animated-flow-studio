@@ -1,6 +1,11 @@
 // Run exactly one UI acceptance task: node tests/editor-task.js 4
 const {chromium}=require('playwright'),assert=require('node:assert/strict'),path=require('node:path');
 const tasks={
+ 7:async page=>{
+  await page.evaluate(()=>{selected={type:'edge',id:project.edges[0].id};draw();inspect();});
+  for(const id of ['out','in','curve','both','line','dashed','dotted','double']){await page.getByLabel('Tipo do conector',{exact:true}).selectOption(id);assert.equal(await page.evaluate(()=>project.edges[0].connector),id);}
+  await page.reload();assert.equal(await page.evaluate(()=>project.edges[0].connector),'double');
+ },
  6:async page=>{
   await page.locator('[data-node="sql"]').click();
   for(const model of ['nosql','schema','sql']){await page.getByLabel('Modelo',{exact:true}).selectOption(model);assert.equal(await page.evaluate(()=>project.nodes.find(n=>n.id==='sql').table.model),model);}

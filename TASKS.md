@@ -20,3 +20,6 @@ Concluída: canvas centralizado na área de edição, ajuste à tela e botão Ce
 
 ## 6 — Tabelas
 Concluída: presets SQL, NoSQL e Schema; 1–12 colunas, 0–40 linhas de dados, edição das células/cabeçalhos, cor e tipografia. Testes cobriram troca dos três modelos, expansão, conteúdo Unicode, zero linhas, JSON e desfazer a remoção de dados.
+
+## 7 — Conectores
+Concluída: seta de saída, entrada, curva, bidirecional, linha, tracejada, pontilhada e dupla. Testes verificaram marcadores/traçados SVG, seleção dos oito estilos no inspector e persistência ao reabrir.
