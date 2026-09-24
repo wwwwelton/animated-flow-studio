@@ -19,7 +19,7 @@ function fit(){if(view.fit)centerCanvas();else applyView();}
 function draw(){
  const old=board.querySelector('svg');if(old)clock=old.getCurrentTime();stopTraffic();
  board.innerHTML=F.render(project,{interactive:true,controls:true,selected,paused,time:clock});
- const svg=board.querySelector('svg');svg.setCurrentTime(clock);if(paused)svg.pauseAnimations();
+ const svg=board.querySelector('svg');svg.setCurrentTime(clock);if(paused)svg.pauseAnimations();$('toggleTraffic').textContent=paused?'Reproduzir':'Pausar';
  stopTraffic=FlowTraffic.mount(svg,project,F);fit();
  if(selected?.type==='edge'){
   const e=project.edges.find(e=>e.id===selected.id);if(e){const a=project.nodes.find(n=>n.id===e.source),b=project.nodes.find(n=>n.id===e.target),r=F.route(a,b,e),g=svg.querySelector('#af-board');

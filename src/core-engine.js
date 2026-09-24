@@ -169,7 +169,8 @@ function motionPacket(stream,prefix){
  if(l.effect==='glow')body=`<circle r="${l.size}" fill="${l.color}" opacity=".2"/><circle r="${l.size*.7}" fill="${l.color}" opacity=".2"/>`+body;
  if(l.effect==='pulse')body=`<g>${body}<animateTransform attributeName="transform" type="scale" values=".65;1.3;.65" dur="${duration/4}s" begin="${delay}s" repeatCount="indefinite"/></g>`;
  if(l.effect==='dashed')body=`<rect x="${-l.size}" y="-2" width="${l.size*2}" height="4" rx="2" fill="${l.color}"/>`;
- let ghosts='';if(['trail','comet'].includes(l.effect))for(let i=4;i>=1;i--)ghosts+=`<g class="packet" opacity="0">${symbol(l.shape,0,0,l.size*(1-i*.13),l.color)}${motion(i*duration*.013)}<animate attributeName="opacity" values="0;${.4-i*.06};${.4-i*.06};0" keyTimes="0;.01;.99;1" begin="${delay+i*duration*.013}s" dur="${duration}s" repeatCount="indefinite"/></g>`;
+ if(l.effect==='comet'){const tail=(l.direction==='reverse'?1:-1)*l.size*3;body=`<path class="comet-tail" d="M 0 ${-l.size*.4} Q ${tail*.45} 0 ${tail} 0 Q ${tail*.45} 0 0 ${l.size*.4} Z" fill="${l.color}" opacity=".45"/>`+body;}
+ let ghosts='';if(l.effect==='trail')for(let i=4;i>=1;i--)ghosts+=`<g class="packet" opacity="0">${symbol(l.shape,0,0,l.size*(1-i*.13),l.color)}${motion(i*duration*.013)}<animate attributeName="opacity" values="0;${.4-i*.06};${.4-i*.06};0" keyTimes="0;.01;.99;1" begin="${delay+i*duration*.013}s" dur="${duration}s" repeatCount="indefinite"/></g>`;
  return ghosts+`<g class="packet" data-stream="${key}" opacity="0">${body}${motion()}${fade}</g>`;
 }
 function render(p,options={}){

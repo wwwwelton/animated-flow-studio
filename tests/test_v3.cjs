@@ -55,3 +55,8 @@ test('SVG catalog separates custom from flowchart and compiled templates are saf
  assert.equal(F.COMPONENTS.reactive.category,'custom');assert.equal(F.COMPONENTS.table.category,'flowchart');
  for(const c of Object.values(F.COMPONENTS)){assert.ok(!/<script|<image|onload=|href=/.test(c.svg));assert.ok(c.file.endsWith('.svg'));}
 });
+
+test('comet has a tapered tail while trail uses spaced markers',()=>{
+ const p=simple();p.legends[0].effect='comet';const comet=F.render(p);assert.match(comet,/comet-tail/);
+ p.legends[0].effect='trail';const trail=F.render(p);assert.ok(!trail.includes('comet-tail'));assert.ok((trail.match(/animateMotion /g)||[]).length>(comet.match(/animateMotion /g)||[]).length);
+});
