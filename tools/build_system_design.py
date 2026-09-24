@@ -138,6 +138,7 @@ if __name__ == '__main__':
     for row in rows:
         (OUT / (row['id']+'.svg')).write_text(icon_svg(row),encoding='utf-8')
     data={row['id']:row for row in rows}
+    (ROOT/'src/system-design.json').write_text(json.dumps(data,ensure_ascii=False,indent=2),encoding='utf-8')
     core_path=ROOT/'src/flow-core.js'
     core=core_path.read_text()
     start='/* SYSTEM_DESIGN_START */'; end='/* SYSTEM_DESIGN_END */'

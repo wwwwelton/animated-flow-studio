@@ -1,0 +1,80 @@
+/* Optional real-browser smoke: npm install --no-save playwright; node tests/editor-browser.js
+ * AFS_BROWSER_PATH may select an already installed Chromium executable.
+ */
+const {chromium}=require('playwright'),assert=require('node:assert/strict'),path=require('node:path'),fs=require('node:fs'),os=require('node:os');
+const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir(),'afs-browser-test-'));
+(async()=>{
+ const browser=await chromium.launch({headless:true,...(process.env.AFS_BROWSER_PATH?{executablePath:process.env.AFS_BROWSER_PATH}:{}),args:['--no-sandbox','--disable-gpu']});
+ const page=await browser.newPage({viewport:{width:1600,height:1050}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('file://'+root+'/editor.html');
+ assert.equal(await page.locator('[data-node]').count(),5);
+ const centered=await page.evaluate(()=>{const v=viewport.getBoundingClientRect(),b=board.getBoundingClientRect();return Math.abs(v.x+v.width/2-b.x-b.width/2)<2&&Math.abs(v.y+v.height/2-b.y-b.height/2)<2;});assert.ok(centered);
+ console.log('PASS load and centered canvas');
+ // Custom library is distinct and inserts a reactive block.
+ await page.selectOption('#paletteMode','custom');assert.equal(await page.locator('#palette [data-shape="reactive"]').count(),1);
+ await page.click('#palette [data-shape="reactive"]');assert.equal(await page.evaluate(()=>project.nodes.at(-1).type),'reactive');
+ await page.click('#undo');assert.equal(await page.locator('[data-node]').count(),5);
+ // Native table editing, row/column count and content.
+ await page.locator('[data-node="sql"]').click();
+ await page.getByLabel('Modelo',{exact:true}).selectOption('schema');
+ await page.getByLabel('Colunas',{exact:true}).fill('4');await page.getByLabel('Colunas',{exact:true}).dispatchEvent('change');
+ await page.getByLabel('Linhas de dados',{exact:true}).fill('5');await page.getByLabel('Linhas de dados',{exact:true}).dispatchEvent('change');
+ await page.getByLabel('Linha 5, coluna 4',{exact:true}).fill('nullable');await page.getByLabel('Linha 5, coluna 4',{exact:true}).dispatchEvent('change');
+ assert.deepEqual(await page.evaluate(()=>{const t=project.nodes.find(n=>n.id==='sql').table;return [t.model,t.columns.length,t.rows.length,t.rows[4][3]];}),['schema',4,5,'nullable']);
+ console.log('PASS custom library and editable table presets/cells');
+ // Typography on regular, system, table and custom uses the same schema.
+ await page.locator('[data-node="client"]').click();
+ await page.getByLabel('Fonte (Google Fonts ou local)',{exact:true}).fill('Georgia');await page.getByLabel('Fonte (Google Fonts ou local)',{exact:true}).dispatchEvent('change');
+ await page.getByLabel('Tamanho da fonte (px)',{exact:true}).fill('21');await page.getByLabel('Tamanho da fonte (px)',{exact:true}).dispatchEvent('change');
+ await page.getByLabel('Bold',{exact:true}).check();await page.getByLabel('Italic',{exact:true}).check();await page.getByLabel('Code',{exact:true}).check();
+ assert.deepEqual(await page.evaluate(()=>project.nodes[0].typography),{fontFamily:'Georgia',fontSize:21,subtitleSize:10,bold:true,italic:true,code:true});
+ const textStyle=await page.locator('[data-node="client"] .node-title').first().getAttribute('style');assert.ok(textStyle.includes('font-weight:700')&&textStyle.includes('font-style:italic')&&textStyle.includes('Courier New'));
+ // Controlled network fixture tests Google Fonts loading, separately from live connectivity.
+ let fontRequests=0;await page.route('https://fonts.googleapis.com/**',route=>{fontRequests++;return route.fulfill({status:200,contentType:'text/css',body:'@font-face{font-family:"Inter";src:local("Arial");font-weight:400 700;}'});});
+ await page.getByLabel('Code',{exact:true}).uncheck();await page.getByLabel('Fonte (Google Fonts ou local)',{exact:true}).fill('Inter');await page.getByLabel('Fonte (Google Fonts ou local)',{exact:true}).dispatchEvent('change');await page.waitForFunction(()=>document.fonts.check('14px Inter'));assert.ok(fontRequests>0);
+ console.log('PASS font size, bold, italic, code and Google Fonts request (fixture)');
+ // Native legend controls, actual animation speed and packet count.
+ await page.locator('#legendEditor summary').first().click();const legend=page.locator('#legendEditor details').first();
+ await legend.getByLabel('Efeito visual',{exact:true}).selectOption('trail');await legend.getByLabel('Símbolo',{exact:true}).selectOption('arrow');
+ await legend.getByLabel('Velocidade desta legenda (×)',{exact:true}).fill('2');await legend.getByLabel('Velocidade desta legenda (×)',{exact:true}).dispatchEvent('change');
+ await legend.getByLabel('Marcadores simultâneos',{exact:true}).fill('3');await legend.getByLabel('Marcadores simultâneos',{exact:true}).dispatchEvent('change');
+ await page.locator('#trafficSpeed').fill('3');await page.locator('#trafficSpeed').dispatchEvent('change');
+ assert.equal(await page.evaluate(()=>F.streams(project)[0].duration),4/6);assert.equal(await page.evaluate(()=>F.streams(project).filter(s=>s.index===0&&s.legend.id==='request').length),3);
+ console.log('PASS traffic effects, symbols, speed and count');
+ // Real mouse zoom keeps the point under the cursor; pan does not move nodes.
+ await page.locator('#viewport').scrollIntoViewIfNeeded();const vp=await page.locator('#viewport').boundingBox();
+ const before=await page.evaluate(()=>({...view}));await page.mouse.move(vp.x+vp.width*.45,vp.y+vp.height*.4);await page.keyboard.down('Control');await page.mouse.wheel(0,-260);await page.keyboard.up('Control');await page.waitForFunction(()=>zoomTarget===null);
+ const after=await page.evaluate(()=>({...view}));assert.ok(after.scale>before.scale);
+ const nodeBefore=await page.evaluate(()=>project.nodes[0].x);await page.mouse.move(vp.x+10,vp.y+10);await page.mouse.down();await page.mouse.move(vp.x+95,vp.y+65,{steps:8});await page.mouse.up();assert.equal(await page.evaluate(()=>project.nodes[0].x),nodeBefore);assert.ok(Math.abs(await page.evaluate(()=>view.x)-after.x)>40);
+ await page.click('#centerCanvas');await page.selectOption('#zoom','fit');
+ console.log('PASS smooth Ctrl+wheel, background pan and toolbar center/zoom');
+ // Seed a clean graph, then create many-to-many edges using native pointer gestures.
+ await page.evaluate(()=>setProject({title:'Connections',width:1050,height:500,nodes:[F.systemNode('client',{id:'a',x:50,y:60}),F.systemNode('server',{id:'b',x:730,y:60}),F.systemNode('cache',{id:'c',x:390,y:310})],edges:[]}));
+ async function dragPort(source,side,target,dest){const from=page.locator(`[data-node="${source}"] [data-port="${side}"]`),to=page.locator(`[data-node="${target}"] [data-port="${dest}"]`);const a=await from.boundingBox(),b=await to.boundingBox();await page.mouse.move(a.x+a.width/2,a.y+a.height/2);await page.mouse.down();await page.mouse.move(b.x+b.width/2,b.y+b.height/2,{steps:12});await page.mouse.up();}
+ await dragPort('a','right','b','left');await dragPort('a','bottom','c','top');await dragPort('c','right','b','bottom');await dragPort('a','right','b','left');
+ assert.equal(await page.evaluate(()=>project.edges.length),4);assert.equal(await page.evaluate(()=>project.edges.filter(e=>e.source==='a').length),3);
+ const handle=await page.locator('[data-reconnect][data-end="target"]').boundingBox(),dest=await page.locator('[data-node="c"] [data-port="left"]').boundingBox();await page.mouse.move(handle.x+handle.width/2,handle.y+handle.height/2);await page.mouse.down();await page.mouse.move(dest.x+dest.width/2,dest.y+dest.height/2,{steps:12});await page.mouse.up();assert.equal(await page.evaluate(()=>project.edges.at(-1).target),'c');
+ await page.click('#undo');assert.equal(await page.evaluate(()=>project.edges.at(-1).target),'b');await page.click('#redo');assert.equal(await page.evaluate(()=>project.edges.at(-1).target),'c');
+ console.log('PASS port drag, fan-out/fan-in, repeated edges, reconnect, undo/redo');
+ // All connector styles through the inspector.
+ await page.evaluate(()=>{selected={type:'edge',id:project.edges[0].id};draw();inspect();});
+ for(const id of ['out','in','curve','both','line','dashed','dotted','double']){await page.getByLabel('Tipo do conector',{exact:true}).selectOption(id);assert.equal(await page.evaluate(()=>project.edges[0].connector),id);}
+ console.log('PASS eight connector styles');
+ // Reactive text/color are driven by arrivals/departures at the paused SVG clock.
+ await page.evaluate(()=>setProject({title:'Reactive export',width:1100,height:400,nodes:[F.systemNode('client',{id:'a',x:40,y:70}),F.makeNode('reactive',{id:'b',x:380,y:70,label:'Idle',reactive:{enterText:'In',exitText:'Out',hold:.5,transition:0}}),F.systemNode('server',{id:'c',x:730,y:70})],edges:[{id:'ab',source:'a',target:'b',duration:2,traffic:['request']},{id:'bc',source:'b',target:'c',duration:4,traffic:['request']}]}));
+ await page.evaluate(()=>{paused=true;draw();board.querySelector('svg').setCurrentTime(2.1);});await page.waitForFunction(()=>document.querySelector('[data-node="b"]').textContent.includes('In'));assert.equal(await page.locator('[data-node="b"]').getAttribute('data-event'),'enter');
+ const pausedClock=await page.evaluate(()=>currentTime());await page.waitForTimeout(100);assert.ok(Math.abs(await page.evaluate(()=>currentTime())-pausedClock)<.01);
+ await page.evaluate(()=>board.querySelector('svg').setCurrentTime(4.3));await page.waitForFunction(()=>document.querySelector('[data-node="b"]').textContent.includes('Out'));
+ await page.evaluate(()=>board.querySelector('svg').setCurrentTime(3));await page.waitForFunction(()=>document.querySelector('[data-node="b"]').textContent.includes('Idle'));
+ console.log('PASS synchronized enter/exit/idle and pause');
+ async function download(button,name){const event=page.waitForEvent('download');await page.click('#'+button);const d=await event;const file=path.join(out,name);await d.saveAs(file);return file;}
+ const json=await download('jsonExport','diagram.json'),svg=await download('svgExport','diagram.svg'),html=await download('htmlExport','diagram.html'),png=await download('pngExport','diagram.png');
+ assert.equal(fs.readFileSync(png).subarray(1,4).toString(),'PNG');
+ await page.setInputFiles('#import',json);assert.equal(await page.evaluate(()=>project.nodes[1].reactive.enterText),'In');
+ await page.reload();assert.equal(await page.evaluate(()=>project.nodes[1].reactive.exitText),'Out');
+ const exported=await browser.newPage();exported.on('pageerror',e=>errors.push(e.message));await exported.goto('file://'+html);assert.equal(await exported.locator('[data-node]').count(),3);await exported.evaluate(()=>{const s=document.querySelector('svg');s.pauseAnimations();s.setCurrentTime(2.1);});await exported.waitForFunction(()=>document.querySelector('[data-node="b"]').textContent.includes('In'));
+ await exported.goto('file://'+svg);assert.equal(await exported.locator('parsererror').count(),0);await exported.evaluate(()=>{document.documentElement.pauseAnimations();document.documentElement.setCurrentTime(2.1);});await exported.waitForFunction(()=>document.querySelector('[data-node="b"]').textContent.includes('In'));
+ assert.deepEqual(errors,[]);console.log('PASS JSON roundtrip/persistence, PNG, animated standalone SVG and HTML export; no browser errors');
+ await page.evaluate(()=>setProject(F.featureTemplate()));await page.screenshot({path:path.join(out,'editor.png')});
+ await browser.close();console.log('Browser artifacts:',out);
+})().catch(e=>{console.error(e);process.exit(1);});

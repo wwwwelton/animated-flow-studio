@@ -1,0 +1,205 @@
+{
+  "version": 1,
+  "components": [
+    {
+      "id": "card",
+      "label": "Cartão / serviço",
+      "category": "flowchart",
+      "file": "flowchart/card.svg",
+      "renderer": "standard",
+      "width": 190,
+      "height": 62,
+      "textInset": 0.07
+    },
+    {
+      "id": "process",
+      "label": "Processo",
+      "category": "flowchart",
+      "file": "flowchart/process.svg",
+      "renderer": "standard",
+      "width": 190,
+      "height": 62,
+      "textInset": 0.07
+    },
+    {
+      "id": "terminator",
+      "label": "Início / fim",
+      "category": "flowchart",
+      "file": "flowchart/terminator.svg",
+      "renderer": "standard",
+      "width": 190,
+      "height": 62,
+      "textInset": 0.07
+    },
+    {
+      "id": "decision",
+      "label": "Decisão",
+      "category": "flowchart",
+      "file": "flowchart/decision.svg",
+      "renderer": "standard",
+      "width": 190,
+      "height": 100,
+      "textInset": 0.26
+    },
+    {
+      "id": "io",
+      "label": "Entrada / saída",
+      "category": "flowchart",
+      "file": "flowchart/io.svg",
+      "renderer": "standard",
+      "width": 190,
+      "height": 62,
+      "textInset": 0.14
+    },
+    {
+      "id": "subprocess",
+      "label": "Subprocesso",
+      "category": "flowchart",
+      "file": "flowchart/subprocess.svg",
+      "renderer": "standard",
+      "width": 190,
+      "height": 62,
+      "textInset": 0.07
+    },
+    {
+      "id": "document",
+      "label": "Documento",
+      "category": "flowchart",
+      "file": "flowchart/document.svg",
+      "renderer": "standard",
+      "width": 190,
+      "height": 62,
+      "textInset": 0.07
+    },
+    {
+      "id": "database",
+      "label": "Banco de dados",
+      "category": "flowchart",
+      "file": "flowchart/database.svg",
+      "renderer": "standard",
+      "width": 190,
+      "height": 62,
+      "textInset": 0.07
+    },
+    {
+      "id": "manual",
+      "label": "Entrada manual",
+      "category": "flowchart",
+      "file": "flowchart/manual.svg",
+      "renderer": "standard",
+      "width": 190,
+      "height": 62,
+      "textInset": 0.07
+    },
+    {
+      "id": "preparation",
+      "label": "Preparação",
+      "category": "flowchart",
+      "file": "flowchart/preparation.svg",
+      "renderer": "standard",
+      "width": 190,
+      "height": 62,
+      "textInset": 0.14
+    },
+    {
+      "id": "delay",
+      "label": "Espera",
+      "category": "flowchart",
+      "file": "flowchart/delay.svg",
+      "renderer": "standard",
+      "width": 190,
+      "height": 62,
+      "textInset": 0.07
+    },
+    {
+      "id": "connector",
+      "label": "Conector",
+      "category": "flowchart",
+      "file": "flowchart/connector.svg",
+      "renderer": "standard",
+      "width": 190,
+      "height": 62,
+      "textInset": 0.07
+    },
+    {
+      "id": "offpage",
+      "label": "Conector de página",
+      "category": "flowchart",
+      "file": "flowchart/offpage.svg",
+      "renderer": "standard",
+      "width": 190,
+      "height": 62,
+      "textInset": 0.07
+    },
+    {
+      "id": "note",
+      "label": "Anotação",
+      "category": "flowchart",
+      "file": "flowchart/note.svg",
+      "renderer": "standard",
+      "width": 190,
+      "height": 62,
+      "textInset": 0.07
+    },
+    {
+      "id": "text",
+      "label": "Texto livre",
+      "category": "flowchart",
+      "file": "flowchart/text.svg",
+      "renderer": "standard",
+      "width": 190,
+      "height": 62,
+      "textInset": 0.07
+    },
+    {
+      "id": "group",
+      "label": "Grupo / contêiner",
+      "category": "flowchart",
+      "file": "flowchart/group.svg",
+      "renderer": "standard",
+      "width": 450,
+      "height": 220,
+      "textInset": 0.07
+    },
+    {
+      "id": "swimlane",
+      "label": "Raia",
+      "category": "flowchart",
+      "file": "flowchart/swimlane.svg",
+      "renderer": "standard",
+      "width": 450,
+      "height": 220,
+      "textInset": 0.07
+    },
+    {
+      "id": "queue",
+      "label": "Fila",
+      "category": "flowchart",
+      "file": "flowchart/queue.svg",
+      "renderer": "standard",
+      "width": 190,
+      "height": 62,
+      "textInset": 0.07
+    },
+    {
+      "id": "table",
+      "label": "Tabela",
+      "category": "flowchart",
+      "file": "flowchart/table.svg",
+      "renderer": "table",
+      "width": 340,
+      "height": 220,
+      "textInset": 0.07
+    },
+    {
+      "id": "reactive",
+      "label": "Componente reativo",
+      "category": "custom",
+      "file": "custom/reactive.svg",
+      "renderer": "reactive",
+      "width": 190,
+      "height": 62,
+      "textInset": 0.07
+    }
+  ]
+}

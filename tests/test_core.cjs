@@ -11,9 +11,9 @@ test('all shapes render safe border and text colors including internal details',
  const p=F.gallery();
  for(const n of p.nodes)Object.assign(n,{color:'#fff1cc',borderColor:'#912345',textColor:'#164567',subtitle:'Detail',subtitleColor:'#765432',icon:'server',iconColor:'#123abc'});
  const svg=F.render(p,{static:true});
- assert.equal((svg.match(/style="fill:#164567"/g)||[]).length,p.nodes.length);
- assert.match(svg,/class="node-detail" style="stroke:#912345"/);
- assert.match(svg,/fill="#fff1cc"/);assert.match(svg,/style="fill:#765432"/);assert.match(svg,/stroke="#123abc"/);
+ for(const n of p.nodes)assert.match(F.componentSVG(n),/fill:#164567/);
+ assert.match(svg,/stroke="#912345"[^>]*class="node-detail"/);
+ assert.match(svg,/fill="#fff1cc"/);assert.match(svg,/fill:#765432/);assert.match(svg,/stroke="#123abc"/);
  assert.match(F.shape(p.nodes.find(n=>n.type==='text')),/pointer-events="all"/);
  assert.ok(!/NaN|undefined/.test(svg));
 });
@@ -25,9 +25,9 @@ test('colored edge markers are independent and survive static and animated expor
   const svg=F.render(p,{static:staticMode});
   assert.match(svg,/<marker id="af-edge-0-arrow"[^]*?stroke="#ab1234"/);
   assert.match(svg,/<marker id="af-edge-1-arrow"[^]*?stroke="#12ab34"/);
-  assert.match(svg,/class="rail" style="stroke:#ab1234" marker-end="url\(#af-edge-0-arrow\)"/);
+  assert.match(svg,/class="rail" style="stroke:#ab1234;stroke-width:1" marker-end="url\(#af-edge-0-arrow\)"/);
   assert.match(svg,/marker-start="url\(#af-edge-0-arrow\)"/);
-  assert.match(svg,/class="edge-label" style="fill:#1234ab"/);
+  assert.match(svg,/class="edge-label" style="[^"]*fill:#1234ab"/);
   assert.match(svg,/fill="#70a0ff"/);
  }
 });
@@ -56,7 +56,7 @@ test('color picker and hex entry commit, validate and checkpoint changes',()=>{
  assert.equal(saves,2);assert.equal(checkpoints,2);
 });
 test('Animated Flow Studio uses square request, circle response and diamond CDC',()=>{const p=F.studioTemplate();assert.deepEqual(p.legends.map(l=>[l.color,l.shape]),[['#70a0ff','square'],['#9ae8c5','circle'],['#bb8ae8','diamond']]);const svg=F.render(p);assert.match(svg,/keyPoints="1;0"/);assert.match(svg,/animateMotion/);assert.match(svg,/Solicitação/);});
-test('all 18 shapes render without invalid geometry',()=>{const p=F.gallery(),svg=F.render(p);assert.equal(p.nodes.length,18);assert.ok(!/NaN|undefined/.test(svg));for(const n of p.nodes)assert.match(svg,new RegExp('data-node="'+n.id+'"'));});
+test('all 19 shapes render without invalid geometry',()=>{const p=F.gallery(),svg=F.render(p);assert.equal(p.nodes.length,19);assert.ok(!/NaN|undefined/.test(svg));for(const n of p.nodes)assert.match(svg,new RegExp('data-node="'+n.id+'"'));});
 test('reject dangling edges, duplicate IDs and parent cycles',()=>{let p=F.studioTemplate();p.edges[0].target='missing';assert.throws(()=>F.normalize(p));p=F.studioTemplate();p.nodes[1].id=p.nodes[0].id;assert.throws(()=>F.normalize(p));p=F.studioTemplate();p.nodes[0].parent=p.nodes[1].id;p.nodes[1].parent=p.nodes[0].id;assert.throws(()=>F.normalize(p));});
 test('old version project migrates without losing label and geometry',()=>{const p=F.normalize({title:'v1',nodes:[{id:'a',label:'A',x:20,y:20,color:'#ffffff'},{id:'b',label:'B',x:300,y:20,color:'#ffffff'}],edges:[{id:'e',source:'a',target:'b',duration:2.5}]});assert.equal(p.nodes[0].w,190);assert.equal(p.nodes[0].label,'A');assert.deepEqual(p.edges[0].traffic,['request']);});
 test('static export retains legends and removes motion and editor UI',()=>{const svg=F.render(F.studioTemplate(),{static:true});assert.match(svg,/Solicitação/);assert.ok(!/<animate|class="hit"|data-play=/.test(svg));});

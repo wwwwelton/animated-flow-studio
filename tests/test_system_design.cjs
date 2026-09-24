@@ -40,5 +40,5 @@ test('gallery keeps all symbols within canvas and standalone files contain no ra
 });
 test('classic card nodes can use the new symbols as inline icons',()=>{
  const n={...F.systemNode('cache'),type:'card',w:230,h:70};const svg=F.render(F.normalize({nodes:[n],edges:[]}));
- assert.match(svg,/scale\(0.3125\)/);assert.match(svg,/Cache/);
+ assert.match(svg,/scale\(0.4375\)/);assert.match(svg,/Cache/);
 });

@@ -1,6 +1,6 @@
 """Animated Flow 2.1: dependency-free Python API and an offline SVG editor."""
 from __future__ import annotations
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from html import escape
 import json
@@ -15,6 +15,10 @@ class Legend:
     color: str = '#70a0ff'
     shape: str = 'square'
     direction: str = 'forward'
+    effect: str = 'packet'
+    speed: float = 1
+    size: float = 8
+    count: int = 1
 
 @dataclass(frozen=True)
 class Node:
@@ -33,6 +37,9 @@ class Node:
     text_color: str = '#000000'
     subtitle_color: str = '#000000'
     icon_color: str = '#333333'
+    typography: dict = field(default_factory=dict)
+    table: dict | None = None
+    reactive: dict | None = None
 
 @dataclass(frozen=True)
 class Edge:
@@ -49,16 +56,25 @@ class Edge:
     offset: float = 0
     stroke_color: str = '#000000'
     text_color: str = '#000000'
+    connector: str | None = None
+    line_width: float = 1
+    source_anchor: float = .5
+    target_anchor: float = .5
+    typography: dict = field(default_factory=dict)
 
 class Diagram:
     def __init__(self, title: str, *, width: int = 1278, height: int = 633,
                  description: str = '', kicker: str = 'FIGURA 01 · ARQUITETURA',
-                 auto_grow: bool = True, growth_margin: float = 48):
+                 auto_grow: bool = True, growth_margin: float = 48,
+                 traffic_speed: float = 1):
         if not all(math.isfinite(n) and 300 <= n <= 5000 for n in (width, height)):
             raise ValueError('Canvas dimensions must be between 300 and 5000')
         if not math.isfinite(growth_margin) or not 0 <= growth_margin <= 500:
             raise ValueError('Growth margin must be between 0 and 500')
         self.auto_grow, self.growth_margin = auto_grow, growth_margin
+        if not math.isfinite(traffic_speed) or not .1 <= traffic_speed <= 8:
+            raise ValueError('Traffic speed must be between 0.1 and 8')
+        self.traffic_speed = traffic_speed
         self.title, self.width, self.height = title, width, height
         self.description, self.kicker = description, kicker
         self.nodes: dict[str, Node] = {}
@@ -74,7 +90,7 @@ class Diagram:
     def add_legend(self, legend: Legend) -> Diagram:
         if not legend.id or legend.id in self.legends:
             raise ValueError('Legend ID must be unique')
-        if legend.shape not in ('square', 'circle', 'diamond') or legend.direction not in ('forward', 'reverse'):
+        if legend.shape not in ('square', 'circle', 'diamond', 'triangle', 'arrow', 'star') or legend.direction not in ('forward', 'reverse'):
             raise ValueError('Invalid legend symbol or direction')
         self.legends[legend.id] = legend
         return self
@@ -112,7 +128,10 @@ class Diagram:
             edges.append(dict(id=f'edge-{i}', source=source, target=target, label=e.label,
                               traffic=traffic, duration=e.duration, route=e.route,
                               sourcePort=e.source_port, targetPort=e.target_port, offset=e.offset,
-                              strokeColor=e.stroke_color, textColor=e.text_color))
+                              strokeColor=e.stroke_color, textColor=e.text_color,
+                              connector=e.connector, lineWidth=e.line_width,
+                              sourceAnchor=e.source_anchor, targetAnchor=e.target_anchor,
+                              typography=e.typography))
         nodes = []
         for n in self.nodes.values():
             d = asdict(n)
@@ -121,21 +140,24 @@ class Diagram:
                                    ('subtitle_color', 'subtitleColor'), ('icon_color', 'iconColor')):
                 d[target] = d.pop(source)
             nodes.append(d)
-        return dict(version=2, title=self.title, kicker=self.kicker, description=self.description,
+        return dict(version=3, trafficSpeed=self.traffic_speed, title=self.title, kicker=self.kicker, description=self.description,
                     width=self.width, height=self.height, autoGrow=self.auto_grow,
                     growthMargin=self.growth_margin, grid=self.grid, showLegend=self.show_legend,
                     legends=legends, nodes=nodes, edges=edges)
 
     def render(self) -> str:
         core = (ROOT / 'src' / 'flow-core.js').read_text(encoding='utf-8')
+        traffic = (ROOT / 'src' / 'traffic-runtime.js').read_text(encoding='utf-8')
+        fonts = (ROOT / 'src' / 'font-manager.js').read_text(encoding='utf-8')
         payload = json.dumps(self.to_dict(), ensure_ascii=False).replace('<', '\\u003c')
         return f'''<!doctype html><html lang="pt-BR"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>{escape(self.title)}</title>
 <style>body{{margin:24px;background:#f5f5f5}}#diagram svg{{display:block;max-width:100%;height:auto;border:1px solid #ddd;background:white;margin:auto}}button{{padding:8px 12px;background:white;border:1px solid #aaa;border-radius:6px;margin-bottom:14px}}</style>
 <button id="play">Pausar / reproduzir</button><div id="diagram"></div>
-<script>{core}</script><script>
+<script>{core}</script><script>{traffic}</script><script>{fonts}</script><script>
 const project=FlowCore.normalize({payload});document.getElementById('diagram').innerHTML=FlowCore.render(project);
 const svg=document.querySelector('svg');document.getElementById('play').onclick=()=>svg.animationsPaused()?svg.unpauseAnimations():svg.pauseAnimations();
+FlowTraffic.mount(svg,project,FlowCore);FlowFonts.ensure(project);
 if(matchMedia('(prefers-reduced-motion: reduce)').matches)svg.pauseAnimations();
 </script></html>'''
 
