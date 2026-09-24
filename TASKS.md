@@ -23,3 +23,6 @@ Concluída: presets SQL, NoSQL e Schema; 1–12 colunas, 0–40 linhas de dados,
 
 ## 7 — Conectores
 Concluída: seta de saída, entrada, curva, bidirecional, linha, tracejada, pontilhada e dupla. Testes verificaram marcadores/traçados SVG, seleção dos oito estilos no inspector e persistência ao reabrir.
+
+## 8 — Zoom suave
+Concluída: Ctrl/Cmd + scroll com interpolação, ancoragem no cursor e limites 5%–400%. Teste real do mouse confirmou aumento da escala, estabilidade do ponto sob o cursor, limite inferior e ausência de zoom sem modificador.

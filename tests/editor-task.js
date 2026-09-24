@@ -1,6 +1,14 @@
 // Run exactly one UI acceptance task: node tests/editor-task.js 4
 const {chromium}=require('playwright'),assert=require('node:assert/strict'),path=require('node:path');
 const tasks={
+ 8:async page=>{
+  const vp=await page.locator('#viewport').boundingBox(),cx=vp.width*.43,cy=vp.height*.41;
+  const before=await page.evaluate(()=>({...view}));await page.mouse.move(vp.x+cx,vp.y+cy);await page.keyboard.down('Control');await page.mouse.wheel(0,-260);await page.keyboard.up('Control');await page.waitForFunction(()=>zoomTarget===null);
+  const after=await page.evaluate(()=>({...view}));assert.ok(after.scale>before.scale);
+  assert.ok(Math.abs((cx-before.x)/before.scale-(cx-after.x)/after.scale)<2);assert.ok(Math.abs((cy-before.y)/before.scale-(cy-after.y)/after.scale)<2);
+  await page.mouse.wheel(0,100);assert.equal(await page.evaluate(()=>view.scale),after.scale);
+  await page.keyboard.down('Control');await page.mouse.wheel(0,50000);await page.keyboard.up('Control');await page.waitForFunction(()=>zoomTarget===null);assert.equal(await page.evaluate(()=>view.scale),.05);
+ },
  7:async page=>{
   await page.evaluate(()=>{selected={type:'edge',id:project.edges[0].id};draw();inspect();});
   for(const id of ['out','in','curve','both','line','dashed','dotted','double']){await page.getByLabel('Tipo do conector',{exact:true}).selectOption(id);assert.equal(await page.evaluate(()=>project.edges[0].connector),id);}
