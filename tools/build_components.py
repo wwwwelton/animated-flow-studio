@@ -14,8 +14,7 @@ ALLOWED = {'svg','g','path','rect','circle','ellipse','polygon','polyline','line
 def compile_catalog():
     manifest = json.loads((SOURCE/'manifest.json').read_text())
     catalog = {}
-    out = ROOT/'assets/flowchart'
-    out.mkdir(parents=True,exist_ok=True)
+    exported = {}
     for entry in manifest['components']:
         ident = entry['id']
         if ident in catalog:
@@ -33,8 +32,13 @@ def compile_catalog():
                     raise ValueError('Templates cannot run code or load external resources')
         inner = template[template.index('>')+1:template.rindex('</svg>')].strip()
         catalog[ident] = {**entry, 'svg':inner}
-        if entry['category']=='flowchart':
-            (out/(ident+'.svg')).write_text(template.replace('{{fill}}','#ffffff').replace('{{stroke}}','#000000'))
+        category = entry['category']
+        if category not in ('flowchart', 'custom'):
+            raise ValueError(f'Unsupported category: {category}')
+        out = ROOT/'assets'/category
+        out.mkdir(parents=True, exist_ok=True)
+        (out/(ident+'.svg')).write_text(template.replace('{{fill}}','#ffffff').replace('{{stroke}}','#000000'))
+        exported.setdefault(category, []).append({**entry, 'file':ident+'.svg'})
     core_path = ROOT/'src/flow-core.js'
     core=core_path.read_text()
     start='/* COMPONENTS_START */'; end='/* COMPONENTS_END */'
@@ -44,7 +48,8 @@ def compile_catalog():
     else:
         core=core.replace("'use strict';","'use strict';\n"+block,1)
     core_path.write_text(core)
-    (out/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2))
+    for category, entries in exported.items():
+        (ROOT/'assets'/category/'manifest.json').write_text(json.dumps({'version':manifest['version'], 'components':entries},ensure_ascii=False,indent=2))
     print(f'Compiled {len(catalog)} SVG component definitions')
 
 if __name__=='__main__':

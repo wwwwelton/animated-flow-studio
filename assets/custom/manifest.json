@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "components": [
+    {
+      "id": "reactive",
+      "label": "Componente reativo",
+      "category": "custom",
+      "file": "reactive.svg",
+      "renderer": "reactive",
+      "width": 190,
+      "height": 62,
+      "textInset": 0.07
+    }
+  ]
+}

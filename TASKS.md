@@ -8,3 +8,6 @@ Concluída: marcador, pulso, brilho, rastro, cometa e fluxo tracejado; seis sím
 
 ## 2 — Tipografia
 Concluída: tamanho, subtítulo, bold, italic, code e família Google/local em todos os componentes e rótulos de conexões. Code preserva famílias monoespaçadas selecionadas. Teste real em Chromium validou controles, renderização em todos os tipos, download/incorporação binária com respostas HTTP controladas e fallback offline. A disponibilidade ao vivo do Google não é garantida pelo teste.
+
+## 3 — Catálogo SVG
+Concluída: 19 componentes de fluxograma em SVG independentes, manifesto extensível, compilação no editor offline e categoria custom separada. Corrigidos os caminhos dos manifests exportados; todos os arquivos referenciados foram resolvidos e analisados como XML. Guia de extensão em src/components/README.md.
