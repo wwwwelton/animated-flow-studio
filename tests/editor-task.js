@@ -1,6 +1,18 @@
 // Run exactly one UI acceptance task: node tests/editor-task.js 4
 const {chromium}=require('playwright'),assert=require('node:assert/strict'),path=require('node:path');
 const tasks={
+ 9:async page=>{
+  const original=await page.evaluate(()=>JSON.stringify(project.nodes));
+  for(const mode of ['background','middle','space','button']){
+   await page.selectOption('#zoom','fit');const vp=await page.locator('#viewport').boundingBox();
+   const start=mode==='background'?{x:vp.x+10,y:vp.y+10}:await page.locator('[data-node="client"]').boundingBox();
+   const x=start.x+4,y=start.y+4;const before=await page.evaluate(()=>({...view}));
+   if(mode==='space')await page.keyboard.down('Space');if(mode==='button')await page.click('#panMode');
+   await page.mouse.move(x,y);await page.mouse.down({button:mode==='middle'?'middle':'left'});await page.mouse.move(x+65,y+40,{steps:8});await page.mouse.up({button:mode==='middle'?'middle':'left'});
+   if(mode==='space')await page.keyboard.up('Space');if(mode==='button')await page.click('#panMode');
+   assert.ok(Math.abs(await page.evaluate(()=>view.x)-before.x-65)<2,mode);assert.equal(await page.evaluate(()=>JSON.stringify(project.nodes)),original,mode);
+  }
+ },
  8:async page=>{
   const vp=await page.locator('#viewport').boundingBox(),cx=vp.width*.43,cy=vp.height*.41;
   const before=await page.evaluate(()=>({...view}));await page.mouse.move(vp.x+cx,vp.y+cy);await page.keyboard.down('Control');await page.mouse.wheel(0,-260);await page.keyboard.up('Control');await page.waitForFunction(()=>zoomTarget===null);

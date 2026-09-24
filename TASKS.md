@@ -26,3 +26,6 @@ Concluída: seta de saída, entrada, curva, bidirecional, linha, tracejada, pont
 
 ## 8 — Zoom suave
 Concluída: Ctrl/Cmd + scroll com interpolação, ancoragem no cursor e limites 5%–400%. Teste real do mouse confirmou aumento da escala, estabilidade do ponto sob o cursor, limite inferior e ausência de zoom sem modificador.
+
+## 9 — Mover canvas
+Concluída: arraste com botão esquerdo no fundo, botão do meio sobre qualquer região, Espaço + arraste e modo Mover canvas. Testes de mouse em Chromium confirmaram os quatro modos sem alterar as coordenadas dos componentes.
