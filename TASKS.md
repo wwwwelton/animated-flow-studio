@@ -32,3 +32,6 @@ Concluída: arraste com botão esquerdo no fundo, botão do meio sobre qualquer 
 
 ## 10 — Conexões por arraste
 Concluída: quatro portas por componente, arraste para porta ou borda do destino, várias entradas/saídas na mesma porta, pares repetidos e reconexão das duas pontas. Testes cobriram fan-in/fan-out, duplicatas, posições de âncora, reconexão de origem/destino, undo/redo e rejeição de auto-conexão.
+
+## 11 — Componente custom reativo
+Concluída: categoria Custom separada, ícone à esquerda, texto à direita e borda preta. Entrada/saída alteram texto, cor ou ambos; filtro de legendas, duração da transição e retorno ao estado base configuráveis. Relógio sincronizado com pausa/velocidade. Testes unitários e Chromium cobriram filtros, eventos simultâneos, sentido reverso, opções independentes, transição CSS, pausa, JSON e SVG/HTML exportados reabertos. A exportação inclui o runtime após todos os elementos SVG.

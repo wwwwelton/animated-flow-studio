@@ -1,6 +1,19 @@
 // Run exactly one UI acceptance task: node tests/editor-task.js 4
 const {chromium}=require('playwright'),assert=require('node:assert/strict'),path=require('node:path');
 const tasks={
+ 11:async page=>{
+  await page.selectOption('#paletteMode','custom');assert.equal(await page.locator('#palette [data-shape="reactive"]').count(),1);
+  await page.evaluate(()=>setProject({nodes:[F.systemNode('client',{id:'a',x:30,y:40}),F.makeNode('reactive',{id:'b',x:330,y:40,label:'Idle',reactive:{enterText:'In',exitText:'Out',hold:.5,transition:0}}),F.systemNode('server',{id:'c',x:650,y:40})],edges:[{id:'ab',source:'a',target:'b',duration:2,traffic:['request']},{id:'bc',source:'b',target:'c',duration:4,traffic:['request']}]}));
+  await page.locator('[data-node="b"]').click();await page.evaluate(()=>{paused=true;draw();board.querySelector('svg').setCurrentTime(2.1);});
+  await page.waitForFunction(()=>document.querySelector('[data-node="b"]').textContent.includes('In'));
+  const color=()=>page.locator('[data-node="b"] .node-shape').first().evaluate(el=>getComputedStyle(el).fill);
+  assert.equal(await color(),'rgb(220, 252, 231)');
+  await page.getByLabel('Alternar texto',{exact:true}).uncheck();await page.waitForFunction(()=>document.querySelector('[data-node="b"]').textContent.includes('Idle'));assert.equal(await color(),'rgb(220, 252, 231)');
+  await page.getByLabel('Alternar cor',{exact:true}).uncheck();await page.waitForFunction(()=>getComputedStyle(document.querySelector('[data-node="b"] .node-shape')).fill==='rgb(255, 255, 255)');
+  await page.getByLabel('Alternar texto',{exact:true}).check();await page.waitForFunction(()=>document.querySelector('[data-node="b"]').textContent.includes('In'));assert.equal(await color(),'rgb(255, 255, 255)');
+  const transition=page.getByLabel('Transição de cor (s)',{exact:true});await transition.fill('.8');await transition.dispatchEvent('change');await page.getByLabel('Alternar cor',{exact:true}).check();
+  assert.equal(await page.locator('[data-node="b"] .node-shape').first().evaluate(el=>el.style.transitionDuration),'0.8s');
+ },
  10:async page=>{
   await page.evaluate(()=>setProject({width:1050,height:500,nodes:[F.systemNode('client',{id:'a',x:50,y:60}),F.systemNode('server',{id:'b',x:730,y:60}),F.systemNode('cache',{id:'c',x:390,y:310})],edges:[]}));
   async function drag(from,to){const a=await from.boundingBox(),b=await to.boundingBox();await page.mouse.move(a.x+a.width/2,a.y+a.height/2);await page.mouse.down();await page.mouse.move(b.x+b.width/2,b.y+b.height/2,{steps:12});await page.mouse.up();}
