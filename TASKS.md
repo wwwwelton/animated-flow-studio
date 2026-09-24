@@ -14,3 +14,6 @@ Concluída: 19 componentes de fluxograma em SVG independentes, manifesto extens�
 
 ## 4 — Velocidade
 Concluída: velocidade global e por legenda de 0,1× a 8×, pausa e reinício. O tempo da conexão é dividido pelos dois multiplicadores. Validados o cálculo no motor e a duração real do animateMotion após alterar os controles em Chromium; pausa/reinício também conferidos.
+
+## 5 — Centralização
+Concluída: canvas centralizado na área de edição, ajuste à tela e botão Centralizar. Teste em Chromium cobriu abertura, redimensionamento da janela, zoom 100% e retorno ao ajuste automático.

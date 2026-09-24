@@ -1,6 +1,12 @@
 // Run exactly one UI acceptance task: node tests/editor-task.js 4
 const {chromium}=require('playwright'),assert=require('node:assert/strict'),path=require('node:path');
 const tasks={
+ 5:async page=>{
+  const centered=()=>page.evaluate(()=>{const v=viewport.getBoundingClientRect(),b=board.getBoundingClientRect();return Math.abs(v.x+v.width/2-b.x-b.width/2)<2&&Math.abs(v.y+v.height/2-b.y-b.height/2)<2;});
+  assert.ok(await centered());await page.setViewportSize({width:1280,height:800});await page.waitForTimeout(100);assert.ok(await centered());
+  await page.selectOption('#zoom','1');await page.click('#centerCanvas');assert.ok(await centered());
+  await page.selectOption('#zoom','fit');assert.ok(await centered());
+ },
  4:async page=>{
   await page.locator('#legendEditor summary').first().click();const legend=page.locator('#legendEditor details').first();
   const speed=legend.getByLabel('Velocidade desta legenda (×)',{exact:true});await speed.fill('2');await speed.dispatchEvent('change');
