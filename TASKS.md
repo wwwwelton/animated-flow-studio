@@ -11,3 +11,6 @@ Concluída: tamanho, subtítulo, bold, italic, code e família Google/local em t
 
 ## 3 — Catálogo SVG
 Concluída: 19 componentes de fluxograma em SVG independentes, manifesto extensível, compilação no editor offline e categoria custom separada. Corrigidos os caminhos dos manifests exportados; todos os arquivos referenciados foram resolvidos e analisados como XML. Guia de extensão em src/components/README.md.
+
+## 4 — Velocidade
+Concluída: velocidade global e por legenda de 0,1× a 8×, pausa e reinício. O tempo da conexão é dividido pelos dois multiplicadores. Validados o cálculo no motor e a duração real do animateMotion após alterar os controles em Chromium; pausa/reinício também conferidos.
