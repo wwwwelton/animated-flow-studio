@@ -1,35 +1,49 @@
 {
-  "version": 2,
+  "version": 3,
+  "systemLayout": "compact-left-v2",
   "title": "Componentes de fluxograma",
-  "kicker": "CATÁLOGO · FORMAS CLÁSSICAS",
-  "description": "Processos, decisões, dados, conectores e contêineres para montar seus diagramas.",
+  "kicker": "CATÁLOGO · SVG EXTENSÍVEL",
+  "description": "",
   "width": 1278,
-  "height": 700,
+  "height": 1050,
   "autoGrow": true,
   "growthMargin": 48,
   "showLegend": true,
   "grid": true,
+  "trafficSpeed": 1,
   "legends": [
     {
       "id": "request",
       "label": "Solicitação",
       "color": "#70a0ff",
       "shape": "square",
-      "direction": "forward"
+      "direction": "forward",
+      "effect": "packet",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     },
     {
       "id": "response",
       "label": "Resposta",
       "color": "#9ae8c5",
       "shape": "circle",
-      "direction": "reverse"
+      "direction": "reverse",
+      "effect": "packet",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     },
     {
       "id": "cdc",
       "label": "Alterações (CDC)",
       "color": "#bb8ae8",
       "shape": "diamond",
-      "direction": "forward"
+      "direction": "forward",
+      "effect": "packet",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     }
   ],
   "nodes": [
@@ -40,15 +54,23 @@
       "subtitle": "",
       "x": 40,
       "y": 35,
-      "w": 230,
-      "h": 85,
+      "w": 250,
+      "h": 95,
       "color": "#ffffff",
       "borderColor": "#000000",
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "shape1",
@@ -57,15 +79,23 @@
       "subtitle": "",
       "x": 340,
       "y": 35,
-      "w": 230,
-      "h": 85,
+      "w": 250,
+      "h": 95,
       "color": "#ffffff",
       "borderColor": "#000000",
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "shape2",
@@ -74,15 +104,23 @@
       "subtitle": "",
       "x": 640,
       "y": 35,
-      "w": 230,
-      "h": 85,
+      "w": 250,
+      "h": 95,
       "color": "#ffffff",
       "borderColor": "#000000",
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "shape3",
@@ -91,15 +129,23 @@
       "subtitle": "",
       "x": 940,
       "y": 35,
-      "w": 230,
-      "h": 85,
+      "w": 250,
+      "h": 95,
       "color": "#ffffff",
       "borderColor": "#000000",
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "shape4",
@@ -107,16 +153,24 @@
       "label": "Entrada / saída",
       "subtitle": "",
       "x": 40,
-      "y": 160,
-      "w": 230,
-      "h": 85,
+      "y": 225,
+      "w": 250,
+      "h": 95,
       "color": "#ffffff",
       "borderColor": "#000000",
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "shape5",
@@ -124,16 +178,24 @@
       "label": "Subprocesso",
       "subtitle": "",
       "x": 340,
-      "y": 160,
-      "w": 230,
-      "h": 85,
+      "y": 225,
+      "w": 250,
+      "h": 95,
       "color": "#ffffff",
       "borderColor": "#000000",
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "shape6",
@@ -141,16 +203,24 @@
       "label": "Documento",
       "subtitle": "",
       "x": 640,
-      "y": 160,
-      "w": 230,
-      "h": 85,
+      "y": 225,
+      "w": 250,
+      "h": 95,
       "color": "#ffffff",
       "borderColor": "#000000",
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "shape7",
@@ -158,16 +228,24 @@
       "label": "Banco de dados",
       "subtitle": "",
       "x": 940,
-      "y": 160,
-      "w": 230,
-      "h": 85,
+      "y": 225,
+      "w": 250,
+      "h": 95,
       "color": "#ffffff",
       "borderColor": "#000000",
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "shape8",
@@ -175,16 +253,24 @@
       "label": "Entrada manual",
       "subtitle": "",
       "x": 40,
-      "y": 285,
-      "w": 230,
-      "h": 85,
+      "y": 415,
+      "w": 250,
+      "h": 95,
       "color": "#ffffff",
       "borderColor": "#000000",
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "shape9",
@@ -192,16 +278,24 @@
       "label": "Preparação",
       "subtitle": "",
       "x": 340,
-      "y": 285,
-      "w": 230,
-      "h": 85,
+      "y": 415,
+      "w": 250,
+      "h": 95,
       "color": "#ffffff",
       "borderColor": "#000000",
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "shape10",
@@ -209,16 +303,24 @@
       "label": "Espera",
       "subtitle": "",
       "x": 640,
-      "y": 285,
-      "w": 230,
-      "h": 85,
+      "y": 415,
+      "w": 250,
+      "h": 95,
       "color": "#ffffff",
       "borderColor": "#000000",
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "shape11",
@@ -226,16 +328,24 @@
       "label": "Conector",
       "subtitle": "",
       "x": 940,
-      "y": 285,
-      "w": 230,
-      "h": 85,
+      "y": 415,
+      "w": 250,
+      "h": 95,
       "color": "#ffffff",
       "borderColor": "#000000",
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "shape12",
@@ -243,16 +353,24 @@
       "label": "Conector de página",
       "subtitle": "",
       "x": 40,
-      "y": 410,
-      "w": 230,
-      "h": 85,
+      "y": 605,
+      "w": 250,
+      "h": 95,
       "color": "#ffffff",
       "borderColor": "#000000",
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "shape13",
@@ -260,16 +378,24 @@
       "label": "Anotação",
       "subtitle": "",
       "x": 340,
-      "y": 410,
-      "w": 230,
-      "h": 85,
+      "y": 605,
+      "w": 250,
+      "h": 95,
       "color": "#ffffff",
       "borderColor": "#000000",
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "shape14",
@@ -277,16 +403,24 @@
       "label": "Texto livre",
       "subtitle": "",
       "x": 640,
-      "y": 410,
-      "w": 230,
-      "h": 85,
+      "y": 605,
+      "w": 250,
+      "h": 95,
       "color": "#ffffff",
       "borderColor": "#000000",
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "shape15",
@@ -294,16 +428,24 @@
       "label": "Grupo / contêiner",
       "subtitle": "",
       "x": 940,
-      "y": 410,
-      "w": 230,
-      "h": 85,
+      "y": 605,
+      "w": 250,
+      "h": 95,
       "color": "#ffffff",
       "borderColor": "#000000",
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "shape16",
@@ -311,16 +453,24 @@
       "label": "Raia",
       "subtitle": "",
       "x": 40,
-      "y": 535,
-      "w": 230,
-      "h": 85,
+      "y": 795,
+      "w": 250,
+      "h": 95,
       "color": "#ffffff",
       "borderColor": "#000000",
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "shape17",
@@ -328,16 +478,75 @@
       "label": "Fila",
       "subtitle": "",
       "x": 340,
-      "y": 535,
-      "w": 230,
-      "h": 85,
+      "y": 795,
+      "w": 250,
+      "h": 95,
       "color": "#ffffff",
       "borderColor": "#000000",
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
+    },
+    {
+      "id": "shape18",
+      "type": "table",
+      "label": "Tabela",
+      "subtitle": "",
+      "x": 640,
+      "y": 795,
+      "w": 250,
+      "h": 150,
+      "color": "#ffffff",
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333",
+      "icon": "none",
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      },
+      "table": {
+        "model": "sql",
+        "headerColor": "#f1f5f9",
+        "columns": [
+          "Coluna",
+          "Tipo",
+          "Chave"
+        ],
+        "rows": [
+          [
+            "id",
+            "UUID",
+            "PK"
+          ],
+          [
+            "user_id",
+            "UUID",
+            "FK"
+          ],
+          [
+            "created_at",
+            "TIMESTAMP",
+            ""
+          ]
+        ]
+      }
     }
   ],
   "edges": []

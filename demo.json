@@ -1,5 +1,6 @@
 {
-  "version": 2,
+  "version": 3,
+  "trafficSpeed": 1,
   "title": "Fluxo de IA de ponta a ponta",
   "kicker": "FIGURA 01 · ARQUITETURA",
   "description": "Solicitações e respostas percorrem o mesmo trilho em sentidos opostos.",
@@ -15,28 +16,44 @@
       "label": "Solicitação",
       "color": "#70a0ff",
       "shape": "square",
-      "direction": "forward"
+      "direction": "forward",
+      "effect": "packet",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     },
     {
       "id": "response",
       "label": "Resposta",
       "color": "#9ae8c5",
       "shape": "circle",
-      "direction": "reverse"
+      "direction": "reverse",
+      "effect": "packet",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     },
     {
       "id": "cdc",
       "label": "Alterações (CDC)",
       "color": "#bb8ae8",
       "shape": "diamond",
-      "direction": "forward"
+      "direction": "forward",
+      "effect": "packet",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     },
     {
       "id": "approval",
       "label": "Aprovação humana",
       "color": "#ffd085",
       "shape": "diamond",
-      "direction": "forward"
+      "direction": "forward",
+      "effect": "glow",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     }
   ],
   "nodes": [
@@ -50,6 +67,9 @@
       "type": "card",
       "icon": "api",
       "parent": null,
+      "typography": {},
+      "table": null,
+      "reactive": null,
       "w": 190,
       "h": 62,
       "borderColor": "#000000",
@@ -67,6 +87,9 @@
       "type": "card",
       "icon": "database",
       "parent": null,
+      "typography": {},
+      "table": null,
+      "reactive": null,
       "w": 190,
       "h": 62,
       "borderColor": "#000000",
@@ -81,9 +104,18 @@
       "y": 260,
       "subtitle": "Decisão",
       "color": "#ffffff",
-      "type": "card",
+      "type": "reactive",
       "icon": "brain",
       "parent": null,
+      "typography": {
+        "bold": true
+      },
+      "table": null,
+      "reactive": {
+        "enterText": "Processando",
+        "exitText": "Respondendo",
+        "hold": 1.5
+      },
       "w": 190,
       "h": 62,
       "borderColor": "#000000",
@@ -101,6 +133,9 @@
       "type": "card",
       "icon": "code",
       "parent": null,
+      "typography": {},
+      "table": null,
+      "reactive": null,
       "w": 190,
       "h": 62,
       "borderColor": "#000000",
@@ -118,6 +153,9 @@
       "type": "decision",
       "icon": "none",
       "parent": null,
+      "typography": {},
+      "table": null,
+      "reactive": null,
       "w": 190,
       "h": 120,
       "borderColor": "#000000",
@@ -142,7 +180,12 @@
       "targetPort": "auto",
       "offset": 0,
       "strokeColor": "#000000",
-      "textColor": "#000000"
+      "textColor": "#000000",
+      "connector": null,
+      "lineWidth": 1,
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "typography": {}
     },
     {
       "id": "edge-1",
@@ -159,7 +202,12 @@
       "targetPort": "auto",
       "offset": 0,
       "strokeColor": "#000000",
-      "textColor": "#000000"
+      "textColor": "#000000",
+      "connector": null,
+      "lineWidth": 1,
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "typography": {}
     },
     {
       "id": "edge-2",
@@ -176,7 +224,12 @@
       "targetPort": "auto",
       "offset": 0,
       "strokeColor": "#000000",
-      "textColor": "#000000"
+      "textColor": "#000000",
+      "connector": null,
+      "lineWidth": 1,
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "typography": {}
     },
     {
       "id": "edge-3",
@@ -192,7 +245,12 @@
       "targetPort": "auto",
       "offset": 0,
       "strokeColor": "#000000",
-      "textColor": "#000000"
+      "textColor": "#000000",
+      "connector": null,
+      "lineWidth": 1,
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "typography": {}
     }
   ]
 }

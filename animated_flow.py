@@ -1,4 +1,4 @@
-"""Animated Flow 2.1: dependency-free Python API and an offline SVG editor."""
+"""Animated Flow 3.0: dependency-free Python API and an offline SVG editor."""
 from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from pathlib import Path

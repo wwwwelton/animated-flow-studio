@@ -1,36 +1,49 @@
 {
-  "version": 2,
-  "systemLayout": "compact-right-v1",
+  "version": 3,
+  "systemLayout": "compact-left-v2",
   "title": "Arquitetura de pedidos",
   "kicker": "SYSTEM DESIGN · EXEMPLO EDITÁVEL",
-  "description": "API, balanceamento, cache, persistência e processamento assíncrono. Selecione os componentes para editar cores e rótulos.",
+  "description": "",
   "width": 1340,
   "height": 670,
   "autoGrow": true,
   "growthMargin": 48,
   "showLegend": true,
   "grid": true,
+  "trafficSpeed": 1,
   "legends": [
     {
       "id": "request",
       "label": "Solicitação",
       "color": "#70a0ff",
       "shape": "square",
-      "direction": "forward"
+      "direction": "forward",
+      "effect": "packet",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     },
     {
       "id": "response",
       "label": "Resposta",
       "color": "#9ae8c5",
       "shape": "circle",
-      "direction": "reverse"
+      "direction": "reverse",
+      "effect": "packet",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     },
     {
       "id": "cdc",
       "label": "Alterações (CDC)",
       "color": "#bb8ae8",
       "shape": "diamond",
-      "direction": "forward"
+      "direction": "forward",
+      "effect": "packet",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     }
   ],
   "nodes": [
@@ -49,7 +62,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:client",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "gateway",
@@ -66,7 +87,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:api-gateway",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "lb",
@@ -83,7 +112,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:load-balancer",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "service",
@@ -100,7 +137,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:server",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "cache",
@@ -117,7 +162,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:cache",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "db",
@@ -134,7 +187,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:sql-database",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "queue",
@@ -151,7 +212,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:message-queue",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "worker",
@@ -168,7 +237,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:consumer",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "storage",
@@ -185,7 +262,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:object-storage",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     }
   ],
   "edges": [
@@ -204,7 +289,19 @@
       "route": "orthogonal",
       "sourcePort": "auto",
       "targetPort": "auto",
-      "offset": 0
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "both",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-edge-1",
@@ -221,7 +318,19 @@
       "route": "orthogonal",
       "sourcePort": "auto",
       "targetPort": "auto",
-      "offset": 0
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "both",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-edge-2",
@@ -238,7 +347,19 @@
       "route": "orthogonal",
       "sourcePort": "auto",
       "targetPort": "auto",
-      "offset": 0
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "both",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-edge-3",
@@ -255,7 +376,19 @@
       "route": "orthogonal",
       "sourcePort": "auto",
       "targetPort": "auto",
-      "offset": 0
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "both",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-edge-4",
@@ -272,7 +405,19 @@
       "route": "orthogonal",
       "sourcePort": "auto",
       "targetPort": "auto",
-      "offset": 0
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "both",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-edge-5",
@@ -288,7 +433,19 @@
       "route": "orthogonal",
       "sourcePort": "auto",
       "targetPort": "auto",
-      "offset": 0
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "out",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-edge-6",
@@ -304,7 +461,19 @@
       "route": "orthogonal",
       "sourcePort": "auto",
       "targetPort": "auto",
-      "offset": 0
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "out",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-edge-7",
@@ -320,7 +489,19 @@
       "route": "orthogonal",
       "sourcePort": "auto",
       "targetPort": "auto",
-      "offset": 0
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "out",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     }
   ]
 }

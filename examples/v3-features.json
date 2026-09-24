@@ -1,0 +1,376 @@
+{
+  "version": 3,
+  "systemLayout": "compact-left-v2",
+  "title": "Tabelas, eventos e componente reativo",
+  "kicker": "ANIMATED FLOW STUDIO 3",
+  "description": "Arraste as portas azuis para conectar. Ctrl + roda aplica zoom; arraste o fundo para navegar.",
+  "width": 1100,
+  "height": 600,
+  "autoGrow": true,
+  "growthMargin": 48,
+  "showLegend": true,
+  "grid": true,
+  "trafficSpeed": 1,
+  "legends": [
+    {
+      "id": "request",
+      "label": "Solicitação",
+      "color": "#70a0ff",
+      "shape": "square",
+      "direction": "forward",
+      "effect": "comet",
+      "speed": 1,
+      "size": 10,
+      "count": 1
+    },
+    {
+      "id": "response",
+      "label": "Resposta",
+      "color": "#9ae8c5",
+      "shape": "circle",
+      "direction": "reverse",
+      "effect": "pulse",
+      "speed": 0.8,
+      "size": 8,
+      "count": 1
+    },
+    {
+      "id": "cdc",
+      "label": "Alterações (CDC)",
+      "color": "#bb8ae8",
+      "shape": "star",
+      "direction": "forward",
+      "effect": "glow",
+      "speed": 1,
+      "size": 8,
+      "count": 1
+    }
+  ],
+  "nodes": [
+    {
+      "id": "client",
+      "type": "system",
+      "label": "Cliente",
+      "subtitle": "",
+      "x": 40,
+      "y": 160,
+      "w": 190,
+      "h": 62,
+      "color": "#ffffff",
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333",
+      "icon": "sd:client",
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
+    },
+    {
+      "id": "status",
+      "type": "reactive",
+      "label": "Aguardando tráfego",
+      "subtitle": "",
+      "x": 365,
+      "y": 160,
+      "w": 190,
+      "h": 62,
+      "color": "#ffffff",
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333",
+      "icon": "sd:server",
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      },
+      "reactive": {
+        "text": true,
+        "color": true,
+        "enterText": "Pedido recebido",
+        "exitText": "Resposta enviada",
+        "enterColor": "#dcfce7",
+        "exitColor": "#dbeafe",
+        "transition": 0.3,
+        "hold": 2,
+        "legends": []
+      }
+    },
+    {
+      "id": "sql",
+      "type": "table",
+      "label": "orders · SQL",
+      "subtitle": "",
+      "x": 690,
+      "y": 45,
+      "w": 340,
+      "h": 220,
+      "color": "#ffffff",
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333",
+      "icon": "none",
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      },
+      "table": {
+        "model": "sql",
+        "headerColor": "#f1f5f9",
+        "columns": [
+          "Coluna",
+          "Tipo",
+          "Chave"
+        ],
+        "rows": [
+          [
+            "id",
+            "UUID",
+            "PK"
+          ],
+          [
+            "user_id",
+            "UUID",
+            "FK"
+          ],
+          [
+            "created_at",
+            "TIMESTAMP",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "id": "nosql",
+      "type": "table",
+      "label": "events · NoSQL",
+      "subtitle": "",
+      "x": 690,
+      "y": 325,
+      "w": 340,
+      "h": 220,
+      "color": "#ffffff",
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333",
+      "icon": "none",
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      },
+      "table": {
+        "model": "nosql",
+        "headerColor": "#f1f5f9",
+        "columns": [
+          "Campo",
+          "Valor"
+        ],
+        "rows": [
+          [
+            "_id",
+            "ObjectId"
+          ],
+          [
+            "name",
+            "\"Cliente\""
+          ],
+          [
+            "tags",
+            "[\"vip\", \"ativo\"]"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "schema",
+      "type": "table",
+      "label": "Contrato · Schema",
+      "subtitle": "",
+      "x": 40,
+      "y": 325,
+      "w": 340,
+      "h": 220,
+      "color": "#ffffff",
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333",
+      "icon": "none",
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      },
+      "table": {
+        "model": "schema",
+        "headerColor": "#f1f5f9",
+        "columns": [
+          "Campo",
+          "Tipo",
+          "Obrigatório"
+        ],
+        "rows": [
+          [
+            "id",
+            "string",
+            "Sim"
+          ],
+          [
+            "email",
+            "string",
+            "Sim"
+          ],
+          [
+            "active",
+            "boolean",
+            "Não"
+          ]
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "a",
+      "source": "client",
+      "target": "status",
+      "label": "",
+      "traffic": [
+        "request",
+        "response"
+      ],
+      "strokeColor": "#000000",
+      "textColor": "#000000",
+      "duration": 4,
+      "route": "orthogonal",
+      "sourcePort": "auto",
+      "targetPort": "auto",
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "both",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
+    },
+    {
+      "id": "b",
+      "source": "status",
+      "target": "sql",
+      "label": "",
+      "traffic": [
+        "request"
+      ],
+      "strokeColor": "#000000",
+      "textColor": "#000000",
+      "duration": 5,
+      "route": "curve",
+      "sourcePort": "auto",
+      "targetPort": "auto",
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "curve",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
+    },
+    {
+      "id": "c",
+      "source": "status",
+      "target": "nosql",
+      "label": "",
+      "traffic": [
+        "cdc"
+      ],
+      "strokeColor": "#000000",
+      "textColor": "#000000",
+      "duration": 6,
+      "route": "orthogonal",
+      "sourcePort": "auto",
+      "targetPort": "auto",
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "dashed",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
+    },
+    {
+      "id": "d",
+      "source": "schema",
+      "target": "status",
+      "label": "",
+      "traffic": [
+        "request"
+      ],
+      "strokeColor": "#000000",
+      "textColor": "#000000",
+      "duration": 8,
+      "route": "orthogonal",
+      "sourcePort": "auto",
+      "targetPort": "auto",
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "dotted",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
+    }
+  ]
+}

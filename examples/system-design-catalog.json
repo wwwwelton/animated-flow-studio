@@ -1,36 +1,49 @@
 {
-  "version": 2,
-  "systemLayout": "compact-right-v1",
+  "version": 3,
+  "systemLayout": "compact-left-v2",
   "title": "Componentes de System Design",
   "kicker": "ANIMATED FLOW STUDIO · CATÁLOGO",
-  "description": "74 símbolos vetoriais originais: infraestrutura, dados, cache, sistemas distribuídos, mensageria e resiliência.",
+  "description": "74 símbolos vetoriais originais.",
   "width": 1160,
   "height": 1400,
   "autoGrow": true,
   "growthMargin": 48,
   "showLegend": true,
   "grid": true,
+  "trafficSpeed": 1,
   "legends": [
     {
       "id": "request",
       "label": "Solicitação",
       "color": "#70a0ff",
       "shape": "square",
-      "direction": "forward"
+      "direction": "forward",
+      "effect": "packet",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     },
     {
       "id": "response",
       "label": "Resposta",
       "color": "#9ae8c5",
       "shape": "circle",
-      "direction": "reverse"
+      "direction": "reverse",
+      "effect": "packet",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     },
     {
       "id": "cdc",
       "label": "Alterações (CDC)",
       "color": "#bb8ae8",
       "shape": "diamond",
-      "direction": "forward"
+      "direction": "forward",
+      "effect": "packet",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     }
   ],
   "nodes": [
@@ -49,7 +62,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:client",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-server",
@@ -66,7 +87,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:server",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-load-balancer",
@@ -83,7 +112,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:load-balancer",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-horizontal-scaling",
@@ -100,7 +137,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:horizontal-scaling",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-vertical-scaling",
@@ -117,7 +162,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:vertical-scaling",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-stateless-service",
@@ -134,7 +187,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:stateless-service",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-stateful-service",
@@ -151,7 +212,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:stateful-service",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-api-gateway",
@@ -168,7 +237,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:api-gateway",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-reverse-proxy",
@@ -185,7 +262,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:reverse-proxy",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-cdn",
@@ -202,7 +287,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:cdn",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-dns",
@@ -219,7 +312,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:dns",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-tls",
@@ -236,7 +337,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:tls",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-database",
@@ -253,7 +362,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:database",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-sql-database",
@@ -270,7 +387,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:sql-database",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-nosql-database",
@@ -287,7 +412,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:nosql-database",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-schema",
@@ -304,7 +437,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:schema",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-primary-key",
@@ -321,7 +462,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:primary-key",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-foreign-key",
@@ -338,7 +487,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:foreign-key",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-index",
@@ -355,7 +512,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:index",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-acid",
@@ -372,7 +537,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:acid",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-transaction",
@@ -389,7 +562,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:transaction",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-replication",
@@ -406,7 +587,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:replication",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-sharding",
@@ -423,7 +612,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:sharding",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-shard-key",
@@ -440,7 +637,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:shard-key",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-hot-partition",
@@ -457,7 +662,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:hot-partition",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-read-replica",
@@ -474,7 +687,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:read-replica",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-wal",
@@ -491,7 +712,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:wal",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-cache",
@@ -508,7 +737,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:cache",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-cache-aside",
@@ -525,7 +762,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:cache-aside",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-cache-eviction",
@@ -542,7 +787,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:cache-eviction",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-ttl",
@@ -559,7 +812,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:ttl",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-cache-stampede",
@@ -576,7 +837,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:cache-stampede",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-object-storage",
@@ -593,7 +862,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:object-storage",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-blob-storage",
@@ -610,7 +887,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:blob-storage",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-distributed-system",
@@ -627,7 +912,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:distributed-system",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-cap",
@@ -644,7 +937,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:cap",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-consistency",
@@ -661,7 +962,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:consistency",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-availability",
@@ -678,7 +987,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:availability",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-eventual-consistency",
@@ -695,7 +1012,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:eventual-consistency",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-strong-consistency",
@@ -712,7 +1037,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:strong-consistency",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-linearizability",
@@ -729,7 +1062,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:linearizability",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-network-partition",
@@ -746,7 +1087,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:network-partition",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-consensus",
@@ -763,7 +1112,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:consensus",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-quorum",
@@ -780,7 +1137,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:quorum",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-consistent-hashing",
@@ -797,7 +1162,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:consistent-hashing",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-leader-election",
@@ -814,7 +1187,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:leader-election",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-split-brain",
@@ -831,7 +1212,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:split-brain",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-vector-clock",
@@ -848,7 +1237,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:vector-clock",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-clock-skew",
@@ -865,7 +1262,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:clock-skew",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-idempotency",
@@ -882,7 +1287,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:idempotency",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-idempotency-key",
@@ -899,7 +1312,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:idempotency-key",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-message-queue",
@@ -916,7 +1337,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:message-queue",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-producer",
@@ -933,7 +1362,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:producer",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-consumer",
@@ -950,7 +1387,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:consumer",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-at-most-once",
@@ -967,7 +1412,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:at-most-once",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-at-least-once",
@@ -984,7 +1437,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:at-least-once",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-exactly-once",
@@ -1001,7 +1462,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:exactly-once",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-dead-letter-queue",
@@ -1018,7 +1487,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:dead-letter-queue",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-pub-sub",
@@ -1035,7 +1512,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:pub-sub",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-event-stream",
@@ -1052,7 +1537,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:event-stream",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-backpressure",
@@ -1069,7 +1562,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:backpressure",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-websocket",
@@ -1086,7 +1587,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:websocket",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-sse",
@@ -1103,7 +1612,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:sse",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-long-polling",
@@ -1120,7 +1637,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:long-polling",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-latency",
@@ -1137,7 +1662,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:latency",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-throughput",
@@ -1154,7 +1687,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:throughput",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-spof",
@@ -1171,7 +1712,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:spof",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-redundancy",
@@ -1188,7 +1737,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:redundancy",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-circuit-breaker",
@@ -1205,7 +1762,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:circuit-breaker",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-timeout",
@@ -1222,7 +1787,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:timeout",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-retry",
@@ -1239,7 +1812,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:retry",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-exponential-backoff",
@@ -1256,7 +1837,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:exponential-backoff",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-rate-limiter",
@@ -1273,7 +1862,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:rate-limiter",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sd-load-shedding",
@@ -1290,7 +1887,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "sd:load-shedding",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     }
   ],
   "edges": []

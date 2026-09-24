@@ -2,11 +2,12 @@ from pathlib import Path
 from animated_flow import Diagram, Edge, Legend, Node
 
 flow = Diagram('Fluxo de IA de ponta a ponta', description='Solicitações e respostas percorrem o mesmo trilho em sentidos opostos.')
-flow.add_legend(Legend('approval', 'Aprovação humana', '#ffd085', 'diamond'))
+flow.add_legend(Legend('approval', 'Aprovação humana', '#ffd085', 'diamond', effect='glow'))
 for n in [
     Node('user', 'Usuário', 45, 260, icon='api'),
     Node('context', 'Contexto / RAG', 335, 260, subtitle='Busca e memória', icon='database'),
-    Node('llm', 'LLM / SLM', 625, 260, subtitle='Decisão', icon='brain'),
+    Node('llm', 'LLM / SLM', 625, 260, subtitle='Decisão', icon='brain', type='reactive', typography={'bold': True},
+         reactive={'enterText': 'Processando', 'exitText': 'Respondendo', 'hold': 1.5}),
     Node('tool', 'Ferramentas', 1025, 120, subtitle='API / MCP', icon='code'),
     Node('check', 'Aprovado?', 1025, 400, height=120, type='decision'),
 ]:

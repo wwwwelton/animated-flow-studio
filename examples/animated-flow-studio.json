@@ -1,5 +1,6 @@
 {
-  "version": 2,
+  "version": 3,
+  "systemLayout": "compact-left-v2",
   "title": "Arquitetura Animated Flow Studio",
   "kicker": "FIGURA 01 · FLUXO DE PONTA A PONTA",
   "description": "O Animated Flow Studio conecta clientes, processamento, serviços e recursos em um fluxo animado e editável.",
@@ -9,27 +10,40 @@
   "growthMargin": 48,
   "showLegend": true,
   "grid": true,
+  "trafficSpeed": 1,
   "legends": [
     {
       "id": "request",
       "label": "Solicitação",
       "color": "#70a0ff",
       "shape": "square",
-      "direction": "forward"
+      "direction": "forward",
+      "effect": "packet",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     },
     {
       "id": "response",
       "label": "Resposta",
       "color": "#9ae8c5",
       "shape": "circle",
-      "direction": "reverse"
+      "direction": "reverse",
+      "effect": "packet",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     },
     {
       "id": "cdc",
       "label": "Alterações (CDC)",
       "color": "#bb8ae8",
       "shape": "diamond",
-      "direction": "forward"
+      "direction": "forward",
+      "effect": "packet",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     }
   ],
   "nodes": [
@@ -48,7 +62,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "center-label",
@@ -65,7 +87,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "right-label",
@@ -82,7 +112,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "client0",
@@ -99,7 +137,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "brain",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "client1",
@@ -116,7 +162,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "api",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "client2",
@@ -133,7 +187,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "code",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "client3",
@@ -150,7 +212,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "services",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "client4",
@@ -167,7 +237,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "dots",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "studio-core",
@@ -184,7 +262,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "cap0",
@@ -201,7 +287,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": "studio-core"
+      "parent": "studio-core",
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "cap1",
@@ -218,7 +312,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": "studio-core"
+      "parent": "studio-core",
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "cap2",
@@ -235,7 +337,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": "studio-core"
+      "parent": "studio-core",
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "cap3",
@@ -252,7 +362,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": "studio-core"
+      "parent": "studio-core",
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "cap4",
@@ -269,7 +387,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": "studio-core"
+      "parent": "studio-core",
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "cap5",
@@ -286,7 +412,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": "studio-core"
+      "parent": "studio-core",
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "routing",
@@ -303,7 +437,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": "studio-core"
+      "parent": "studio-core",
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "store0",
@@ -320,7 +462,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "database",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "store1",
@@ -337,7 +487,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "database",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "store2",
@@ -354,7 +512,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "bolt",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "store3",
@@ -371,7 +537,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "cube",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "events",
@@ -388,7 +562,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "network",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sink0",
@@ -405,7 +587,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sink1",
@@ -422,7 +612,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sink2",
@@ -439,7 +637,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "sink3",
@@ -456,7 +662,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     }
   ],
   "edges": [
@@ -475,7 +689,19 @@
       "route": "orthogonal",
       "sourcePort": "right",
       "targetPort": "left",
-      "offset": -35.5
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": -35.5,
+      "connector": "both",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "edge1",
@@ -492,7 +718,19 @@
       "route": "orthogonal",
       "sourcePort": "right",
       "targetPort": "left",
-      "offset": -35.5
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": -35.5,
+      "connector": "both",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "edge2",
@@ -509,7 +747,19 @@
       "route": "orthogonal",
       "sourcePort": "right",
       "targetPort": "left",
-      "offset": -35.5
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": -35.5,
+      "connector": "both",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "edge3",
@@ -526,7 +776,19 @@
       "route": "orthogonal",
       "sourcePort": "right",
       "targetPort": "left",
-      "offset": -35.5
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": -35.5,
+      "connector": "both",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "edge4",
@@ -543,7 +805,19 @@
       "route": "orthogonal",
       "sourcePort": "right",
       "targetPort": "left",
-      "offset": -35.5
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": -35.5,
+      "connector": "both",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "edge5",
@@ -560,7 +834,19 @@
       "route": "orthogonal",
       "sourcePort": "right",
       "targetPort": "left",
-      "offset": 33.5
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 33.5,
+      "connector": "both",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "edge6",
@@ -577,7 +863,19 @@
       "route": "orthogonal",
       "sourcePort": "right",
       "targetPort": "left",
-      "offset": 33.5
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 33.5,
+      "connector": "both",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "edge7",
@@ -594,7 +892,19 @@
       "route": "orthogonal",
       "sourcePort": "right",
       "targetPort": "left",
-      "offset": 33.5
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 33.5,
+      "connector": "both",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "edge8",
@@ -611,7 +921,19 @@
       "route": "orthogonal",
       "sourcePort": "right",
       "targetPort": "left",
-      "offset": 33.5
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 33.5,
+      "connector": "both",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "edge9",
@@ -627,7 +949,19 @@
       "route": "orthogonal",
       "sourcePort": "bottom",
       "targetPort": "top",
-      "offset": 0
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "out",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "edge10",
@@ -643,7 +977,19 @@
       "route": "orthogonal",
       "sourcePort": "bottom",
       "targetPort": "top",
-      "offset": 0
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "out",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "edge11",
@@ -659,7 +1005,19 @@
       "route": "orthogonal",
       "sourcePort": "bottom",
       "targetPort": "top",
-      "offset": 0
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "out",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "edge12",
@@ -675,7 +1033,19 @@
       "route": "orthogonal",
       "sourcePort": "bottom",
       "targetPort": "top",
-      "offset": 0
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "out",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "edge13",
@@ -691,7 +1061,19 @@
       "route": "orthogonal",
       "sourcePort": "bottom",
       "targetPort": "top",
-      "offset": 0
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "out",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     }
   ]
 }

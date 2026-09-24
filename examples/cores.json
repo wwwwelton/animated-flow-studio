@@ -1,5 +1,6 @@
 {
-  "version": 2,
+  "version": 3,
+  "systemLayout": "compact-left-v2",
   "title": "Cores dos elementos",
   "kicker": "FIGURA 01 · ARQUITETURA",
   "description": "Preenchimento, bordas, textos, ícones e conexões configuráveis.",
@@ -9,27 +10,40 @@
   "growthMargin": 48,
   "showLegend": true,
   "grid": true,
+  "trafficSpeed": 1,
   "legends": [
     {
       "id": "request",
       "label": "Solicitação",
       "color": "#70a0ff",
       "shape": "square",
-      "direction": "forward"
+      "direction": "forward",
+      "effect": "packet",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     },
     {
       "id": "response",
       "label": "Resposta",
       "color": "#9ae8c5",
       "shape": "circle",
-      "direction": "reverse"
+      "direction": "reverse",
+      "effect": "packet",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     },
     {
       "id": "cdc",
       "label": "Alterações (CDC)",
       "color": "#bb8ae8",
       "shape": "diamond",
-      "direction": "forward"
+      "direction": "forward",
+      "effect": "packet",
+      "speed": 1,
+      "size": 8,
+      "count": 1
     }
   ],
   "nodes": [
@@ -48,7 +62,15 @@
       "subtitleColor": "#5179a8",
       "iconColor": "#3268b5",
       "icon": "api",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "b",
@@ -65,7 +87,15 @@
       "subtitleColor": "#9975bd",
       "iconColor": "#8857bb",
       "icon": "brain",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "c",
@@ -82,7 +112,15 @@
       "subtitleColor": "#000000",
       "iconColor": "#333333",
       "icon": "none",
-      "parent": null
+      "parent": null,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     }
   ],
   "edges": [
@@ -101,7 +139,19 @@
       "route": "orthogonal",
       "sourcePort": "auto",
       "targetPort": "auto",
-      "offset": 0
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "both",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     },
     {
       "id": "edge1",
@@ -118,7 +168,19 @@
       "route": "orthogonal",
       "sourcePort": "auto",
       "targetPort": "auto",
-      "offset": 0
+      "sourceAnchor": 0.5,
+      "targetAnchor": 0.5,
+      "offset": 0,
+      "connector": "both",
+      "lineWidth": 1,
+      "typography": {
+        "fontFamily": "Arial",
+        "fontSize": 14,
+        "subtitleSize": 10,
+        "bold": false,
+        "italic": false,
+        "code": false
+      }
     }
   ]
 }

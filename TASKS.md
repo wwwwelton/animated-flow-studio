@@ -35,3 +35,6 @@ Concluída: quatro portas por componente, arraste para porta ou borda do destino
 
 ## 11 — Componente custom reativo
 Concluída: categoria Custom separada, ícone à esquerda, texto à direita e borda preta. Entrada/saída alteram texto, cor ou ambos; filtro de legendas, duração da transição e retorno ao estado base configuráveis. Relógio sincronizado com pausa/velocidade. Testes unitários e Chromium cobriram filtros, eventos simultâneos, sentido reverso, opções independentes, transição CSS, pausa, JSON e SVG/HTML exportados reabertos. A exportação inclui o runtime após todos os elementos SVG.
+
+## Entrega 3.0
+Documentação e exemplos atualizados. Verificação final: 38 testes Node, 7 testes Python, tarefas de navegador isoladas 4–11, tipografia em navegador e cenário integrado com exportações reabertas, todos aprovados. SVGs de exemplo analisados como XML e interface/figura 3.0 revisadas visualmente. Fontes externas testadas com fixture de rede, não como prova de disponibilidade do Google. Pacote inclui histórico completo em history.bundle.
