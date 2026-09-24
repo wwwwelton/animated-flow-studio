@@ -30,8 +30,8 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  assert.deepEqual(await page.evaluate(()=>project.nodes[0].typography),{fontFamily:'Georgia',fontSize:21,subtitleSize:10,bold:true,italic:true,code:true});
  const textStyle=await page.locator('[data-node="client"] .node-title').first().getAttribute('style');assert.ok(textStyle.includes('font-weight:700')&&textStyle.includes('font-style:italic')&&textStyle.includes('Courier New'));
  // Controlled network fixture tests Google Fonts loading, separately from live connectivity.
- let fontRequests=0;await page.route('https://fonts.googleapis.com/**',route=>{fontRequests++;return route.fulfill({status:200,contentType:'text/css',body:'@font-face{font-family:"Inter";src:local("Arial");font-weight:400 700;}'});});
- await page.getByLabel('Code',{exact:true}).uncheck();await page.getByLabel('Fonte (Google Fonts ou local)',{exact:true}).fill('Inter');await page.getByLabel('Fonte (Google Fonts ou local)',{exact:true}).dispatchEvent('change');await page.waitForFunction(()=>document.fonts.check('14px Inter'));assert.ok(fontRequests>0);
+ const fontRequests=await require('./font-fixture')(page);
+ await page.getByLabel('Code',{exact:true}).uncheck();await page.getByLabel('Fonte (Google Fonts ou local)',{exact:true}).fill('Inter');await page.getByLabel('Fonte (Google Fonts ou local)',{exact:true}).dispatchEvent('change');await page.waitForFunction(()=>document.fonts.check('14px Inter'));assert.ok(fontRequests()>0);
  console.log('PASS font size, bold, italic, code and Google Fonts request (fixture)');
  // Native legend controls, actual animation speed and packet count.
  await page.locator('#legendEditor summary').first().click();const legend=page.locator('#legendEditor details').first();
