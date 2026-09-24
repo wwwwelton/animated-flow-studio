@@ -1,0 +1,326 @@
+{
+  "version": 2,
+  "systemLayout": "compact-right-v1",
+  "title": "Arquitetura de pedidos",
+  "kicker": "SYSTEM DESIGN · EXEMPLO EDITÁVEL",
+  "description": "API, balanceamento, cache, persistência e processamento assíncrono. Selecione os componentes para editar cores e rótulos.",
+  "width": 1340,
+  "height": 670,
+  "autoGrow": true,
+  "growthMargin": 48,
+  "showLegend": true,
+  "grid": true,
+  "legends": [
+    {
+      "id": "request",
+      "label": "Solicitação",
+      "color": "#70a0ff",
+      "shape": "square",
+      "direction": "forward"
+    },
+    {
+      "id": "response",
+      "label": "Resposta",
+      "color": "#9ae8c5",
+      "shape": "circle",
+      "direction": "reverse"
+    },
+    {
+      "id": "cdc",
+      "label": "Alterações (CDC)",
+      "color": "#bb8ae8",
+      "shape": "diamond",
+      "direction": "forward"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "client",
+      "type": "system",
+      "label": "Cliente",
+      "subtitle": "",
+      "x": 40,
+      "y": 70,
+      "w": 190,
+      "h": 62,
+      "color": "#ffffff",
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333",
+      "icon": "sd:client",
+      "parent": null
+    },
+    {
+      "id": "gateway",
+      "type": "system",
+      "label": "API gateway",
+      "subtitle": "",
+      "x": 300,
+      "y": 70,
+      "w": 190,
+      "h": 62,
+      "color": "#ffffff",
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333",
+      "icon": "sd:api-gateway",
+      "parent": null
+    },
+    {
+      "id": "lb",
+      "type": "system",
+      "label": "Load balancer",
+      "subtitle": "",
+      "x": 560,
+      "y": 70,
+      "w": 190,
+      "h": 62,
+      "color": "#ffffff",
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333",
+      "icon": "sd:load-balancer",
+      "parent": null
+    },
+    {
+      "id": "service",
+      "type": "system",
+      "label": "Serviço de pedidos",
+      "subtitle": "",
+      "x": 820,
+      "y": 70,
+      "w": 190,
+      "h": 62,
+      "color": "#ffffff",
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333",
+      "icon": "sd:server",
+      "parent": null
+    },
+    {
+      "id": "cache",
+      "type": "system",
+      "label": "Cache",
+      "subtitle": "",
+      "x": 1080,
+      "y": 40,
+      "w": 190,
+      "h": 62,
+      "color": "#ffffff",
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333",
+      "icon": "sd:cache",
+      "parent": null
+    },
+    {
+      "id": "db",
+      "type": "system",
+      "label": "Banco SQL",
+      "subtitle": "",
+      "x": 1080,
+      "y": 260,
+      "w": 190,
+      "h": 62,
+      "color": "#ffffff",
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333",
+      "icon": "sd:sql-database",
+      "parent": null
+    },
+    {
+      "id": "queue",
+      "type": "system",
+      "label": "Fila de mensagens",
+      "subtitle": "",
+      "x": 560,
+      "y": 340,
+      "w": 190,
+      "h": 62,
+      "color": "#ffffff",
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333",
+      "icon": "sd:message-queue",
+      "parent": null
+    },
+    {
+      "id": "worker",
+      "type": "system",
+      "label": "Consumidor",
+      "subtitle": "",
+      "x": 820,
+      "y": 340,
+      "w": 190,
+      "h": 62,
+      "color": "#ffffff",
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333",
+      "icon": "sd:consumer",
+      "parent": null
+    },
+    {
+      "id": "storage",
+      "type": "system",
+      "label": "Object storage",
+      "subtitle": "",
+      "x": 1080,
+      "y": 480,
+      "w": 190,
+      "h": 62,
+      "color": "#ffffff",
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333",
+      "icon": "sd:object-storage",
+      "parent": null
+    }
+  ],
+  "edges": [
+    {
+      "id": "sd-edge-0",
+      "source": "client",
+      "target": "gateway",
+      "label": "HTTPS",
+      "traffic": [
+        "request",
+        "response"
+      ],
+      "strokeColor": "#000000",
+      "textColor": "#000000",
+      "duration": 6,
+      "route": "orthogonal",
+      "sourcePort": "auto",
+      "targetPort": "auto",
+      "offset": 0
+    },
+    {
+      "id": "sd-edge-1",
+      "source": "gateway",
+      "target": "lb",
+      "label": "API",
+      "traffic": [
+        "request",
+        "response"
+      ],
+      "strokeColor": "#000000",
+      "textColor": "#000000",
+      "duration": 6,
+      "route": "orthogonal",
+      "sourcePort": "auto",
+      "targetPort": "auto",
+      "offset": 0
+    },
+    {
+      "id": "sd-edge-2",
+      "source": "lb",
+      "target": "service",
+      "label": "Roteamento",
+      "traffic": [
+        "request",
+        "response"
+      ],
+      "strokeColor": "#000000",
+      "textColor": "#000000",
+      "duration": 6,
+      "route": "orthogonal",
+      "sourcePort": "auto",
+      "targetPort": "auto",
+      "offset": 0
+    },
+    {
+      "id": "sd-edge-3",
+      "source": "service",
+      "target": "cache",
+      "label": "Consulta",
+      "traffic": [
+        "request",
+        "response"
+      ],
+      "strokeColor": "#000000",
+      "textColor": "#000000",
+      "duration": 6,
+      "route": "orthogonal",
+      "sourcePort": "auto",
+      "targetPort": "auto",
+      "offset": 0
+    },
+    {
+      "id": "sd-edge-4",
+      "source": "service",
+      "target": "db",
+      "label": "Persistência",
+      "traffic": [
+        "request",
+        "response"
+      ],
+      "strokeColor": "#000000",
+      "textColor": "#000000",
+      "duration": 6,
+      "route": "orthogonal",
+      "sourcePort": "auto",
+      "targetPort": "auto",
+      "offset": 0
+    },
+    {
+      "id": "sd-edge-5",
+      "source": "service",
+      "target": "queue",
+      "label": "Evento",
+      "traffic": [
+        "cdc"
+      ],
+      "strokeColor": "#000000",
+      "textColor": "#000000",
+      "duration": 6,
+      "route": "orthogonal",
+      "sourcePort": "auto",
+      "targetPort": "auto",
+      "offset": 0
+    },
+    {
+      "id": "sd-edge-6",
+      "source": "queue",
+      "target": "worker",
+      "label": "Consumo",
+      "traffic": [
+        "cdc"
+      ],
+      "strokeColor": "#000000",
+      "textColor": "#000000",
+      "duration": 6,
+      "route": "orthogonal",
+      "sourcePort": "auto",
+      "targetPort": "auto",
+      "offset": 0
+    },
+    {
+      "id": "sd-edge-7",
+      "source": "worker",
+      "target": "storage",
+      "label": "Artefato",
+      "traffic": [
+        "cdc"
+      ],
+      "strokeColor": "#000000",
+      "textColor": "#000000",
+      "duration": 6,
+      "route": "orthogonal",
+      "sourcePort": "auto",
+      "targetPort": "auto",
+      "offset": 0
+    }
+  ]
+}

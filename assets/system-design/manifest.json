@@ -1,0 +1,1416 @@
+{
+  "name": "Animated Flow Studio — System Design",
+  "version": 1,
+  "count": 74,
+  "source": "75 numbered terms in the PDF supplied by the user; availability (38, 67) deduplicated.",
+  "artwork": "Original SVG geometry, created for this project. No raster embedding, extraction or tracing of the PDF illustrations.",
+  "components": [
+    {
+      "id": "client",
+      "label": "Cliente",
+      "english": "Client",
+      "category": "Clientes e infraestrutura",
+      "kind": "component",
+      "sourceTerms": [
+        1
+      ],
+      "file": "client.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:client",
+        "label": "Cliente",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "server",
+      "label": "Servidor",
+      "english": "Server",
+      "category": "Clientes e infraestrutura",
+      "kind": "component",
+      "sourceTerms": [
+        2
+      ],
+      "file": "server.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:server",
+        "label": "Servidor",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "load-balancer",
+      "label": "Load balancer",
+      "english": "Load Balancer",
+      "category": "Clientes e infraestrutura",
+      "kind": "component",
+      "sourceTerms": [
+        3
+      ],
+      "file": "load-balancer.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:load-balancer",
+        "label": "Load balancer",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "horizontal-scaling",
+      "label": "Escala horizontal",
+      "english": "Horizontal Scaling",
+      "category": "Clientes e infraestrutura",
+      "kind": "pattern",
+      "sourceTerms": [
+        4
+      ],
+      "file": "horizontal-scaling.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:horizontal-scaling",
+        "label": "Escala horizontal",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "vertical-scaling",
+      "label": "Escala vertical",
+      "english": "Vertical Scaling",
+      "category": "Clientes e infraestrutura",
+      "kind": "pattern",
+      "sourceTerms": [
+        5
+      ],
+      "file": "vertical-scaling.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:vertical-scaling",
+        "label": "Escala vertical",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "stateless-service",
+      "label": "Serviço stateless",
+      "english": "Stateless Service",
+      "category": "Clientes e infraestrutura",
+      "kind": "component",
+      "sourceTerms": [
+        6
+      ],
+      "file": "stateless-service.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:stateless-service",
+        "label": "Serviço stateless",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "stateful-service",
+      "label": "Serviço stateful",
+      "english": "Stateful Service",
+      "category": "Clientes e infraestrutura",
+      "kind": "component",
+      "sourceTerms": [
+        7
+      ],
+      "file": "stateful-service.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:stateful-service",
+        "label": "Serviço stateful",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "api-gateway",
+      "label": "API gateway",
+      "english": "API Gateway",
+      "category": "Clientes e infraestrutura",
+      "kind": "component",
+      "sourceTerms": [
+        8
+      ],
+      "file": "api-gateway.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:api-gateway",
+        "label": "API gateway",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "reverse-proxy",
+      "label": "Reverse proxy",
+      "english": "Reverse Proxy",
+      "category": "Clientes e infraestrutura",
+      "kind": "component",
+      "sourceTerms": [
+        9
+      ],
+      "file": "reverse-proxy.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:reverse-proxy",
+        "label": "Reverse proxy",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "cdn",
+      "label": "CDN",
+      "english": "Content Delivery Network",
+      "category": "Clientes e infraestrutura",
+      "kind": "component",
+      "sourceTerms": [
+        10
+      ],
+      "file": "cdn.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:cdn",
+        "label": "CDN",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "dns",
+      "label": "DNS",
+      "english": "Domain Name System",
+      "category": "Clientes e infraestrutura",
+      "kind": "component",
+      "sourceTerms": [
+        11
+      ],
+      "file": "dns.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:dns",
+        "label": "DNS",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "tls",
+      "label": "SSL / TLS",
+      "english": "SSL/TLS",
+      "category": "Clientes e infraestrutura",
+      "kind": "component",
+      "sourceTerms": [
+        12
+      ],
+      "file": "tls.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:tls",
+        "label": "SSL / TLS",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "database",
+      "label": "Banco de dados",
+      "english": "Database",
+      "category": "Dados e armazenamento",
+      "kind": "component",
+      "sourceTerms": [
+        13
+      ],
+      "file": "database.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:database",
+        "label": "Banco de dados",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "sql-database",
+      "label": "Banco SQL",
+      "english": "SQL Database",
+      "category": "Dados e armazenamento",
+      "kind": "component",
+      "sourceTerms": [
+        14
+      ],
+      "file": "sql-database.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:sql-database",
+        "label": "Banco SQL",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "nosql-database",
+      "label": "Banco NoSQL",
+      "english": "NoSQL Database",
+      "category": "Dados e armazenamento",
+      "kind": "component",
+      "sourceTerms": [
+        15
+      ],
+      "file": "nosql-database.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:nosql-database",
+        "label": "Banco NoSQL",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "schema",
+      "label": "Schema",
+      "english": "Schema",
+      "category": "Dados e armazenamento",
+      "kind": "concept",
+      "sourceTerms": [
+        16
+      ],
+      "file": "schema.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:schema",
+        "label": "Schema",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "primary-key",
+      "label": "Chave primária",
+      "english": "Primary Key",
+      "category": "Dados e armazenamento",
+      "kind": "concept",
+      "sourceTerms": [
+        17
+      ],
+      "file": "primary-key.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:primary-key",
+        "label": "Chave primária",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "foreign-key",
+      "label": "Chave estrangeira",
+      "english": "Foreign Key",
+      "category": "Dados e armazenamento",
+      "kind": "concept",
+      "sourceTerms": [
+        18
+      ],
+      "file": "foreign-key.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:foreign-key",
+        "label": "Chave estrangeira",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "index",
+      "label": "Índice",
+      "english": "Index",
+      "category": "Dados e armazenamento",
+      "kind": "concept",
+      "sourceTerms": [
+        19
+      ],
+      "file": "index.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:index",
+        "label": "Índice",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "acid",
+      "label": "ACID",
+      "english": "ACID",
+      "category": "Dados e armazenamento",
+      "kind": "concept",
+      "sourceTerms": [
+        20
+      ],
+      "file": "acid.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:acid",
+        "label": "ACID",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "transaction",
+      "label": "Transação",
+      "english": "Transaction",
+      "category": "Dados e armazenamento",
+      "kind": "pattern",
+      "sourceTerms": [
+        21
+      ],
+      "file": "transaction.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:transaction",
+        "label": "Transação",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "replication",
+      "label": "Replicação",
+      "english": "Replication",
+      "category": "Dados e armazenamento",
+      "kind": "pattern",
+      "sourceTerms": [
+        22
+      ],
+      "file": "replication.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:replication",
+        "label": "Replicação",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "sharding",
+      "label": "Sharding",
+      "english": "Sharding / Partitioning",
+      "category": "Dados e armazenamento",
+      "kind": "pattern",
+      "sourceTerms": [
+        23
+      ],
+      "file": "sharding.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:sharding",
+        "label": "Sharding",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "shard-key",
+      "label": "Chave de shard",
+      "english": "Shard Key",
+      "category": "Dados e armazenamento",
+      "kind": "concept",
+      "sourceTerms": [
+        24
+      ],
+      "file": "shard-key.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:shard-key",
+        "label": "Chave de shard",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "hot-partition",
+      "label": "Partição quente",
+      "english": "Hot Partition",
+      "category": "Dados e armazenamento",
+      "kind": "concept",
+      "sourceTerms": [
+        25
+      ],
+      "file": "hot-partition.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:hot-partition",
+        "label": "Partição quente",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "read-replica",
+      "label": "Réplica de leitura",
+      "english": "Read Replica",
+      "category": "Dados e armazenamento",
+      "kind": "component",
+      "sourceTerms": [
+        26
+      ],
+      "file": "read-replica.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:read-replica",
+        "label": "Réplica de leitura",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "wal",
+      "label": "Write-ahead log",
+      "english": "Write-Ahead Log (WAL)",
+      "category": "Dados e armazenamento",
+      "kind": "component",
+      "sourceTerms": [
+        27
+      ],
+      "file": "wal.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:wal",
+        "label": "Write-ahead log",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "cache",
+      "label": "Cache",
+      "english": "Cache",
+      "category": "Cache",
+      "kind": "component",
+      "sourceTerms": [
+        28
+      ],
+      "file": "cache.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:cache",
+        "label": "Cache",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "cache-aside",
+      "label": "Cache-aside",
+      "english": "Cache-Aside",
+      "category": "Cache",
+      "kind": "pattern",
+      "sourceTerms": [
+        29
+      ],
+      "file": "cache-aside.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:cache-aside",
+        "label": "Cache-aside",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "cache-eviction",
+      "label": "Remoção do cache",
+      "english": "Cache Eviction",
+      "category": "Cache",
+      "kind": "pattern",
+      "sourceTerms": [
+        30
+      ],
+      "file": "cache-eviction.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:cache-eviction",
+        "label": "Remoção do cache",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "ttl",
+      "label": "TTL",
+      "english": "Time To Live",
+      "category": "Cache",
+      "kind": "concept",
+      "sourceTerms": [
+        31
+      ],
+      "file": "ttl.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:ttl",
+        "label": "TTL",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "cache-stampede",
+      "label": "Cache stampede",
+      "english": "Cache Stampede",
+      "category": "Cache",
+      "kind": "concept",
+      "sourceTerms": [
+        32
+      ],
+      "file": "cache-stampede.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:cache-stampede",
+        "label": "Cache stampede",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "object-storage",
+      "label": "Object storage",
+      "english": "Object Storage",
+      "category": "Dados e armazenamento",
+      "kind": "component",
+      "sourceTerms": [
+        33
+      ],
+      "file": "object-storage.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:object-storage",
+        "label": "Object storage",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "blob-storage",
+      "label": "Blob storage",
+      "english": "Blob Storage",
+      "category": "Dados e armazenamento",
+      "kind": "component",
+      "sourceTerms": [
+        34
+      ],
+      "file": "blob-storage.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:blob-storage",
+        "label": "Blob storage",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "distributed-system",
+      "label": "Sistema distribuído",
+      "english": "Distributed System",
+      "category": "Sistemas distribuídos",
+      "kind": "pattern",
+      "sourceTerms": [
+        35
+      ],
+      "file": "distributed-system.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:distributed-system",
+        "label": "Sistema distribuído",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "cap",
+      "label": "Teorema CAP",
+      "english": "CAP Theorem",
+      "category": "Sistemas distribuídos",
+      "kind": "concept",
+      "sourceTerms": [
+        36
+      ],
+      "file": "cap.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:cap",
+        "label": "Teorema CAP",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "consistency",
+      "label": "Consistência",
+      "english": "Consistency",
+      "category": "Sistemas distribuídos",
+      "kind": "concept",
+      "sourceTerms": [
+        37
+      ],
+      "file": "consistency.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:consistency",
+        "label": "Consistência",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "availability",
+      "label": "Disponibilidade",
+      "english": "Availability",
+      "category": "Resiliência e desempenho",
+      "kind": "concept",
+      "sourceTerms": [
+        38,
+        67
+      ],
+      "file": "availability.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:availability",
+        "label": "Disponibilidade",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "eventual-consistency",
+      "label": "Consistência eventual",
+      "english": "Eventual Consistency",
+      "category": "Sistemas distribuídos",
+      "kind": "concept",
+      "sourceTerms": [
+        39
+      ],
+      "file": "eventual-consistency.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:eventual-consistency",
+        "label": "Consistência eventual",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "strong-consistency",
+      "label": "Consistência forte",
+      "english": "Strong Consistency",
+      "category": "Sistemas distribuídos",
+      "kind": "concept",
+      "sourceTerms": [
+        40
+      ],
+      "file": "strong-consistency.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:strong-consistency",
+        "label": "Consistência forte",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "linearizability",
+      "label": "Linearizabilidade",
+      "english": "Linearizability",
+      "category": "Sistemas distribuídos",
+      "kind": "concept",
+      "sourceTerms": [
+        41
+      ],
+      "file": "linearizability.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:linearizability",
+        "label": "Linearizabilidade",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "network-partition",
+      "label": "Partição de rede",
+      "english": "Network Partition",
+      "category": "Sistemas distribuídos",
+      "kind": "concept",
+      "sourceTerms": [
+        42
+      ],
+      "file": "network-partition.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:network-partition",
+        "label": "Partição de rede",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "consensus",
+      "label": "Consenso",
+      "english": "Consensus",
+      "category": "Sistemas distribuídos",
+      "kind": "pattern",
+      "sourceTerms": [
+        43
+      ],
+      "file": "consensus.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:consensus",
+        "label": "Consenso",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "quorum",
+      "label": "Quórum",
+      "english": "Quorum",
+      "category": "Sistemas distribuídos",
+      "kind": "concept",
+      "sourceTerms": [
+        44
+      ],
+      "file": "quorum.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:quorum",
+        "label": "Quórum",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "consistent-hashing",
+      "label": "Hash consistente",
+      "english": "Consistent Hashing",
+      "category": "Sistemas distribuídos",
+      "kind": "pattern",
+      "sourceTerms": [
+        45
+      ],
+      "file": "consistent-hashing.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:consistent-hashing",
+        "label": "Hash consistente",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "leader-election",
+      "label": "Eleição de líder",
+      "english": "Leader Election",
+      "category": "Sistemas distribuídos",
+      "kind": "pattern",
+      "sourceTerms": [
+        46
+      ],
+      "file": "leader-election.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:leader-election",
+        "label": "Eleição de líder",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "split-brain",
+      "label": "Split brain",
+      "english": "Split Brain",
+      "category": "Sistemas distribuídos",
+      "kind": "concept",
+      "sourceTerms": [
+        47
+      ],
+      "file": "split-brain.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:split-brain",
+        "label": "Split brain",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "vector-clock",
+      "label": "Relógio vetorial",
+      "english": "Vector Clock",
+      "category": "Sistemas distribuídos",
+      "kind": "concept",
+      "sourceTerms": [
+        48
+      ],
+      "file": "vector-clock.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:vector-clock",
+        "label": "Relógio vetorial",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "clock-skew",
+      "label": "Desvio de relógio",
+      "english": "Clock Skew",
+      "category": "Sistemas distribuídos",
+      "kind": "concept",
+      "sourceTerms": [
+        49
+      ],
+      "file": "clock-skew.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:clock-skew",
+        "label": "Desvio de relógio",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "idempotency",
+      "label": "Idempotência",
+      "english": "Idempotency",
+      "category": "Sistemas distribuídos",
+      "kind": "pattern",
+      "sourceTerms": [
+        50
+      ],
+      "file": "idempotency.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:idempotency",
+        "label": "Idempotência",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "idempotency-key",
+      "label": "Chave idempotente",
+      "english": "Idempotency Key",
+      "category": "Sistemas distribuídos",
+      "kind": "concept",
+      "sourceTerms": [
+        51
+      ],
+      "file": "idempotency-key.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:idempotency-key",
+        "label": "Chave idempotente",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "message-queue",
+      "label": "Fila de mensagens",
+      "english": "Message Queue",
+      "category": "Mensageria",
+      "kind": "component",
+      "sourceTerms": [
+        52
+      ],
+      "file": "message-queue.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:message-queue",
+        "label": "Fila de mensagens",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "producer",
+      "label": "Produtor",
+      "english": "Producer",
+      "category": "Mensageria",
+      "kind": "component",
+      "sourceTerms": [
+        53
+      ],
+      "file": "producer.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:producer",
+        "label": "Produtor",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "consumer",
+      "label": "Consumidor",
+      "english": "Consumer",
+      "category": "Mensageria",
+      "kind": "component",
+      "sourceTerms": [
+        54
+      ],
+      "file": "consumer.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:consumer",
+        "label": "Consumidor",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "at-most-once",
+      "label": "At-most-once",
+      "english": "At-Most-Once Delivery",
+      "category": "Mensageria",
+      "kind": "pattern",
+      "sourceTerms": [
+        55
+      ],
+      "file": "at-most-once.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:at-most-once",
+        "label": "At-most-once",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "at-least-once",
+      "label": "At-least-once",
+      "english": "At-Least-Once Delivery",
+      "category": "Mensageria",
+      "kind": "pattern",
+      "sourceTerms": [
+        56
+      ],
+      "file": "at-least-once.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:at-least-once",
+        "label": "At-least-once",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "exactly-once",
+      "label": "Exactly-once",
+      "english": "Exactly-Once Delivery",
+      "category": "Mensageria",
+      "kind": "pattern",
+      "sourceTerms": [
+        57
+      ],
+      "file": "exactly-once.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:exactly-once",
+        "label": "Exactly-once",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "dead-letter-queue",
+      "label": "Dead-letter queue",
+      "english": "Dead-Letter Queue (DLQ)",
+      "category": "Mensageria",
+      "kind": "component",
+      "sourceTerms": [
+        58
+      ],
+      "file": "dead-letter-queue.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:dead-letter-queue",
+        "label": "Dead-letter queue",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "pub-sub",
+      "label": "Pub / Sub",
+      "english": "Publish–Subscribe",
+      "category": "Mensageria",
+      "kind": "pattern",
+      "sourceTerms": [
+        59
+      ],
+      "file": "pub-sub.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:pub-sub",
+        "label": "Pub / Sub",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "event-stream",
+      "label": "Event streaming",
+      "english": "Event Streaming",
+      "category": "Mensageria",
+      "kind": "component",
+      "sourceTerms": [
+        60
+      ],
+      "file": "event-stream.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:event-stream",
+        "label": "Event streaming",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "backpressure",
+      "label": "Backpressure",
+      "english": "Backpressure",
+      "category": "Mensageria",
+      "kind": "pattern",
+      "sourceTerms": [
+        61
+      ],
+      "file": "backpressure.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:backpressure",
+        "label": "Backpressure",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "websocket",
+      "label": "WebSocket",
+      "english": "WebSocket",
+      "category": "Mensageria",
+      "kind": "component",
+      "sourceTerms": [
+        62
+      ],
+      "file": "websocket.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:websocket",
+        "label": "WebSocket",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "sse",
+      "label": "Server-sent events",
+      "english": "Server-Sent Events (SSE)",
+      "category": "Mensageria",
+      "kind": "component",
+      "sourceTerms": [
+        63
+      ],
+      "file": "sse.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:sse",
+        "label": "Server-sent events",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "long-polling",
+      "label": "Long polling",
+      "english": "Long Polling",
+      "category": "Mensageria",
+      "kind": "pattern",
+      "sourceTerms": [
+        64
+      ],
+      "file": "long-polling.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:long-polling",
+        "label": "Long polling",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "latency",
+      "label": "Latência",
+      "english": "Latency",
+      "category": "Resiliência e desempenho",
+      "kind": "metric",
+      "sourceTerms": [
+        65
+      ],
+      "file": "latency.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:latency",
+        "label": "Latência",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "throughput",
+      "label": "Throughput",
+      "english": "Throughput",
+      "category": "Resiliência e desempenho",
+      "kind": "metric",
+      "sourceTerms": [
+        66
+      ],
+      "file": "throughput.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:throughput",
+        "label": "Throughput",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "spof",
+      "label": "Ponto único de falha",
+      "english": "Single Point of Failure (SPOF)",
+      "category": "Resiliência e desempenho",
+      "kind": "concept",
+      "sourceTerms": [
+        68
+      ],
+      "file": "spof.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:spof",
+        "label": "Ponto único de falha",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "redundancy",
+      "label": "Redundância",
+      "english": "Redundancy",
+      "category": "Resiliência e desempenho",
+      "kind": "pattern",
+      "sourceTerms": [
+        69
+      ],
+      "file": "redundancy.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:redundancy",
+        "label": "Redundância",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "circuit-breaker",
+      "label": "Circuit breaker",
+      "english": "Circuit Breaker",
+      "category": "Resiliência e desempenho",
+      "kind": "component",
+      "sourceTerms": [
+        70
+      ],
+      "file": "circuit-breaker.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:circuit-breaker",
+        "label": "Circuit breaker",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "timeout",
+      "label": "Timeout",
+      "english": "Timeout",
+      "category": "Resiliência e desempenho",
+      "kind": "pattern",
+      "sourceTerms": [
+        71
+      ],
+      "file": "timeout.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:timeout",
+        "label": "Timeout",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "retry",
+      "label": "Retry",
+      "english": "Retry",
+      "category": "Resiliência e desempenho",
+      "kind": "pattern",
+      "sourceTerms": [
+        72
+      ],
+      "file": "retry.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:retry",
+        "label": "Retry",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "exponential-backoff",
+      "label": "Backoff exponencial",
+      "english": "Exponential Backoff",
+      "category": "Resiliência e desempenho",
+      "kind": "pattern",
+      "sourceTerms": [
+        73
+      ],
+      "file": "exponential-backoff.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:exponential-backoff",
+        "label": "Backoff exponencial",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "rate-limiter",
+      "label": "Rate limiter",
+      "english": "Rate Limiting",
+      "category": "Resiliência e desempenho",
+      "kind": "component",
+      "sourceTerms": [
+        74
+      ],
+      "file": "rate-limiter.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:rate-limiter",
+        "label": "Rate limiter",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "load-shedding",
+      "label": "Load shedding",
+      "english": "Load Shedding",
+      "category": "Resiliência e desempenho",
+      "kind": "pattern",
+      "sourceTerms": [
+        75
+      ],
+      "file": "load-shedding.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:load-shedding",
+        "label": "Load shedding",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    }
+  ]
+}

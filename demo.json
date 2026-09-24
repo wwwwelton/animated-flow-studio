@@ -1,0 +1,198 @@
+{
+  "version": 2,
+  "title": "Fluxo de IA de ponta a ponta",
+  "kicker": "FIGURA 01 · ARQUITETURA",
+  "description": "Solicitações e respostas percorrem o mesmo trilho em sentidos opostos.",
+  "width": 1278,
+  "height": 633,
+  "autoGrow": true,
+  "growthMargin": 48,
+  "grid": true,
+  "showLegend": true,
+  "legends": [
+    {
+      "id": "request",
+      "label": "Solicitação",
+      "color": "#70a0ff",
+      "shape": "square",
+      "direction": "forward"
+    },
+    {
+      "id": "response",
+      "label": "Resposta",
+      "color": "#9ae8c5",
+      "shape": "circle",
+      "direction": "reverse"
+    },
+    {
+      "id": "cdc",
+      "label": "Alterações (CDC)",
+      "color": "#bb8ae8",
+      "shape": "diamond",
+      "direction": "forward"
+    },
+    {
+      "id": "approval",
+      "label": "Aprovação humana",
+      "color": "#ffd085",
+      "shape": "diamond",
+      "direction": "forward"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "user",
+      "label": "Usuário",
+      "x": 45,
+      "y": 260,
+      "subtitle": "",
+      "color": "#ffffff",
+      "type": "card",
+      "icon": "api",
+      "parent": null,
+      "w": 190,
+      "h": 62,
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333"
+    },
+    {
+      "id": "context",
+      "label": "Contexto / RAG",
+      "x": 335,
+      "y": 260,
+      "subtitle": "Busca e memória",
+      "color": "#ffffff",
+      "type": "card",
+      "icon": "database",
+      "parent": null,
+      "w": 190,
+      "h": 62,
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333"
+    },
+    {
+      "id": "llm",
+      "label": "LLM / SLM",
+      "x": 625,
+      "y": 260,
+      "subtitle": "Decisão",
+      "color": "#ffffff",
+      "type": "card",
+      "icon": "brain",
+      "parent": null,
+      "w": 190,
+      "h": 62,
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333"
+    },
+    {
+      "id": "tool",
+      "label": "Ferramentas",
+      "x": 1025,
+      "y": 120,
+      "subtitle": "API / MCP",
+      "color": "#ffffff",
+      "type": "card",
+      "icon": "code",
+      "parent": null,
+      "w": 190,
+      "h": 62,
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333"
+    },
+    {
+      "id": "check",
+      "label": "Aprovado?",
+      "x": 1025,
+      "y": 400,
+      "subtitle": "",
+      "color": "#ffffff",
+      "type": "decision",
+      "icon": "none",
+      "parent": null,
+      "w": 190,
+      "h": 120,
+      "borderColor": "#000000",
+      "textColor": "#000000",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-0",
+      "source": "user",
+      "target": "context",
+      "label": "",
+      "traffic": [
+        "request",
+        "response"
+      ],
+      "duration": 8,
+      "route": "orthogonal",
+      "sourcePort": "auto",
+      "targetPort": "auto",
+      "offset": 0,
+      "strokeColor": "#000000",
+      "textColor": "#000000"
+    },
+    {
+      "id": "edge-1",
+      "source": "context",
+      "target": "llm",
+      "label": "",
+      "traffic": [
+        "request",
+        "response"
+      ],
+      "duration": 8,
+      "route": "orthogonal",
+      "sourcePort": "auto",
+      "targetPort": "auto",
+      "offset": 0,
+      "strokeColor": "#000000",
+      "textColor": "#000000"
+    },
+    {
+      "id": "edge-2",
+      "source": "llm",
+      "target": "tool",
+      "label": "",
+      "traffic": [
+        "request",
+        "response"
+      ],
+      "duration": 8,
+      "route": "orthogonal",
+      "sourcePort": "auto",
+      "targetPort": "auto",
+      "offset": 0,
+      "strokeColor": "#000000",
+      "textColor": "#000000"
+    },
+    {
+      "id": "edge-3",
+      "source": "llm",
+      "target": "check",
+      "label": "",
+      "traffic": [
+        "approval"
+      ],
+      "duration": 8,
+      "route": "orthogonal",
+      "sourcePort": "auto",
+      "targetPort": "auto",
+      "offset": 0,
+      "strokeColor": "#000000",
+      "textColor": "#000000"
+    }
+  ]
+}

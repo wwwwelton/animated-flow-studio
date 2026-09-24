@@ -1,0 +1,124 @@
+{
+  "version": 2,
+  "title": "Cores dos elementos",
+  "kicker": "FIGURA 01 · ARQUITETURA",
+  "description": "Preenchimento, bordas, textos, ícones e conexões configuráveis.",
+  "width": 940,
+  "height": 300,
+  "autoGrow": true,
+  "growthMargin": 48,
+  "showLegend": true,
+  "grid": true,
+  "legends": [
+    {
+      "id": "request",
+      "label": "Solicitação",
+      "color": "#70a0ff",
+      "shape": "square",
+      "direction": "forward"
+    },
+    {
+      "id": "response",
+      "label": "Resposta",
+      "color": "#9ae8c5",
+      "shape": "circle",
+      "direction": "reverse"
+    },
+    {
+      "id": "cdc",
+      "label": "Alterações (CDC)",
+      "color": "#bb8ae8",
+      "shape": "diamond",
+      "direction": "forward"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "a",
+      "type": "card",
+      "label": "Cliente",
+      "subtitle": "SOLICITAÇÃO",
+      "x": 40,
+      "y": 100,
+      "w": 230,
+      "h": 90,
+      "color": "#eaf2ff",
+      "borderColor": "#3268b5",
+      "textColor": "#194375",
+      "subtitleColor": "#5179a8",
+      "iconColor": "#3268b5",
+      "icon": "api",
+      "parent": null
+    },
+    {
+      "id": "b",
+      "type": "card",
+      "label": "Serviço de IA",
+      "subtitle": "PROCESSAMENTO",
+      "x": 355,
+      "y": 100,
+      "w": 230,
+      "h": 90,
+      "color": "#f2eaff",
+      "borderColor": "#8857bb",
+      "textColor": "#593780",
+      "subtitleColor": "#9975bd",
+      "iconColor": "#8857bb",
+      "icon": "brain",
+      "parent": null
+    },
+    {
+      "id": "c",
+      "type": "database",
+      "label": "Dados",
+      "subtitle": "",
+      "x": 700,
+      "y": 100,
+      "w": 180,
+      "h": 90,
+      "color": "#e6f6ed",
+      "borderColor": "#29805a",
+      "textColor": "#185b3d",
+      "subtitleColor": "#000000",
+      "iconColor": "#333333",
+      "icon": "none",
+      "parent": null
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge0",
+      "source": "a",
+      "target": "b",
+      "label": "API",
+      "traffic": [
+        "request",
+        "response"
+      ],
+      "strokeColor": "#3268b5",
+      "textColor": "#194375",
+      "duration": 8,
+      "route": "orthogonal",
+      "sourcePort": "auto",
+      "targetPort": "auto",
+      "offset": 0
+    },
+    {
+      "id": "edge1",
+      "source": "b",
+      "target": "c",
+      "label": "Consulta",
+      "traffic": [
+        "request",
+        "response"
+      ],
+      "strokeColor": "#29805a",
+      "textColor": "#185b3d",
+      "duration": 8,
+      "route": "orthogonal",
+      "sourcePort": "auto",
+      "targetPort": "auto",
+      "offset": 0
+    }
+  ]
+}
