@@ -29,6 +29,7 @@ Com o servidor acima em execução:
 | 7 protocolos de API e efeitos de tráfego | http://127.0.0.1:8000/examples/api-7-protocols.html ou o botão **7 protocolos de API** em Modelos |
 | Fluxo de IA com Python | http://127.0.0.1:8000/demo.html |
 | Diagrama dos protocolos para importar | `examples/api-7-protocols.json` |
+| Prévia do diagrama | `examples/api-7-protocols.png` e `examples/api-7-protocols.svg` |
 | Arquitetura de pedidos | Importe `examples/system-design.json` no editor |
 | Todas as formas de fluxograma | Importe `examples/componentes.json` |
 | Catálogo System Design | Importe `examples/system-design-catalog.json` |

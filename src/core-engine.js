@@ -80,9 +80,9 @@ function shape(n){
 function nodeLabels(n,label=n.label){
  const t=typography(n),compact=['card','system','reactive'].includes(n.type),hasIcon=n.icon!=='none'&&compact;
  if(COMPONENTS[n.type]?.renderer==='protocol'){
-  const titleHeight=Math.max(18,t.fontSize*1.4),subtitleHeight=Math.max(14,t.subtitleSize*1.4);
-  let result=textBlock(n,label,8,62,n.w-16,titleHeight,{anchor:'middle',limit:2});
-  if(n.subtitle)result+=textBlock(n,n.subtitle,8,83,n.w-16,subtitleHeight,{subtitle:true,anchor:'middle',limit:2});
+  const pad=72,width=Math.max(12,n.w-pad-12),titleHeight=Math.max(20,t.fontSize*1.5);
+  let result=textBlock(n,label,pad,6,width,titleHeight,{limit:2});
+  if(n.subtitle)result+=textBlock(n,n.subtitle,pad,29,width,n.h-34,{subtitle:true,limit:3});
   return result;
  }
  if(compact&&(n.w<140||n.h<46)){const w=Math.max(140,n.w),h=Math.max(46,n.h),s=Math.min(n.w/w,n.h/h);return `<g transform="translate(${(n.w-w*s)/2} ${(n.h-h*s)/2}) scale(${s})">${nodeLabels({...n,w,h},label)}</g>`;}
@@ -240,20 +240,20 @@ function featureTemplate(){
 }
 function protocolTemplate(){
  const specs=[
-  {id:'rest',type:'api-rest',title:'REST',effect:'rest',color:'#2563eb',shape:'square',icon:'api',source:'Web e mobile',target:'Recursos HTTP',note:'CRUD com métodos HTTP e recursos.',link:'Métodos HTTP'},
-  {id:'graphql',type:'api-graphql',title:'GraphQL',effect:'graphql',color:'#c026d3',shape:'diamond',icon:'database',source:'Aplicações clientes',target:'API de dados',note:'O cliente seleciona os campos da resposta.',link:'Consulta tipada'},
-  {id:'grpc',type:'api-grpc',title:'gRPC',effect:'grpc',color:'#0f766e',shape:'square',icon:'server',source:'Serviço interno A',target:'Microsserviço B',note:'Chamadas rápidas com contratos tipados.',link:'RPC · Protobuf'},
-  {id:'websocket',type:'api-websocket',title:'WebSockets',effect:'websocket',color:'#ea580c',shape:'arrow',icon:'network',source:'Chat / multiplayer',target:'Serviço em tempo real',note:'Conexão persistente e bidirecional.',link:'Canal aberto'},
-  {id:'webhook',type:'api-webhook',title:'Webhooks',effect:'webhook',color:'#dc2626',shape:'star',icon:'network',source:'Provedor de eventos',target:'Agente de IA',note:'Eventos enviados ao endpoint inscrito.',link:'POST de evento'},
-  {id:'sse',type:'api-sse',title:'SSE',effect:'sse',color:'#0284c7',shape:'circle',icon:'server',source:'Servidor de eventos',target:'Feed / agente',note:'Atualizações contínuas do servidor ao cliente.',link:'HTTP · stream'},
-  {id:'mqtt',type:'api-mqtt',title:'MQTT',effect:'mqtt',color:'#65a30d',shape:'triangle',icon:'network',source:'Sensores IoT',target:'Assinantes',note:'Publish/subscribe leve para redes instáveis.',link:'Tópico pub/sub'}
+  {id:'rest',type:'api-rest',title:'REST',effect:'rest',color:'#2563eb',shape:'square',icon:'api',source:'Web e mobile',sourceNote:'Cliente HTTP.',target:'Recursos HTTP',targetNote:'Users · products · orders.',note:'CRUD com métodos HTTP e recursos.',link:'Métodos HTTP'},
+  {id:'graphql',type:'api-graphql',title:'GraphQL',effect:'graphql',color:'#c026d3',shape:'diamond',icon:'database',source:'Aplicações clientes',sourceNote:'Pede apenas os campos necessários.',target:'API de dados',targetNote:'Resolvers e fontes de dados.',note:'Consulta campos sob demanda.',link:'Consulta tipada'},
+  {id:'grpc',type:'api-grpc',title:'gRPC',effect:'grpc',color:'#0f766e',shape:'square',icon:'server',source:'Serviço interno A',sourceNote:'Chama com contrato Protobuf.',target:'Microsserviço B',targetNote:'Atende chamadas RPC tipadas.',note:'RPC tipada de baixa latência.',link:'RPC · Protobuf'},
+  {id:'websocket',type:'api-websocket',title:'WebSockets',effect:'websocket',color:'#ea580c',shape:'arrow',icon:'network',source:'Chat / multiplayer',sourceNote:'Mantém o canal aberto.',target:'Serviço em tempo real',targetNote:'Envia e recebe eventos.',note:'Conexão persistente, duas vias.',link:'Canal aberto'},
+  {id:'webhook',type:'api-webhook',title:'Webhooks',effect:'webhook',color:'#dc2626',shape:'star',icon:'network',source:'Provedor de eventos',sourceNote:'Publica um evento.',target:'Agente de IA',targetNote:'Recebe um callback HTTP.',note:'Notificação enviada ao endpoint.',link:'POST de evento'},
+  {id:'sse',type:'api-sse',title:'SSE',effect:'sse',color:'#0284c7',shape:'circle',icon:'server',source:'Servidor de eventos',sourceNote:'Envia eventos via HTTP.',target:'Feed / agente',targetNote:'Recebe o fluxo contínuo.',note:'Stream unidirecional do servidor.',link:'HTTP · stream'},
+  {id:'mqtt',type:'api-mqtt',title:'MQTT',effect:'mqtt',color:'#65a30d',shape:'triangle',icon:'network',source:'Sensores IoT',sourceNote:'Publica em tópicos.',target:'Assinantes',targetNote:'Consome tópicos inscritos.',note:'Pub/sub leve para redes instáveis.',link:'Tópico pub/sub'}
  ];
  const nodes=[],edges=[],legends=[];
  for(const [i,s] of specs.entries()){
   const y=36+i*142;
-  nodes.push(makeNode('card',{id:`${s.id}-source`,label:s.source,subtitle:s.note,x:42,y:y+15,w:224,h:74,color:'#ffffff',icon:s.icon}));
-  nodes.push(makeNode(s.type,{id:`${s.id}-protocol`,label:s.title,subtitle:s.note,x:493,y:y,w:205,h:104,color:'#ffffff',typography:{fontSize:15,subtitleSize:9,bold:true}}));
-  nodes.push(makeNode('card',{id:`${s.id}-target`,label:s.target,subtitle:s.note,x:1110,y:y+15,w:224,h:74,color:'#ffffff',icon:s.icon}));
+  nodes.push(makeNode('card',{id:`${s.id}-source`,label:s.source,subtitle:s.sourceNote,x:42,y:y+15,w:224,h:74,color:'#ffffff',icon:s.icon}));
+  nodes.push(makeNode(s.type,{id:`${s.id}-protocol`,label:s.title,subtitle:s.note,x:493,y:y+15,w:224,h:74,color:'#ffffff'}));
+  nodes.push(makeNode('card',{id:`${s.id}-target`,label:s.target,subtitle:s.targetNote,x:1110,y:y+15,w:224,h:74,color:'#ffffff',icon:s.icon}));
   legends.push({id:s.id,label:s.title+' · '+s.link,color:s.color,shape:s.shape,direction:'forward',effect:s.effect,speed:i%2?.9:1.15,size:8+i%3,count:i===3||i===6?2:1});
   const source=i===5?`${s.id}-target`:`${s.id}-source`,target=i===5?`${s.id}-source`:`${s.id}-target`;
   edges.push({id:`${s.id}-request`,source,target:`${s.id}-protocol`,traffic:[s.id],duration:5+i%3,connector:s.id==='websocket'?'both':'out'});
