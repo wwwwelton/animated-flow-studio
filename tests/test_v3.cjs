@@ -51,6 +51,25 @@ test('many-to-many permits shared ports and repeated node pairs with distinct ed
 test('all marker shapes and effects remain valid standalone SVG geometry',()=>{
  const p=simple();for(const effect of Object.keys(F.EFFECTS))for(const shape of Object.keys(F.SYMBOLS)){p.legends[0].effect=effect;p.legends[0].shape=shape;const svg=F.render(p);assert.ok(!/NaN|undefined/.test(svg));assert.match(svg,/animateMotion/);}
 });
+test('API traffic uses small glyphs, soft fades and protocol-specific direction',()=>{
+ const p=F.protocolTemplate(),legendMap=Object.fromEntries(p.legends.map(l=>[l.id,l]));
+ assert.deepEqual(Object.values(legendMap).map(l=>[l.size,l.count]),Array.from({length:7},()=>[7,1]));
+ assert.deepEqual(['rest','graphql','grpc','websocket','webhook','sse','mqtt'].map(id=>legendMap[id].speed),[1,1,1.05,.95,.8,.95,.95]);
+ for(const n of p.nodes.filter(n=>n.type.startsWith('api-'))){assert.equal(n.color,'#ffffff');assert.equal(n.borderColor,'#000000');assert.equal(n.iconColor,'#333333');}
+ const rest=p.edges.filter(e=>e.id.startsWith('rest-')),websocket=p.edges.filter(e=>e.id.startsWith('websocket-'));
+ assert.ok(rest.every(e=>e.connector==='out'));assert.ok(websocket.every(e=>e.connector==='both'));
+ const sse=F.streams(p).filter(s=>s.legend.id==='sse');assert.equal(sse.length,2);
+ assert.deepEqual(sse.map(s=>[s.source,s.target]),[['sse-target','sse-protocol'],['sse-protocol','sse-source']]);
+ assert.equal(F.streams(p).find(s=>s.legend.id==='webhook').duration,7.5);
+ const svg=F.render(p);assert.match(svg,/values="0;0\.86;0\.86;0" keyTimes="0;0\.06;0\.94;1"/);
+ assert.match(svg,/data-stream="0-0-0-return"[^]*?begin="0\.55s"[^]*?keyPoints="1;0"/);
+ assert.match(svg,/data-stream="6-0-0-return"[^]*?begin="[0-9.]+s"[^]*?keyPoints="1;0"/);
+ assert.match(svg,/data-stream="8-0-0"[^]*?values="0;0\.86;0\.86;0;0" keyTimes="0;0\.03;0\.47;0\.5;1" dur="15s"/);
+ assert.equal((svg.match(/data-stream="[^"]+-return"/g)||[]).length,4);
+ assert.doesNotMatch(svg,/r="8" fill="#[0-9a-f]{6}" fill-opacity/);
+ for(const id of ['api-rest','api-graphql','api-grpc','api-websocket','api-webhook','api-sse','api-mqtt'])
+  assert.match(F.COMPONENTS[id].svg,/stroke-width="1\.3"/);
+});
 test('SVG catalog separates custom from flowchart and compiled templates are safe',()=>{
  assert.equal(F.COMPONENTS.reactive.category,'custom');assert.equal(F.COMPONENTS.table.category,'flowchart');
  for(const c of Object.values(F.COMPONENTS)){assert.ok(!/<script|<image|onload=|href=/.test(c.svg));assert.ok(c.file.endsWith('.svg'));}

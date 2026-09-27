@@ -19,8 +19,8 @@
       "shape": "square",
       "direction": "forward",
       "effect": "rest",
-      "speed": 1.15,
-      "size": 8,
+      "speed": 1,
+      "size": 7,
       "count": 1
     },
     {
@@ -30,8 +30,8 @@
       "shape": "diamond",
       "direction": "forward",
       "effect": "graphql",
-      "speed": 0.9,
-      "size": 9,
+      "speed": 1,
+      "size": 7,
       "count": 1
     },
     {
@@ -41,8 +41,8 @@
       "shape": "square",
       "direction": "forward",
       "effect": "grpc",
-      "speed": 1.15,
-      "size": 10,
+      "speed": 1.05,
+      "size": 7,
       "count": 1
     },
     {
@@ -52,9 +52,9 @@
       "shape": "arrow",
       "direction": "forward",
       "effect": "websocket",
-      "speed": 0.9,
-      "size": 8,
-      "count": 2
+      "speed": 0.95,
+      "size": 7,
+      "count": 1
     },
     {
       "id": "webhook",
@@ -63,8 +63,8 @@
       "shape": "star",
       "direction": "forward",
       "effect": "webhook",
-      "speed": 1.15,
-      "size": 9,
+      "speed": 0.8,
+      "size": 7,
       "count": 1
     },
     {
@@ -74,8 +74,8 @@
       "shape": "circle",
       "direction": "forward",
       "effect": "sse",
-      "speed": 0.9,
-      "size": 10,
+      "speed": 0.95,
+      "size": 7,
       "count": 1
     },
     {
@@ -85,9 +85,9 @@
       "shape": "triangle",
       "direction": "forward",
       "effect": "mqtt",
-      "speed": 1.15,
-      "size": 8,
-      "count": 2
+      "speed": 0.95,
+      "size": 7,
+      "count": 1
     }
   ],
   "nodes": [
