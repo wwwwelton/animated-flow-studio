@@ -18,7 +18,7 @@ parts = "\n".join(
     (SOURCE / name).read_text()
     for name in ("core-engine.js", "canvas.js", "icons.js", "templates.js")
 )
-exports = "return {COMPONENTS,SYSTEM_DESIGN,TYPES,LEGENDS,EFFECTS,SYMBOLS,CONNECTORS,FONTS,CANVAS_LIMIT,DEFAULT_MARGIN,esc,color,clone,normalize,render,shape,nodeLabels,typography,textStyle,makeNode,systemNode,systemGlyph,componentSVG,tablePreset,normalizeTable,streams,reactiveStates,closestPort,port,contentBounds,growCanvas,resizeCanvas,transformNodes,headerHeight,route,lines,studioTemplate,gallery,systemGallery,systemTemplate,featureTemplate};\n});\n"
+exports = "return {COMPONENTS,SYSTEM_DESIGN,TYPES,LEGENDS,EFFECTS,SYMBOLS,CONNECTORS,FONTS,CANVAS_LIMIT,DEFAULT_MARGIN,esc,color,clone,normalize,render,shape,nodeLabels,typography,textStyle,makeNode,systemNode,systemGlyph,componentSVG,tablePreset,normalizeTable,streams,reactiveStates,closestPort,port,contentBounds,growCanvas,resizeCanvas,transformNodes,headerHeight,route,lines,studioTemplate,gallery,systemGallery,systemTemplate,featureTemplate,protocolTemplate};\n});\n"
 (SOURCE / "flow-core.js").write_text(wrapper + catalog + parts + exports)
 runpy.run_path(str(ROOT / "tools/build_components.py"), run_name="__main__")
 (SOURCE / "editor.js").write_text(

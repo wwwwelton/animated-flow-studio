@@ -4,10 +4,10 @@ Edite os arquivos desta pasta e execute `uv run python build.py` na raiz. O edit
 
 Para adicionar uma forma:
 
-1. Crie `flowchart/minha-forma.svg` com `viewBox="0 0 100 100"` e `preserveAspectRatio="none"`.
+1. Crie `flowchart/minha-forma.svg` ou `custom/minha-forma.svg` com `viewBox="0 0 100 100"` e `preserveAspectRatio="none"`.
 2. Use `{{fill}}` e `{{stroke}}` para cores editáveis, `vector-effect="non-scaling-stroke"` nas bordas.
 3. Adicione ao `manifest.json` um objeto com `id` único, `label`, `category: "flowchart"`, `file: "flowchart/minha-forma.svg"`, `renderer: "standard"`, `width`, `height` e `textInset` (fração da largura usada como margem).
-4. Execute o build. A forma entra no catálogo, na paleta, na validação JSON e nas exportações. Confira o texto dentro da geometria e as conexões laterais.
+4. Use `category: "flowchart"` ou `category: "custom"` no manifesto e execute o build. A forma entra no catálogo, na paleta, na validação JSON e nas exportações. Para cartões com o desenho no alto e rótulo embaixo, defina `renderer: "protocol"`, `width: 205`, `height: 104`; o renderer reserva a área superior para o SVG. Confira o texto dentro da geometria e as conexões laterais.
 
 São permitidos svg, g, path, rect, circle, ellipse, polygon, polyline e line. Scripts, eventos, estilos arbitrários e recursos externos são rejeitados. O renderer usa a geometria original e aplica a tipografia separadamente.
 

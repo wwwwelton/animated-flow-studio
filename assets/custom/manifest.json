@@ -10,6 +10,76 @@
       "width": 190,
       "height": 62,
       "textInset": 0.07
+    },
+    {
+      "id": "api-rest",
+      "label": "REST",
+      "category": "custom",
+      "file": "api-rest.svg",
+      "renderer": "protocol",
+      "width": 205,
+      "height": 104,
+      "textInset": 0.07
+    },
+    {
+      "id": "api-graphql",
+      "label": "GraphQL",
+      "category": "custom",
+      "file": "api-graphql.svg",
+      "renderer": "protocol",
+      "width": 205,
+      "height": 104,
+      "textInset": 0.07
+    },
+    {
+      "id": "api-grpc",
+      "label": "gRPC",
+      "category": "custom",
+      "file": "api-grpc.svg",
+      "renderer": "protocol",
+      "width": 205,
+      "height": 104,
+      "textInset": 0.07
+    },
+    {
+      "id": "api-websocket",
+      "label": "WebSockets",
+      "category": "custom",
+      "file": "api-websocket.svg",
+      "renderer": "protocol",
+      "width": 205,
+      "height": 104,
+      "textInset": 0.07
+    },
+    {
+      "id": "api-webhook",
+      "label": "Webhooks",
+      "category": "custom",
+      "file": "api-webhook.svg",
+      "renderer": "protocol",
+      "width": 205,
+      "height": 104,
+      "textInset": 0.07
+    },
+    {
+      "id": "api-sse",
+      "label": "SSE",
+      "category": "custom",
+      "file": "api-sse.svg",
+      "renderer": "protocol",
+      "width": 205,
+      "height": 104,
+      "textInset": 0.07
+    },
+    {
+      "id": "api-mqtt",
+      "label": "MQTT",
+      "category": "custom",
+      "file": "api-mqtt.svg",
+      "renderer": "protocol",
+      "width": 205,
+      "height": 104,
+      "textInset": 0.07
     }
   ]
 }

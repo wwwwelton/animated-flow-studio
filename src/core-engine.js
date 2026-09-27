@@ -1,7 +1,7 @@
 /* Pure SVG renderer and project schema. No DOM or network dependency. */
 const TYPES={...Object.fromEntries(Object.entries(COMPONENTS).map(([id,c])=>[id,c.label])),system:'System Design'};
 const LEGENDS=[{id:'request',label:'Solicitação',color:'#70a0ff',shape:'square',direction:'forward'},{id:'response',label:'Resposta',color:'#9ae8c5',shape:'circle',direction:'reverse'},{id:'cdc',label:'Alterações (CDC)',color:'#bb8ae8',shape:'diamond',direction:'forward'}];
-const EFFECTS={packet:'Marcador',pulse:'Pulso',glow:'Brilho',trail:'Rastro',comet:'Cometa',dashed:'Fluxo tracejado'};
+const EFFECTS={packet:'Marcador',pulse:'Pulso',glow:'Brilho',trail:'Rastro',comet:'Cometa',dashed:'Fluxo tracejado',rest:'REST · solicitação/resposta',graphql:'GraphQL · seleção de dados',grpc:'gRPC · quadro tipado',websocket:'WebSocket · duas vias',webhook:'Webhook · notificação',sse:'SSE · fluxo contínuo',mqtt:'MQTT · publish/subscribe'};
 const SYMBOLS={square:'Quadrado',circle:'Círculo',diamond:'Losango',triangle:'Triângulo',arrow:'Seta',star:'Estrela'};
 const CONNECTORS={out:'Seta saída',in:'Seta entrada',curve:'Seta em curva',both:'Seta bidirecional',line:'Linha',dashed:'Linha tracejada',dotted:'Linha pontilhada',double:'Linha dupla'};
 const FONTS=['Arial','Georgia','Verdana','Courier New','Inter','Roboto','Open Sans','Lato','Montserrat','Poppins','Nunito','Ubuntu','Merriweather','Playfair Display','Roboto Mono','JetBrains Mono','Fira Code','Source Code Pro'];
@@ -79,6 +79,12 @@ function shape(n){
 }
 function nodeLabels(n,label=n.label){
  const t=typography(n),compact=['card','system','reactive'].includes(n.type),hasIcon=n.icon!=='none'&&compact;
+ if(COMPONENTS[n.type]?.renderer==='protocol'){
+  const titleHeight=Math.max(18,t.fontSize*1.4),subtitleHeight=Math.max(14,t.subtitleSize*1.4);
+  let result=textBlock(n,label,8,62,n.w-16,titleHeight,{anchor:'middle',limit:2});
+  if(n.subtitle)result+=textBlock(n,n.subtitle,8,83,n.w-16,subtitleHeight,{subtitle:true,anchor:'middle',limit:2});
+  return result;
+ }
  if(compact&&(n.w<140||n.h<46)){const w=Math.max(140,n.w),h=Math.max(46,n.h),s=Math.min(n.w/w,n.h/h);return `<g transform="translate(${(n.w-w*s)/2} ${(n.h-h*s)/2}) scale(${s})">${nodeLabels({...n,w,h},label)}</g>`;}
  const grouped=['group','swimlane'].includes(n.type);
  const pad=grouped?12:hasIcon?50:Math.max(12,n.w*(COMPONENTS[n.type]?.textInset??.07));
@@ -163,15 +169,27 @@ function headerHeight(p){return 130+(p.description?Math.max(0,lines(p.descriptio
 const svgStyle=`text{font-family:Arial,sans-serif;fill:#000}.kicker{font-family:monospace;font-size:10px;font-weight:600}.figure-title{font-size:21px;font-weight:700}.description{font-size:13px}.legend-label{font-size:13px}.edge-label{paint-order:stroke;stroke:white;stroke-width:4px;stroke-linejoin:round}.rail{fill:none;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round}.node-shape{stroke-linejoin:round}.selection{fill:none;stroke:#1675df;stroke-width:1.5;stroke-dasharray:4 3;pointer-events:none}.hit{stroke:transparent;stroke-width:16;fill:none;cursor:pointer}.node{cursor:move}.node text,.icon,.packet{pointer-events:none}.resize{fill:white;stroke:#1675df;cursor:nwse-resize}.port{fill:white;stroke:#2563eb;stroke-width:1.5;opacity:0;cursor:crosshair}.node:hover>.port,.node.selected>.port,.connecting .port{opacity:1}.diagram-controls{cursor:pointer}@media(prefers-reduced-motion:reduce){.packet{display:none}}`;
 function motionPacket(stream,prefix){
  const {legend:l,duration,delay,index,key}=stream,pid=`${prefix}-edge-${index}`;
- const motion=(lag=0)=>`<animateMotion dur="${duration}s" begin="${delay+lag}s" calcMode="linear" repeatCount="indefinite" rotate="auto" ${l.direction==='reverse'?'keyPoints="1;0" keyTimes="0;1"':''}><mpath href="#${pid}"/></animateMotion>`;
- const fade=`<animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.01;.99;1" dur="${duration}s" begin="${delay}s" repeatCount="indefinite"/>`;
+ const motion=(lag=0,reverse=l.direction==='reverse')=>`<animateMotion dur="${duration}s" begin="${delay+lag}s" calcMode="linear" repeatCount="indefinite" rotate="auto" ${reverse?'keyPoints="1;0" keyTimes="0;1"':''}><mpath href="#${pid}"/></animateMotion>`;
  let body=symbol(l.shape,0,0,l.size,l.color);
  if(l.effect==='glow')body=`<circle r="${l.size}" fill="${l.color}" opacity=".2"/><circle r="${l.size*.7}" fill="${l.color}" opacity=".2"/>`+body;
  if(l.effect==='pulse')body=`<g>${body}<animateTransform attributeName="transform" type="scale" values=".65;1.3;.65" dur="${duration/4}s" begin="${delay}s" repeatCount="indefinite"/></g>`;
  if(l.effect==='dashed')body=`<rect x="${-l.size}" y="-2" width="${l.size*2}" height="4" rx="2" fill="${l.color}"/>`;
  if(l.effect==='comet'){const tail=(l.direction==='reverse'?1:-1)*l.size*3;body=`<path class="comet-tail" d="M 0 ${-l.size*.4} Q ${tail*.45} 0 ${tail} 0 Q ${tail*.45} 0 0 ${l.size*.4} Z" fill="${l.color}" opacity=".45"/>`+body;}
+ const scale=l.size/8,stroke=`stroke="${l.color}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"`;
+ const protocolGlyphs={
+  rest:`<g transform="scale(${scale})" fill="none" ${stroke}><rect x="-5" y="-4" width="9" height="9" rx="1" fill="${l.color}"/><path d="M-2 0H10m-4-4 4 4-4 4M5-8H-7m4-4-4 4 4 4"/></g>`,
+  graphql:`<g transform="scale(${scale})" fill="none" ${stroke}><path d="M-9-7H-12V7H-9M9-7H12V7H9M-4-4H4M-4 0H2M-4 4H4"/><circle cx="-6" cy="-4" r=".8" fill="${l.color}"/><circle cx="-6" cy="0" r=".8" fill="${l.color}"/><circle cx="-6" cy="4" r=".8" fill="${l.color}"/></g>`,
+  grpc:`<g transform="scale(${scale})" fill="none" ${stroke}><rect x="-10" y="-7" width="20" height="14" rx="2"/><path d="M-6-3H-3V0H-6ZM0-3H3V0H0ZM6-3H8M-6 3H-1M2 3H8"/></g>`,
+  websocket:`<g transform="scale(${scale})" fill="none" ${stroke}><path d="M-11-4H10m-4-4 4 4-4 4M11 4H-10m4-4-4 4 4 4"/></g>`,
+  webhook:`<g transform="scale(${scale})" fill="none" ${stroke}><path d="M0-10V-8M-7 4C-7 2-9 1-10 0V-2C-10-7-6-10 0-10S10-7 10-2V0C9 1 7 2 7 4ZM-4 7C-3 11 3 11 4 7Z"/><circle cx="0" cy="-12" r="1.5" fill="${l.color}"/></g>`,
+  sse:`<g transform="scale(${scale})" fill="${l.color}" ${stroke}><circle cx="-7" cy="0" r="2.2"/><circle cx="0" cy="0" r="2.2"/><circle cx="7" cy="0" r="2.2"/><path d="M-10-7H10m-4-4 4 4-4 4" fill="none"/></g>`,
+  mqtt:`<g transform="scale(${scale})" fill="none" ${stroke}><circle cx="0" cy="0" r="4" fill="${l.color}"/><circle cx="-10" cy="-7" r="2"/><circle cx="10" cy="-7" r="2"/><circle cx="-10" cy="7" r="2"/><circle cx="10" cy="7" r="2"/><path d="M-8-6L-3-2M8-6L3-2M-8 6L-3 2M8 6L3 2"/></g>`
+ };
+ if(protocolGlyphs[l.effect])body=protocolGlyphs[l.effect];
  let ghosts='';if(l.effect==='trail')for(let i=4;i>=1;i--)ghosts+=`<g class="packet" opacity="0">${symbol(l.shape,0,0,l.size*(1-i*.13),l.color)}${motion(i*duration*.013)}<animate attributeName="opacity" values="0;${.4-i*.06};${.4-i*.06};0" keyTimes="0;.01;.99;1" begin="${delay+i*duration*.013}s" dur="${duration}s" repeatCount="indefinite"/></g>`;
- return ghosts+`<g class="packet" data-stream="${key}" opacity="0">${body}${motion()}${fade}</g>`;
+ const packet=(content,reverse=false,lag=0,streamKey=key)=>`<g class="packet" data-stream="${streamKey}" opacity="0">${content}${motion(lag,reverse)}<animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.01;.99;1" dur="${duration}s" begin="${delay+lag}s" repeatCount="indefinite"/></g>`;
+ const paired=['rest','websocket'].includes(l.effect);
+ return ghosts+packet(body,l.direction==='reverse')+(paired?packet(protocolGlyphs[l.effect],l.direction!=='reverse',duration/2,`${key}-return`):'');
 }
 function render(p,options={}){
  const head=headerHeight(p),height=p.height+head,prefix=options.prefix??'af',sel=options.selected,staticMode=options.static===true;
@@ -219,4 +237,27 @@ function featureTemplate(){
  const nodes=[systemNode('client',{id:'client',x:40,y:160}),makeNode('reactive',{id:'status',x:365,y:160,label:'Aguardando tráfego',reactive:{enterText:'Pedido recebido',exitText:'Resposta enviada',enterColor:'#dcfce7',exitColor:'#dbeafe',hold:2}}),makeNode('table',{id:'sql',label:'orders · SQL',x:690,y:45,table:tablePreset('sql')}),makeNode('table',{id:'nosql',label:'events · NoSQL',x:690,y:325,table:tablePreset('nosql')}),makeNode('table',{id:'schema',label:'Contrato · Schema',x:40,y:325,table:tablePreset('schema')})];
  const legends=[{...LEGENDS[0],effect:'comet',size:10,speed:1},{...LEGENDS[1],effect:'pulse',speed:.8},{...LEGENDS[2],effect:'glow',shape:'star'}];
  return normalize({title:'Tabelas, eventos e componente reativo',kicker:'ANIMATED FLOW STUDIO 3',description:'Arraste as portas azuis para conectar. Ctrl + roda aplica zoom; arraste o fundo para navegar.',width:1100,height:600,nodes,legends,edges:[{id:'a',source:'client',target:'status',traffic:['request','response'],duration:4,connector:'both'},{id:'b',source:'status',target:'sql',traffic:['request'],duration:5,connector:'curve'},{id:'c',source:'status',target:'nosql',traffic:['cdc'],duration:6,connector:'dashed'},{id:'d',source:'schema',target:'status',traffic:['request'],duration:8,connector:'dotted'}]});
+}
+function protocolTemplate(){
+ const specs=[
+  {id:'rest',type:'api-rest',title:'REST',effect:'rest',color:'#2563eb',shape:'square',icon:'api',source:'Web e mobile',target:'Recursos HTTP',note:'CRUD com métodos HTTP e recursos.',link:'Métodos HTTP'},
+  {id:'graphql',type:'api-graphql',title:'GraphQL',effect:'graphql',color:'#c026d3',shape:'diamond',icon:'database',source:'Aplicações clientes',target:'API de dados',note:'O cliente seleciona os campos da resposta.',link:'Consulta tipada'},
+  {id:'grpc',type:'api-grpc',title:'gRPC',effect:'grpc',color:'#0f766e',shape:'square',icon:'server',source:'Serviço interno A',target:'Microsserviço B',note:'Chamadas rápidas com contratos tipados.',link:'RPC · Protobuf'},
+  {id:'websocket',type:'api-websocket',title:'WebSockets',effect:'websocket',color:'#ea580c',shape:'arrow',icon:'network',source:'Chat / multiplayer',target:'Serviço em tempo real',note:'Conexão persistente e bidirecional.',link:'Canal aberto'},
+  {id:'webhook',type:'api-webhook',title:'Webhooks',effect:'webhook',color:'#dc2626',shape:'star',icon:'network',source:'Provedor de eventos',target:'Agente de IA',note:'Eventos enviados ao endpoint inscrito.',link:'POST de evento'},
+  {id:'sse',type:'api-sse',title:'SSE',effect:'sse',color:'#0284c7',shape:'circle',icon:'server',source:'Servidor de eventos',target:'Feed / agente',note:'Atualizações contínuas do servidor ao cliente.',link:'HTTP · stream'},
+  {id:'mqtt',type:'api-mqtt',title:'MQTT',effect:'mqtt',color:'#65a30d',shape:'triangle',icon:'network',source:'Sensores IoT',target:'Assinantes',note:'Publish/subscribe leve para redes instáveis.',link:'Tópico pub/sub'}
+ ];
+ const nodes=[],edges=[],legends=[];
+ for(const [i,s] of specs.entries()){
+  const y=36+i*142;
+  nodes.push(makeNode('card',{id:`${s.id}-source`,label:s.source,subtitle:s.note,x:42,y:y+15,w:224,h:74,color:'#ffffff',icon:s.icon}));
+  nodes.push(makeNode(s.type,{id:`${s.id}-protocol`,label:s.title,subtitle:s.note,x:493,y:y,w:205,h:104,color:'#ffffff',typography:{fontSize:15,subtitleSize:9,bold:true}}));
+  nodes.push(makeNode('card',{id:`${s.id}-target`,label:s.target,subtitle:s.note,x:1110,y:y+15,w:224,h:74,color:'#ffffff',icon:s.icon}));
+  legends.push({id:s.id,label:s.title+' · '+s.link,color:s.color,shape:s.shape,direction:'forward',effect:s.effect,speed:i%2?.9:1.15,size:8+i%3,count:i===3||i===6?2:1});
+  const source=i===5?`${s.id}-target`:`${s.id}-source`,target=i===5?`${s.id}-source`:`${s.id}-target`;
+  edges.push({id:`${s.id}-request`,source,target:`${s.id}-protocol`,traffic:[s.id],duration:5+i%3,connector:s.id==='websocket'?'both':'out'});
+  edges.push({id:`${s.id}-delivery`,source:`${s.id}-protocol`,target,traffic:[s.id],duration:5+i%3,connector:s.id==='websocket'?'both':'out'});
+ }
+ return normalize({title:'7 protocolos de API',kicker:'GUIA VISUAL · API E TEMPO REAL',description:'REST, GraphQL, gRPC, WebSockets, Webhooks, SSE e MQTT: compare o papel de cada protocolo e veja o tráfego animado em ação.',width:1380,height:1035,nodes,edges,legends,trafficSpeed:1,grid:false});
 }

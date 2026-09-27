@@ -6,7 +6,7 @@ const projects={
  'animated-flow-studio':F.studioTemplate(),componentes:F.gallery(),
  'system-design':F.systemTemplate(),'system-design-catalog':F.systemGallery(),
  cores:F.normalize(JSON.parse(fs.readFileSync(path.join(dir,'cores.json'),'utf8'))),
- 'v3-features':F.featureTemplate(),
+ 'v3-features':F.featureTemplate(),'api-7-protocols':F.protocolTemplate(),
 };
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.AFS_BROWSER_PATH,args:['--no-sandbox','--disable-gpu']});
@@ -19,8 +19,9 @@ const projects={
   fs.writeFileSync(path.join(dir,name+'.json'),JSON.stringify(p,null,2)+'\n');fs.writeFileSync(path.join(dir,name+'.svg'),svg);
   await page.setContent('<style>body{margin:0}svg{display:block}</style>'+F.render(p,{static:true,time:2.1}));
   await page.locator('svg').first().screenshot({path:path.join(dir,name+'.png')});
-  if(name==='v3-features'){
-   fs.writeFileSync(path.join(dir,name+'.html'),'<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Animated Flow Studio 3</title><style>body{font-family:Arial;margin:24px;background:#eee}svg{max-width:100%;height:auto;display:block;margin:auto}button{padding:8px;margin-bottom:12px}</style><button id="play">Pausar / reproduzir</button>'+F.render(p)+'<script>'+script.replace(/<\/script/gi,'<\\/script')+'\ndocument.getElementById("play").onclick=()=>{const s=document.querySelector("svg");s.animationsPaused()?s.unpauseAnimations():s.pauseAnimations();};if(matchMedia("(prefers-reduced-motion: reduce)").matches)document.querySelector("svg").pauseAnimations();</script></html>');
+  if(name==='v3-features'||name==='api-7-protocols'){
+   const title=name==='api-7-protocols'?'7 protocolos de API · Animated Flow Studio':'Animated Flow Studio 3';
+   fs.writeFileSync(path.join(dir,name+'.html'),'<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+title+'</title><style>body{font-family:Arial;margin:24px;background:#eee}svg{max-width:100%;height:auto;display:block;margin:auto}button{padding:8px;margin-bottom:12px}</style><button id="play">Pausar / reproduzir</button>'+F.render(p)+'<script>'+script.replace(/<\/script/gi,'<\\/script')+'\ndocument.getElementById("play").onclick=()=>{const s=document.querySelector("svg");s.animationsPaused()?s.unpauseAnimations():s.pauseAnimations();};if(matchMedia("(prefers-reduced-motion: reduce)").matches)document.querySelector("svg").pauseAnimations();</script></html>');
   }
  }
  await page.goto('file://'+root+'/editor.html');await page.screenshot({path:path.join(dir,'editor-preview.png')});

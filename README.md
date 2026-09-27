@@ -1,6 +1,6 @@
 # Animated Flow Studio 3.0.1
 
-Editor de fluxogramas e arquiteturas com tráfego animado em SVG. Possui 19 componentes de fluxograma, 74 símbolos de System Design, tabelas SQL/NoSQL/Schema e componente Custom que alterna texto/cor conforme o tráfego. Os cartões usam borda preta, ícone à esquerda e texto à direita.
+Editor de fluxogramas e arquiteturas com tráfego animado em SVG. Possui 19 componentes de fluxograma, 74 símbolos de System Design, sete componentes de protocolo de API, tabelas SQL/NoSQL/Schema e componente Custom que alterna texto/cor conforme o tráfego. Os cartões usam borda preta, ícone à esquerda e texto à direita.
 
 Este README descreve **o pacote 3.0.1**. O editor roda no navegador; Python é opcional para servir os arquivos, gerar exemplos ou reconstruir o projeto. Node.js e Playwright são usados somente no desenvolvimento e nos testes.
 
@@ -26,7 +26,9 @@ Com o servidor acima em execução:
 | Exemplo | Como abrir |
 |---|---|
 | Tabelas e componente reativo | http://127.0.0.1:8000/examples/v3-features.html |
+| 7 protocolos de API e efeitos de tráfego | http://127.0.0.1:8000/examples/api-7-protocols.html ou o botão **7 protocolos de API** em Modelos |
 | Fluxo de IA com Python | http://127.0.0.1:8000/demo.html |
+| Diagrama dos protocolos para importar | `examples/api-7-protocols.json` |
 | Arquitetura de pedidos | Importe `examples/system-design.json` no editor |
 | Todas as formas de fluxograma | Importe `examples/componentes.json` |
 | Catálogo System Design | Importe `examples/system-design-catalog.json` |

@@ -2,7 +2,7 @@ for(const category of new Set(Object.values(F.SYSTEM_DESIGN).map(c=>c.category))
 for(const name of F.FONTS){const o=document.createElement('option');o.value=name;$('fontFamilies').append(o);}
 for(const [id,label]of Object.entries(F.CONNECTORS)){const o=document.createElement('option');o.value=id;o.textContent=label;$('connectorType').append(o);}
 $('paletteMode').onchange=renderPalette;$('componentSearch').oninput=renderPalette;$('componentCategory').onchange=renderPalette;renderPalette();
-for(const [button,factory]of [['studioTemplate',F.studioTemplate],['gallery',F.gallery],['systemTemplate',F.systemTemplate],['systemGallery',F.systemGallery],['featureTemplate',F.featureTemplate]])$(button).onclick=()=>setProject(factory());
+for(const [button,factory]of [['studioTemplate',F.studioTemplate],['gallery',F.gallery],['systemTemplate',F.systemTemplate],['systemGallery',F.systemGallery],['featureTemplate',F.featureTemplate],['protocolTemplate',F.protocolTemplate]])$(button).onclick=()=>setProject(factory());
 $('blank').onclick=()=>setProject({...F.studioTemplate(),title:'Novo fluxograma',kicker:'ANIMATED FLOW STUDIO',description:'',nodes:[],edges:[]});
 for(const [id,key]of [['diagramTitle','title'],['kicker','kicker'],['description','description']])$(id).onchange=()=>{const next=F.normalize({...project,[key]:$(id).value});checkpoint();project=next;save();};
 for(const [id,key]of [['canvasWidth','width'],['canvasHeight','height']])$(id).onchange=()=>{try{const next=F.clone(project),v=Number($(id).value),r=F.resizeCanvas(next,key==='width'?v:next.width,key==='height'?v:next.height);checkpoint();project=next;save({panel:true});if(r.constrained)status('Tamanho ajustado para manter os componentes visíveis.');}catch(e){status(e.message);canvasFields();}};
