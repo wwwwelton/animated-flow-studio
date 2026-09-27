@@ -1,4 +1,4 @@
-const test=require('node:test'),assert=require('node:assert/strict'),F=require('../src/flow-core.js');
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),F=require('../src/flow-core.js');
 const simple=()=>F.normalize({nodes:[F.systemNode('client',{id:'a',x:30,y:40}),F.makeNode('reactive',{id:'b',x:330,y:40,label:'Idle',reactive:{enterText:'In',exitText:'Out',hold:.5}}),F.systemNode('server',{id:'c',x:650,y:40})],edges:[{id:'ab',source:'a',target:'b',duration:2,traffic:['request']},{id:'bc',source:'b',target:'c',duration:4,traffic:['request']}]});
 test('all v3 settings survive JSON and invalid ranges are rejected',()=>{
  const p=F.featureTemplate();p.nodes[0].typography={fontFamily:'Roboto Mono',fontSize:21,subtitleSize:12,bold:true,italic:true,code:true};p.trafficSpeed=2;p.legends[0].count=4;p.legends[0].speed=3;
@@ -69,8 +69,31 @@ test('API traffic uses small glyphs, soft fades and protocol-specific direction'
  assert.match(svg,/data-stream="8-0-0"[^]*?values="0;0\.86;0\.86;0;0" keyTimes="0;0\.03;0\.47;0\.5;1" dur="15s"/);
  assert.equal((svg.match(/data-stream="[^"]+-return"/g)||[]).length,4);
  assert.doesNotMatch(svg,/r="8" fill="#[0-9a-f]{6}" fill-opacity/);
- for(const id of ['api-rest','api-graphql','api-grpc','api-websocket','api-webhook','api-sse','api-mqtt'])
-  assert.match(F.COMPONENTS[id].svg,/stroke-width="1\.3"/);
+});
+test('API protocol cards use canonical System Design glyphs at a preserved 28px scale',()=>{
+ const p=F.protocolTemplate(),types=['api-rest','api-graphql','api-grpc','api-websocket','api-webhook','api-sse','api-mqtt'];
+ const diagram=F.render(p,{static:true});
+ for(const [index,id] of types.entries()){
+  const n=p.nodes.find(node=>node.id===id.replace('api-','')+'-protocol'),source=path.join(__dirname,'../src/components/custom',id+'.svg');
+  assert.ok(n,`${id} node exists`);assert.equal(n.icon,'sd:'+id);assert.deepEqual([n.x,n.y,n.w,n.h],[493,51+index*142,224,74]);
+  const template=fs.readFileSync(source,'utf8'),component=F.COMPONENTS[id].svg;
+  assert.match(template,/viewBox="0 0 100 100"/);assert.equal((template.match(/<rect\b/g)||[]).length,1);
+  assert.doesNotMatch(template,/<(?:path|circle|ellipse|polygon|polyline|line)\b/);
+  assert.equal((component.match(/<rect\b/g)||[]).length,1);assert.doesNotMatch(component,/<(?:path|circle|ellipse|polygon|polyline|line)\b/);
+  const glyph=F.systemGlyph(id,12,23,28,n.iconColor);
+  assert.match(glyph,/transform="translate\(12 23\) scale\(0\.4375\)"/);
+  assert.equal((glyph.match(/scale\(0\.4375\)/g)||[]).length,1);
+  assert.ok(glyph.includes(F.SYSTEM_DESIGN[id].svg),`${id} uses the canonical catalog geometry`);
+  assert.ok(F.nodeLabels(F.systemNode(id,{id:`catalog-${id}`,w:224,h:74})).includes(glyph),`${id} matches the System Design node renderer`);
+  const exported=F.componentSVG(n);
+  assert.ok(exported.includes(glyph),`${id} component SVG export includes the catalog glyph`);
+  assert.ok(diagram.includes(glyph),`${id} diagram export includes the catalog glyph`);
+  assert.match(exported,/width="226" height="76" viewBox="-1 -1 226 76"/);
+  assert.ok(exported.includes('translate(72 '),`${id} text starts at x=72`);
+ }
+ const legacy=F.clone(p);for(const n of legacy.nodes.filter(node=>types.includes(node.type)))n.icon='sd:server';
+ const legacySvg=F.render(F.normalize(legacy),{static:true});
+ for(const id of types)assert.ok(legacySvg.includes(F.systemGlyph(id,12,23,28,'#333333')),`${id} keeps its canonical glyph when legacy icon metadata differs`);
 });
 test('SVG catalog separates custom from flowchart and compiled templates are safe',()=>{
  assert.equal(F.COMPONENTS.reactive.category,'custom');assert.equal(F.COMPONENTS.table.category,'flowchart');

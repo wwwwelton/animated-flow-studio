@@ -97,6 +97,7 @@ function nodeLabels(n,label=n.label){
   const pad=72,width=Math.max(12,n.w-pad-12),titleHeight=Math.max(20,t.fontSize*1.5);
   let result=textBlock(n,label,pad,6,width,titleHeight,{limit:2});
   if(n.subtitle)result+=textBlock(n,n.subtitle,pad,29,width,n.h-34,{subtitle:true,limit:3});
+  result+=systemGlyph(n.type,12,(n.h-28)/2,28,n.iconColor);
   return result;
  }
  if(compact&&(n.w<140||n.h<46)){const w=Math.max(140,n.w),h=Math.max(46,n.h),s=Math.min(n.w/w,n.h/h);return `<g transform="translate(${(n.w-w*s)/2} ${(n.h-h*s)/2}) scale(${s})">${nodeLabels({...n,w,h},label)}</g>`;}
@@ -265,7 +266,7 @@ function protocolTemplate(){
  for(const [i,s] of specs.entries()){
   const y=36+i*142;
   nodes.push(makeNode('card',{id:`${s.id}-source`,label:s.source,subtitle:s.sourceNote,x:42,y:y+15,w:224,h:74,color:'#ffffff',icon:s.icon}));
-  nodes.push(makeNode(s.type,{id:`${s.id}-protocol`,label:s.title,subtitle:s.note,x:493,y:y+15,w:224,h:74,color:'#ffffff'}));
+  nodes.push(makeNode(s.type,{id:`${s.id}-protocol`,label:s.title,subtitle:s.note,x:493,y:y+15,w:224,h:74,color:'#ffffff',icon:`sd:${s.type}`}));
   nodes.push(makeNode('card',{id:`${s.id}-target`,label:s.target,subtitle:s.targetNote,x:1110,y:y+15,w:224,h:74,color:'#ffffff',icon:s.icon}));
   legends.push({id:s.id,label:s.title+' · '+s.link,color:s.color,shape:s.shape,direction:'forward',effect:s.effect,speed:s.speed,size:8,count:s.count});
   const source=`${s.id}-source`,target=`${s.id}-target`;

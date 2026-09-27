@@ -130,7 +130,7 @@
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
-      "icon": "none",
+      "icon": "sd:api-rest",
       "parent": null,
       "typography": {
         "fontFamily": "Arial",
@@ -205,7 +205,7 @@
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
-      "icon": "none",
+      "icon": "sd:api-graphql",
       "parent": null,
       "typography": {
         "fontFamily": "Arial",
@@ -280,7 +280,7 @@
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
-      "icon": "none",
+      "icon": "sd:api-grpc",
       "parent": null,
       "typography": {
         "fontFamily": "Arial",
@@ -355,7 +355,7 @@
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
-      "icon": "none",
+      "icon": "sd:api-websocket",
       "parent": null,
       "typography": {
         "fontFamily": "Arial",
@@ -430,7 +430,7 @@
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
-      "icon": "none",
+      "icon": "sd:api-webhook",
       "parent": null,
       "typography": {
         "fontFamily": "Arial",
@@ -505,7 +505,7 @@
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
-      "icon": "none",
+      "icon": "sd:api-sse",
       "parent": null,
       "typography": {
         "fontFamily": "Arial",
@@ -580,7 +580,7 @@
       "textColor": "#000000",
       "subtitleColor": "#000000",
       "iconColor": "#333333",
-      "icon": "none",
+      "icon": "sd:api-mqtt",
       "parent": null,
       "typography": {
         "fontFamily": "Arial",
