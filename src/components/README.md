@@ -1,6 +1,6 @@
 # Componentes SVG
 
-Edite os arquivos desta pasta e execute `python3 build.py` na raiz. O editor distribuído é autocontido; não precisa buscar arquivos SVG durante o uso.
+Edite os arquivos desta pasta e execute `uv run python build.py` na raiz. O editor distribuído é autocontido; não precisa buscar arquivos SVG durante o uso.
 
 Para adicionar uma forma:
 

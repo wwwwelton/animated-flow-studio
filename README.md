@@ -12,10 +12,10 @@ Se preferir abrir por endereço HTTP, execute dentro da pasta:
 
 ```bash
 cd animated_flow
-python3 -m http.server 8000 --bind 127.0.0.1
+uv run python3 -m http.server 8000 --bind 127.0.0.1
 ```
 
-Acesse **http://127.0.0.1:8000/editor.html**. Use Ctrl+C para encerrar o servidor. No Windows sem `python3`, use `py -m http.server 8000 --bind 127.0.0.1`.
+Acesse **http://127.0.0.1:8000/editor.html**. Use Ctrl+C para encerrar o servidor. No Windows sem `python3`, use `uv run python -m http.server 8000 --bind 127.0.0.1`.
 
 As fontes locais funcionam offline. Google Fonts precisa de rede no primeiro carregamento; em caso de falha, o editor usa uma fonte de reserva e avisa. O projeto é salvo no navegador; exporte JSON para manter uma cópia e transferi-lo entre navegadores. Abrir por `file://` e por HTTP pode usar armazenamentos separados.
 
@@ -36,32 +36,43 @@ Os HTMLs também podem ser abertos diretamente. JSONs são projetos editáveis; 
 
 ### Gerar um diagrama com Python
 
-Requer Python 3.10 ou superior, sem instalação de bibliotecas adicionais:
+Requer `uv` e Python 3.10 ou superior. O projeto não usa bibliotecas Python de runtime:
 
 ```bash
-python3 example.py
+uv run python example.py
 ```
 
 O comando atualiza `demo.html` e `demo.json`. Abra o HTML para assistir ou importe o JSON no editor.
 
-Para criar outro exemplo, salve o código abaixo em `meu_fluxo.py`, ao lado de `animated_flow.py`, e execute `python3 meu_fluxo.py`:
+Para criar outro exemplo, salve o código abaixo em `meu_fluxo.py`, ao lado de `animated_flow.py`, e execute `uv run python meu_fluxo.py`:
 
 ```python
 from animated_flow import Diagram, Node, Edge, Legend
 
-flow = Diagram('Cliente e serviço', traffic_speed=1.5)
-flow.add_legend(Legend('evento', 'Evento', effect='comet', speed=2))
-flow.add_node(Node('cliente', 'Cliente', 40, 100,
-                   type='system', icon='sd:client'))
-flow.add_node(Node('servico', 'Aguardando', 380, 100,
-                   type='reactive', icon='sd:server',
-                   typography={'fontSize': 16, 'bold': True},
-                   reactive={'enterText': 'Recebido', 'exitText': 'Enviando',
-                             'text': True, 'color': True, 'hold': 2}))
-flow.add_edge(Edge('cliente', 'servico', traffic=('evento',),
-                   connector='curve', route='curve'))
-flow.save('meu-fluxo.html')
-flow.save_json('meu-fluxo.json')
+flow = Diagram("Cliente e serviço", traffic_speed=1.5)
+flow.add_legend(Legend("evento", "Evento", effect="comet", speed=2))
+flow.add_node(Node("cliente", "Cliente", 40, 100, type="system", icon="sd:client"))
+flow.add_node(
+    Node(
+        "servico",
+        "Aguardando",
+        380,
+        100,
+        type="reactive",
+        icon="sd:server",
+        typography={"fontSize": 16, "bold": True},
+        reactive={
+            "enterText": "Recebido",
+            "exitText": "Enviando",
+            "text": True,
+            "color": True,
+            "hold": 2,
+        },
+    )
+)
+flow.add_edge(Edge("cliente", "servico", traffic=("evento",), connector="curve", route="curve"))
+flow.save("meu-fluxo.html")
+flow.save_json("meu-fluxo.json")
 ```
 
 ## 3. Controles principais
@@ -85,12 +96,17 @@ Detalhes de tabelas, efeitos, conectores, eventos e exportações estão em [doc
 
 Requer Python 3.10+ e Node.js 20+. Execute os comandos na raiz `animated_flow`.
 
-### Build e testes sem navegador
+Instale `uv` seguindo a [documentação oficial](https://docs.astral.sh/uv/getting-started/installation/). `uv sync` cria o ambiente virtual e instala as ferramentas de desenvolvimento, incluindo o Ruff. O arquivo `uv.lock` fixa as versões para reproduzir esse ambiente.
+
+### Build, lint e testes sem navegador
 
 ```bash
-python3 build.py
+uv sync
+uv run ruff check .
+uv run ruff format --check .
+uv run python build.py
 node --test tests/*.cjs
-python3 -m unittest discover -s tests -p 'test_python.py'
+uv run python3 -m unittest discover -s tests -v
 ```
 
 ### Testes com navegador
@@ -163,12 +179,12 @@ Esse comando recupera os arquivos commitados no bundle. Alterações locais que 
 | `examples/` | Projetos e exportações |
 | `TASKS.md` | Registro histórico das tarefas |
 
-Para adicionar uma forma SVG, siga [src/components/README.md](src/components/README.md) e execute `python3 build.py`. `src/flow-core.js`, `src/editor.js` e `editor.html` são gerados: altere os módulos de origem.
+Para adicionar uma forma SVG, siga [src/components/README.md](src/components/README.md) e execute `uv run python build.py`. `src/flow-core.js`, `src/editor.js` e `editor.html` são gerados: altere os módulos de origem.
 
 Para gerar o ZIP de distribuição, com Git completo e bundle:
 
 ```bash
-python3 tools/package_release.py
+uv run python tools/package_release.py
 ```
 
 O comando requer Git, uma branch ativa e árvore de trabalho limpa; grava o pacote em `dist/animated-flow-studio.zip`. Ele empacota os arquivos commitados e não inclui `node_modules`, caches ou configurações pessoais do repositório.
