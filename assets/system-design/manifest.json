@@ -1,8 +1,8 @@
 {
   "name": "Animated Flow Studio — System Design",
   "version": 1,
-  "count": 74,
-  "source": "75 numbered terms in the PDF supplied by the user; availability (38, 67) deduplicated.",
+  "count": 81,
+  "source": "75 numbered terms in the PDF supplied by the user (availability 38 and 67 deduplicated), plus seven original API protocol symbols.",
   "artwork": "Original SVG geometry, created for this project. No raster embedding, extraction or tracing of the PDF illustrations.",
   "components": [
     {
@@ -1407,6 +1407,125 @@
         "type": "system",
         "icon": "sd:load-shedding",
         "label": "Load shedding",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "api-rest",
+      "label": "REST",
+      "english": "REST API",
+      "category": "Protocolos de API",
+      "kind": "component",
+      "sourceTerms": [],
+      "file": "api-rest.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:api-rest",
+        "label": "REST",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "api-graphql",
+      "label": "GraphQL",
+      "english": "GraphQL API",
+      "category": "Protocolos de API",
+      "kind": "component",
+      "sourceTerms": [],
+      "file": "api-graphql.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:api-graphql",
+        "label": "GraphQL",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "api-grpc",
+      "label": "gRPC",
+      "english": "gRPC",
+      "category": "Protocolos de API",
+      "kind": "component",
+      "sourceTerms": [],
+      "file": "api-grpc.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:api-grpc",
+        "label": "gRPC",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "api-websocket",
+      "label": "WebSockets",
+      "english": "WebSocket",
+      "category": "Protocolos de API",
+      "kind": "component",
+      "sourceTerms": [],
+      "file": "api-websocket.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:api-websocket",
+        "label": "WebSockets",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "api-webhook",
+      "label": "Webhooks",
+      "english": "Webhook",
+      "category": "Protocolos de API",
+      "kind": "component",
+      "sourceTerms": [],
+      "file": "api-webhook.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:api-webhook",
+        "label": "Webhooks",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "api-sse",
+      "label": "SSE",
+      "english": "Server-Sent Events",
+      "category": "Protocolos de API",
+      "kind": "component",
+      "sourceTerms": [],
+      "file": "api-sse.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:api-sse",
+        "label": "SSE",
+        "w": 190,
+        "h": 62,
+        "borderColor": "#000000"
+      }
+    },
+    {
+      "id": "api-mqtt",
+      "label": "MQTT",
+      "english": "MQTT",
+      "category": "Protocolos de API",
+      "kind": "component",
+      "sourceTerms": [],
+      "file": "api-mqtt.svg",
+      "node": {
+        "type": "system",
+        "icon": "sd:api-mqtt",
+        "label": "MQTT",
         "w": 190,
         "h": 62,
         "borderColor": "#000000"

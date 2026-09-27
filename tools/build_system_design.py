@@ -781,6 +781,86 @@ add(
 )
 
 
+def add_api(key, name, en, drawing):
+    rows.append(
+        dict(
+            id="api-" + key,
+            label=name,
+            english=en,
+            category="Protocolos de API",
+            kind="component",
+            sourceTerms=[],
+            svg=drawing,
+        )
+    )
+
+
+add_api(
+    "rest",
+    "REST",
+    "REST API",
+    rect(10, 9, 28, 44, 4)
+    + path("M17 20H31M17 27H31M17 34H28M17 41H31")
+    + path("M41 19H55m-5-5 5 5-5 5M55 43H41m5-5-5 5 5 5"),
+)
+add_api(
+    "graphql",
+    "GraphQL",
+    "GraphQL API",
+    path("M18 12H13Q10 12 10 15V49Q10 52 13 52H18M46 12H51Q54 12 54 15V49Q54 52 51 52H46")
+    + path("M25 22H42M25 32H38M25 42H42")
+    + circle(20, 22, 1.6)
+    + circle(20, 32, 1.6)
+    + circle(20, 42, 1.6),
+)
+add_api(
+    "grpc",
+    "gRPC",
+    "gRPC",
+    rect(9, 12, 46, 37, 6)
+    + rect(17, 20, 8, 7, 2)
+    + rect(29, 20, 8, 7, 2)
+    + rect(41, 20, 8, 7, 2)
+    + path("M17 36H47M17 42H37"),
+)
+add_api(
+    "websocket",
+    "WebSockets",
+    "WebSocket",
+    rect(7, 21, 15, 22, 5)
+    + rect(47, 21, 15, 22, 5)
+    + path("M22 27H43m-5-5 5 5-5 5M47 37H26m5-5-5 5 5 5"),
+)
+add_api(
+    "webhook",
+    "Webhooks",
+    "Webhook",
+    path("M32 8V13M25 53H39M17 43Q14 41 14 37V34Q14 18 32 18T50 34V37Q50 41 47 43L43 47H21Z")
+    + path("M24 49Q25 56 32 56T40 49"),
+)
+add_api(
+    "sse",
+    "SSE",
+    "Server-Sent Events",
+    rect(8, 10, 22, 44, 4)
+    + path("M14 19H24M14 26H24M14 33H21M34 38H54m-5-5 5 5-5 5")
+    + circle(37, 46, 1.5)
+    + circle(43, 46, 1.5)
+    + circle(49, 46, 1.5),
+)
+add_api(
+    "mqtt",
+    "MQTT",
+    "MQTT",
+    circle(32, 32, 8)
+    + rect(8, 10, 12, 9, 3)
+    + rect(44, 10, 12, 9, 3)
+    + rect(8, 45, 12, 9, 3)
+    + rect(44, 45, 12, 9, 3)
+    + path("M20 17L27 27M44 17L37 27M20 48L27 37M44 48L37 37"),
+)
+
+
 def icon_svg(row):
     return f'<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" style="color:#334155" role="img" aria-label="{escape(row["label"])}"><title>{escape(row["label"])}</title><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{row["svg"]}</g></svg>'
 
@@ -813,7 +893,7 @@ if __name__ == "__main__":
         "name": "Animated Flow Studio — System Design",
         "version": 1,
         "count": len(rows),
-        "source": "75 numbered terms in the PDF supplied by the user; availability (38, 67) deduplicated.",
+        "source": "75 numbered terms in the PDF supplied by the user (availability 38 and 67 deduplicated), plus seven original API protocol symbols.",
         "artwork": "Original SVG geometry, created for this project. No raster embedding, extraction or tracing of the PDF illustrations.",
         "components": [
             {

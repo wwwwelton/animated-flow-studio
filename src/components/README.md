@@ -13,4 +13,4 @@ São permitidos svg, g, path, rect, circle, ellipse, polygon, polyline e line. S
 
 `table` e `reactive` têm comportamento especializado em `src/core-engine.js`; `reactive` também usa `src/traffic-runtime.js`. O campo renderer documenta esses casos; criar outro comportamento exige implementá-lo no motor. Novas formas estáticas não precisam de alterações no motor.
 
-O build exporta SVGs individuais e manifests separados em `assets/flowchart` e `assets/custom`. Cada `file` de um manifest exportado é relativo à própria pasta. Os 74 ícones de System Design permanecem em `assets/system-design`.
+O build exporta SVGs individuais e manifests separados em `assets/flowchart` e `assets/custom`. Cada `file` de um manifest exportado é relativo à própria pasta. Os 81 ícones de System Design, incluindo os sete protocolos de API, permanecem em `assets/system-design`.

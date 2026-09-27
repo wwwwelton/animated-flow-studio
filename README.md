@@ -1,6 +1,6 @@
 # Animated Flow Studio 3.0.1
 
-Editor de fluxogramas e arquiteturas com tráfego animado em SVG. Possui 19 componentes de fluxograma, 74 símbolos de System Design, sete componentes de protocolo de API, tabelas SQL/NoSQL/Schema e componente Custom que alterna texto/cor conforme o tráfego. Os cartões usam borda preta, ícone à esquerda e texto à direita.
+Editor de fluxogramas e arquiteturas com tráfego animado em SVG. Possui 19 componentes de fluxograma, 81 símbolos de System Design (incluindo sete protocolos de API), tabelas SQL/NoSQL/Schema e componente Custom que alterna texto/cor conforme o tráfego. Os cartões usam borda preta, ícone à esquerda e texto à direita.
 
 Este README descreve **o pacote 3.0.1**. O editor roda no navegador; Python é opcional para servir os arquivos, gerar exemplos ou reconstruir o projeto. Node.js e Playwright são usados somente no desenvolvimento e nos testes.
 

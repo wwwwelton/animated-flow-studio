@@ -813,5 +813,68 @@
       75
     ],
     "svg": "<path d=\"M4 23H59m-5 -5 5 5-5 5\"/><path d=\"M28 23V45H49m-5-5 5 5-5 5M53 39l8 12M61 39l-8 12\"/>"
+  },
+  "api-rest": {
+    "id": "api-rest",
+    "label": "REST",
+    "english": "REST API",
+    "category": "Protocolos de API",
+    "kind": "component",
+    "sourceTerms": [],
+    "svg": "<rect x=\"10\" y=\"9\" width=\"28\" height=\"44\" rx=\"4\"/><path d=\"M17 20H31M17 27H31M17 34H28M17 41H31\"/><path d=\"M41 19H55m-5-5 5 5-5 5M55 43H41m5-5-5 5 5 5\"/>"
+  },
+  "api-graphql": {
+    "id": "api-graphql",
+    "label": "GraphQL",
+    "english": "GraphQL API",
+    "category": "Protocolos de API",
+    "kind": "component",
+    "sourceTerms": [],
+    "svg": "<path d=\"M18 12H13Q10 12 10 15V49Q10 52 13 52H18M46 12H51Q54 12 54 15V49Q54 52 51 52H46\"/><path d=\"M25 22H42M25 32H38M25 42H42\"/><circle cx=\"20\" cy=\"22\" r=\"1.6\"/><circle cx=\"20\" cy=\"32\" r=\"1.6\"/><circle cx=\"20\" cy=\"42\" r=\"1.6\"/>"
+  },
+  "api-grpc": {
+    "id": "api-grpc",
+    "label": "gRPC",
+    "english": "gRPC",
+    "category": "Protocolos de API",
+    "kind": "component",
+    "sourceTerms": [],
+    "svg": "<rect x=\"9\" y=\"12\" width=\"46\" height=\"37\" rx=\"6\"/><rect x=\"17\" y=\"20\" width=\"8\" height=\"7\" rx=\"2\"/><rect x=\"29\" y=\"20\" width=\"8\" height=\"7\" rx=\"2\"/><rect x=\"41\" y=\"20\" width=\"8\" height=\"7\" rx=\"2\"/><path d=\"M17 36H47M17 42H37\"/>"
+  },
+  "api-websocket": {
+    "id": "api-websocket",
+    "label": "WebSockets",
+    "english": "WebSocket",
+    "category": "Protocolos de API",
+    "kind": "component",
+    "sourceTerms": [],
+    "svg": "<rect x=\"7\" y=\"21\" width=\"15\" height=\"22\" rx=\"5\"/><rect x=\"47\" y=\"21\" width=\"15\" height=\"22\" rx=\"5\"/><path d=\"M22 27H43m-5-5 5 5-5 5M47 37H26m5-5-5 5 5 5\"/>"
+  },
+  "api-webhook": {
+    "id": "api-webhook",
+    "label": "Webhooks",
+    "english": "Webhook",
+    "category": "Protocolos de API",
+    "kind": "component",
+    "sourceTerms": [],
+    "svg": "<path d=\"M32 8V13M25 53H39M17 43Q14 41 14 37V34Q14 18 32 18T50 34V37Q50 41 47 43L43 47H21Z\"/><path d=\"M24 49Q25 56 32 56T40 49\"/>"
+  },
+  "api-sse": {
+    "id": "api-sse",
+    "label": "SSE",
+    "english": "Server-Sent Events",
+    "category": "Protocolos de API",
+    "kind": "component",
+    "sourceTerms": [],
+    "svg": "<rect x=\"8\" y=\"10\" width=\"22\" height=\"44\" rx=\"4\"/><path d=\"M14 19H24M14 26H24M14 33H21M34 38H54m-5-5 5 5-5 5\"/><circle cx=\"37\" cy=\"46\" r=\"1.5\"/><circle cx=\"43\" cy=\"46\" r=\"1.5\"/><circle cx=\"49\" cy=\"46\" r=\"1.5\"/>"
+  },
+  "api-mqtt": {
+    "id": "api-mqtt",
+    "label": "MQTT",
+    "english": "MQTT",
+    "category": "Protocolos de API",
+    "kind": "component",
+    "sourceTerms": [],
+    "svg": "<circle cx=\"32\" cy=\"32\" r=\"8\"/><rect x=\"8\" y=\"10\" width=\"12\" height=\"9\" rx=\"3\"/><rect x=\"44\" y=\"10\" width=\"12\" height=\"9\" rx=\"3\"/><rect x=\"8\" y=\"45\" width=\"12\" height=\"9\" rx=\"3\"/><rect x=\"44\" y=\"45\" width=\"12\" height=\"9\" rx=\"3\"/><path d=\"M20 17L27 27M44 17L37 27M20 48L27 37M44 48L37 37\"/>"
   }
 }

@@ -67,11 +67,11 @@ Entrada ocorre quando um marcador termina o percurso; saída quando inicia. O se
 ## Catálogos e extensão
 
 - `assets/flowchart/`: 19 SVGs de formas de fluxograma e manifesto.
-- `assets/system-design/`: 74 ícones SVG originais, com nomes e categorias.
+- `assets/system-design/`: 81 ícones SVG originais, com nomes e categorias; inclui sete protocolos de API.
 - `assets/custom/`: forma SVG do componente reativo e manifesto.
 - `src/components/`: fontes SVG parametrizadas e manifesto de compilação; veja `src/components/README.md` para adicionar formas.
 
-Os símbolos System Design representam componentes, conceitos, padrões e métricas. Os 75 termos numerados da referência original resultaram em 74 símbolos porque Disponibilidade aparecia duas vezes. São desenhos vetoriais originais, não recortes da referência. Para exportar um bloco completo com texto e estilo, selecione-o e use Componente selecionado (SVG).
+Os símbolos System Design representam componentes, conceitos, padrões e métricas. Os 75 termos numerados da referência original resultaram em 74 símbolos porque Disponibilidade aparecia duas vezes. O catálogo também inclui sete ícones vetoriais originais para REST, GraphQL, gRPC, WebSockets, Webhooks, SSE e MQTT. Não são recortes da referência. Para exportar um bloco completo com texto e estilo, selecione-o e use Componente selecionado (SVG).
 
 Projetos anteriores continuam importáveis. Os antigos cartões System Design com tamanho padrão de 180 × 140 px são migrados para o formato compacto uma vez, preservando tamanhos personalizados, IDs, grupos e conexões. Novos recursos exigem o editor 3.0.
 
@@ -91,4 +91,3 @@ Projetos anteriores continuam importáveis. Os antigos cartões System Design co
 **Para compartilhar transições reativas, prefira HTML.** SVG aberto como documento no navegador executa o runtime; SVG usado em `<img>`, leitores Markdown e outros visualizadores pode ter scripts bloqueados. PNG/PDF/SVG estático não preservam movimento. A preferência de movimento reduzido é respeitada na apresentação.
 
 Em `examples/`, abra `v3-features.html` para ver tabelas e estados reativos; importe `v3-features.json` para editar. Há também exemplos de arquitetura, cores, catálogo de formas e System Design, com JSON/SVG/PNG. `editor-preview.png` mostra a interface.
-

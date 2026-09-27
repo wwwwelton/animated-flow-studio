@@ -11,10 +11,10 @@ test('legacy default system nodes become compact once, preserving custom nodes a
  assert.equal(updated.nodes[1].borderColor,'#123456');assert.equal(JSON.stringify(updated.edges),edges);
  assert.deepEqual(F.normalize(updated),updated);
 });
-test('74 unique symbols cover every numbered PDF term including deduplicated availability',()=>{
- const entries=Object.values(F.SYSTEM_DESIGN);assert.equal(entries.length,74);
+test('81 unique symbols cover every numbered PDF term including deduplicated availability',()=>{
+ const entries=Object.values(F.SYSTEM_DESIGN);assert.equal(entries.length,81);
  assert.deepEqual(entries.flatMap(c=>c.sourceTerms).sort((a,b)=>a-b),Array.from({length:75},(_,i)=>i+1));
- assert.equal(new Set(entries.map(c=>c.svg)).size,74);
+ assert.equal(new Set(entries.map(c=>c.svg)).size,81);
 });
 test('new nodes, colors, parent and animated links survive JSON roundtrip',()=>{
  const p=F.systemTemplate();Object.assign(p.nodes[0],{iconColor:'#ef1234',color:'#eafafa',textColor:'#123456'});
@@ -32,7 +32,7 @@ test('component SVG is standalone, origin aligned, escaped, and includes custom 
  assert.ok(!svg.includes('<img'));assert.match(svg,/color:#abcdef/);
 });
 test('gallery keeps all symbols within canvas and standalone files contain no raster',()=>{
- const p=F.systemGallery();assert.equal(p.nodes.length,74);const b=F.contentBounds(p.nodes);assert.ok(b.right<=p.width&&b.bottom<=p.height);
+ const p=F.systemGallery();assert.equal(p.nodes.length,81);const b=F.contentBounds(p.nodes);assert.ok(b.right<=p.width&&b.bottom<=p.height);
  for(const c of Object.values(F.SYSTEM_DESIGN)){
   const svg=fs.readFileSync(__dirname+'/../assets/system-design/'+c.id+'.svg','utf8');
   assert.ok(!/<image|data:|<script/.test(svg));assert.match(svg,/viewBox="0 0 64 64"/);
