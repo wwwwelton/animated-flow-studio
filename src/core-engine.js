@@ -80,7 +80,9 @@ function textBlock(n,text,x,y,width,height,{subtitle=false,anchor='start',limit=
  const t=typography(n),size=subtitle?t.subtitleSize:t.fontSize,lineHeight=size*1.22;
  const wrapped=wrapText(text,width,size).slice(0,limit),total=wrapped.length*lineHeight,scale=Math.min(1,height/Math.max(total,1));
  const xText=anchor==='middle'?width/2:0;
- return `<g transform="translate(${x} ${y+(height-total*scale)/2})"><g transform="scale(${scale})">${wrapped.map((s,i)=>`<text x="${xText}" y="${size+i*lineHeight}" text-anchor="${anchor}" style="${textStyle(n,subtitle)}">${esc(s)}</text>`).join('')}</g></g>`;
+ const content=wrapped.map((s,i)=>`<text x="${xText}" y="${size+i*lineHeight}" text-anchor="${anchor}" style="${textStyle(n,subtitle)}">${esc(s)}</text>`).join('');
+ if(anchor==='middle')return `<g transform="translate(${x+width/2} ${y+(height-total*scale)/2})"><g transform="scale(${scale}) translate(${-width/2} 0)">${content}</g></g>`;
+ return `<g transform="translate(${x} ${y+(height-total*scale)/2})"><g transform="scale(${scale})">${content}</g></g>`;
 }
 function systemGlyph(id,x=0,y=0,size=64,stroke='#333333'){
  const entry=owns(SYSTEM_DESIGN,id)?SYSTEM_DESIGN[id]:null;if(!entry)return '';
@@ -95,8 +97,8 @@ function nodeLabels(n,label=n.label){
  const t=typography(n),compact=['card','system','reactive'].includes(n.type),hasIcon=n.icon!=='none'&&compact;
  if(COMPONENTS[n.type]?.renderer==='protocol'){
   const pad=72,width=Math.max(12,n.w-pad-12),titleHeight=Math.max(20,t.fontSize*1.5);
-  let result=textBlock(n,label,pad,6,width,titleHeight,{limit:2});
-  if(n.subtitle)result+=textBlock(n,n.subtitle,pad,29,width,n.h-34,{subtitle:true,limit:3});
+  let result=textBlock(n,label,pad,6,width,titleHeight,{limit:2,anchor:'middle'});
+  if(n.subtitle)result+=textBlock(n,n.subtitle,pad,29,width,n.h-34,{subtitle:true,limit:3,anchor:'middle'});
   result+=systemGlyph(n.type,12,(n.h-28)/2,28,n.iconColor);
   return result;
  }

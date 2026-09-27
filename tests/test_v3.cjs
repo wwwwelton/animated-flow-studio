@@ -73,6 +73,7 @@ test('API traffic uses small glyphs, soft fades and protocol-specific direction'
 test('API protocol cards use canonical System Design glyphs at a preserved 28px scale',()=>{
  const p=F.protocolTemplate(),types=['api-rest','api-graphql','api-grpc','api-websocket','api-webhook','api-sse','api-mqtt'];
  const diagram=F.render(p,{static:true});
+ assert.equal(p.edges.length,14);
  for(const [index,id] of types.entries()){
   const n=p.nodes.find(node=>node.id===id.replace('api-','')+'-protocol'),source=path.join(__dirname,'../src/components/custom',id+'.svg');
   assert.ok(n,`${id} node exists`);assert.equal(n.icon,'sd:'+id);assert.deepEqual([n.x,n.y,n.w,n.h],[493,51+index*142,224,74]);
@@ -85,12 +86,17 @@ test('API protocol cards use canonical System Design glyphs at a preserved 28px 
   assert.equal((glyph.match(/scale\(0\.4375\)/g)||[]).length,1);
   assert.ok(glyph.includes(F.SYSTEM_DESIGN[id].svg),`${id} uses the canonical catalog geometry`);
   assert.ok(F.nodeLabels(F.systemNode(id,{id:`catalog-${id}`,w:224,h:74})).includes(glyph),`${id} matches the System Design node renderer`);
+  const labels=F.nodeLabels(n),textLines=[...labels.matchAll(/<text\b[^>]*>/g)].map(([tag])=>tag);
+  assert.ok(textLines.length>1);for(const line of textLines)assert.match(line,/x="70"[^>]*text-anchor="middle"/);
+  assert.ok(labels.includes('translate(142 '),`${id} text is centered at x=142 in the text area`);
   const exported=F.componentSVG(n);
   assert.ok(exported.includes(glyph),`${id} component SVG export includes the catalog glyph`);
-  assert.ok(diagram.includes(glyph),`${id} diagram export includes the catalog glyph`);
+  assert.ok(exported.includes(labels)&&diagram.includes(labels),`${id} keeps centered text in component and diagram exports`);
   assert.match(exported,/width="226" height="76" viewBox="-1 -1 226 76"/);
-  assert.ok(exported.includes('translate(72 '),`${id} text starts at x=72`);
  }
+ const wider=F.makeNode('api-rest',{id:'wide-protocol',w:300,h:74,label:'REST',subtitle:'Wide card'}),wideLabels=F.nodeLabels(wider);
+ assert.match(wideLabels,/translate\(180 /);assert.match(wideLabels,/<text x="108"[^>]*text-anchor="middle"/);
+ const source=p.nodes.find(n=>n.id==='rest-source');assert.match(F.nodeLabels(source),/text-anchor="start"/);
  const legacy=F.clone(p);for(const n of legacy.nodes.filter(node=>types.includes(node.type)))n.icon='sd:server';
  const legacySvg=F.render(F.normalize(legacy),{static:true});
  for(const id of types)assert.ok(legacySvg.includes(F.systemGlyph(id,12,23,28,'#333333')),`${id} keeps its canonical glyph when legacy icon metadata differs`);
