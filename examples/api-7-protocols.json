@@ -900,7 +900,7 @@
     },
     {
       "id": "sse-request",
-      "source": "sse-target",
+      "source": "sse-source",
       "target": "sse-protocol",
       "label": "",
       "traffic": [
@@ -929,7 +929,7 @@
     {
       "id": "sse-delivery",
       "source": "sse-protocol",
-      "target": "sse-source",
+      "target": "sse-target",
       "label": "",
       "traffic": [
         "sse"

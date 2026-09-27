@@ -59,7 +59,7 @@ test('API traffic uses small glyphs, soft fades and protocol-specific direction'
  const rest=p.edges.filter(e=>e.id.startsWith('rest-')),websocket=p.edges.filter(e=>e.id.startsWith('websocket-'));
  assert.ok(rest.every(e=>e.connector==='out'));assert.ok(websocket.every(e=>e.connector==='both'));
  const sse=F.streams(p).filter(s=>s.legend.id==='sse');assert.equal(sse.length,2);
- assert.deepEqual(sse.map(s=>[s.source,s.target]),[['sse-target','sse-protocol'],['sse-protocol','sse-source']]);
+ assert.deepEqual(sse.map(s=>[s.source,s.target]),[['sse-source','sse-protocol'],['sse-protocol','sse-target']]);
  assert.equal(F.streams(p).find(s=>s.legend.id==='webhook').duration,7.5);
  const svg=F.render(p);assert.match(svg,/values="0;0\.86;0\.86;0" keyTimes="0;0\.06;0\.94;1"/);
  assert.match(svg,/data-stream="0-0-0-return"[^]*?begin="0\.55s"[^]*?keyPoints="1;0"/);
