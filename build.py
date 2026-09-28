@@ -24,7 +24,7 @@ runpy.run_path(str(ROOT / "tools/build_components.py"), run_name="__main__")
 (SOURCE / "editor.js").write_text(
     "\n".join(
         (SOURCE / name).read_text()
-        for name in ("editor-main.js", "editor-colors.js", "editor-actions.js")
+        for name in ("editor-main.js", "editor-colors.js", "editor-actions.js", "png-export.js")
     )
 )
 shell = (SOURCE / "editor-shell.html").read_text()

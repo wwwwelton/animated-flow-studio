@@ -11,6 +11,7 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  assert.equal(await page.locator('[data-node]').count(),5);
  const centered=await page.evaluate(()=>{const v=viewport.getBoundingClientRect(),b=board.getBoundingClientRect();return Math.abs(v.x+v.width/2-b.x-b.width/2)<2&&Math.abs(v.y+v.height/2-b.y-b.height/2)<2;});assert.ok(centered);
  console.log('PASS load and centered canvas');
+ assert.equal(await page.evaluate(()=>getComputedStyle(document.documentElement).fontSize),'16px');
  // Custom library is distinct and inserts a reactive block.
  await page.selectOption('#paletteMode','custom');assert.equal(await page.locator('#palette [data-shape="reactive"]').count(),1);
  await page.click('#palette [data-shape="reactive"]');assert.equal(await page.evaluate(()=>project.nodes.at(-1).type),'reactive');
@@ -42,13 +43,14 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  await page.locator('#trafficSpeed').fill('3');await page.locator('#trafficSpeed').dispatchEvent('change');
  assert.equal(await page.evaluate(()=>F.streams(project)[0].duration),4/6);assert.equal(await page.evaluate(()=>F.streams(project).filter(s=>s.index===0&&s.legend.id==='request').length),3);
  console.log('PASS traffic effects, symbols, speed and count');
- await page.click('#addLegend');const apiLegend=page.locator('#legendEditor details').last();await apiLegend.locator('summary').click();assert.equal(await apiLegend.getByLabel('Tamanho do marcador (px)',{exact:true}).inputValue(),'10');const symbol=apiLegend.getByLabel('Símbolo',{exact:true});
+ await page.click('#addLegend');const apiLegend=page.locator('#legendEditor details').last();await apiLegend.locator('summary').click();assert.equal(await apiLegend.getByLabel('Tamanho do marcador (px)',{exact:true}).inputValue(),'16');const symbol=apiLegend.getByLabel('Símbolo',{exact:true});
  const apiSymbols=await symbol.locator('option').evaluateAll(options=>options.slice(-7).map(option=>option.value));
  assert.deepEqual(apiSymbols,['rest','graphql','grpc','websocket','webhook','sse','mqtt']);
  await symbol.selectOption('graphql');const apiLegendId=await page.evaluate(()=>project.legends.at(-1).id);
  assert.ok((await page.locator(`#board svg .legend-marker[data-legend="${apiLegendId}"]`).innerHTML()).includes('M0-3.5L3.5 0 0 3.5'));
  assert.equal(await page.evaluate(()=>F.normalize(JSON.parse(JSON.stringify(project))).legends.at(-1).shape),'graphql');
  console.log('PASS API protocol glyph symbols render in the top legend and survive roundtrip');
+
  // Real mouse zoom keeps the point under the cursor; pan does not move nodes.
  await page.locator('#viewport').scrollIntoViewIfNeeded();const vp=await page.locator('#viewport').boundingBox();
  const before=await page.evaluate(()=>({...view}));await page.mouse.move(vp.x+vp.width*.45,vp.y+vp.height*.4);await page.keyboard.down('Control');await page.mouse.wheel(0,-260);await page.keyboard.up('Control');await page.waitForFunction(()=>zoomTarget===null);
@@ -77,12 +79,12 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  console.log('PASS synchronized enter/exit/idle and pause');
  async function download(button,name){const event=page.waitForEvent('download');await page.click('#'+button);const d=await event;const file=path.join(out,name);await d.saveAs(file);return file;}
  const json=await download('jsonExport','diagram.json'),svg=await download('svgExport','diagram.svg'),html=await download('htmlExport','diagram.html'),png=await download('pngExport','diagram.png');
- assert.equal(fs.readFileSync(png).subarray(1,4).toString(),'PNG');
+ const pngBytes=fs.readFileSync(png);assert.equal(pngBytes.subarray(1,4).toString(),'PNG');const densityOffset=pngBytes.indexOf(Buffer.from('pHYs'));assert.ok(densityOffset>0);assert.equal(pngBytes.readUInt32BE(densityOffset+4),11811);assert.equal(pngBytes.readUInt32BE(densityOffset+8),11811);
  await page.setInputFiles('#import',json);assert.equal(await page.evaluate(()=>project.nodes[1].reactive.enterText),'In');
  await page.reload();assert.equal(await page.evaluate(()=>project.nodes[1].reactive.exitText),'Out');
  const exported=await browser.newPage();exported.on('pageerror',e=>errors.push(e.message));await exported.goto(require('node:url').pathToFileURL(html).href);assert.equal(await exported.locator('[data-node]').count(),3);await exported.evaluate(()=>{const s=document.querySelector('svg');s.pauseAnimations();s.setCurrentTime(2.1);});await exported.waitForFunction(()=>document.querySelector('[data-node="b"]').textContent.includes('In'));
  await exported.goto(require('node:url').pathToFileURL(svg).href);assert.equal(await exported.locator('parsererror').count(),0);await exported.evaluate(()=>{document.documentElement.pauseAnimations();document.documentElement.setCurrentTime(2.1);});await exported.waitForFunction(()=>document.querySelector('[data-node="b"]').textContent.includes('In'));
- assert.deepEqual(errors,[]);console.log('PASS JSON roundtrip/persistence, PNG, animated standalone SVG and HTML export; no browser errors');
+ assert.deepEqual(errors,[]);console.log('PASS JSON roundtrip/persistence, PNG 300 dpi, animated standalone SVG and HTML export; no browser errors');
  await page.evaluate(()=>setProject(F.featureTemplate()));await page.screenshot({path:path.join(out,'editor.png')});
  console.log('Browser artifacts:',out);
  }finally{await browser.close();}

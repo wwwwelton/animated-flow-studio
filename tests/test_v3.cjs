@@ -6,10 +6,10 @@ test('all v3 settings survive JSON and invalid ranges are rejected',()=>{
  for(const update of [{trafficSpeed:0},{trafficSpeed:Infinity}])assert.throws(()=>F.normalize({...p,...update}));
  p.nodes[0].typography.fontFamily='Arial; fill:red';assert.throws(()=>F.normalize(p));
 });
-test('new traffic markers default to 10 diagram pixels and retain explicit sizes',()=>{
+test('new traffic markers default to one rem and retain explicit sizes',()=>{
  const p=F.normalize({nodes:[F.systemNode('client',{id:'client'})],edges:[],legends:[{id:'default'},{id:'custom',size:8}]});
- assert.deepEqual(p.legends.map(legend=>legend.size),[10,8]);
- assert.ok(F.protocolTemplate().legends.every(legend=>legend.size===10));
+ assert.deepEqual(p.legends.map(legend=>legend.size),[16,8]);
+ assert.ok(F.protocolTemplate().legends.every(legend=>legend.size===16));
 });
 test('global speed and per-legend speed change actual travel durations',()=>{
  const p=simple();p.trafficSpeed=2;p.legends[0].speed=4;p.legends[0].count=3;
@@ -71,11 +71,11 @@ test('API protocol glyphs can be selected as symbols and appear in the traffic l
  assert.match(marker,/scale\(2\.25\)/);assert.ok(marker.includes('M0-3.5L3.5 0 0 3.5'));
  assert.match(marker,/stroke="#c026d3"/);
  const animatedSvg=F.render(p);
- assert.match(animatedSvg,/data-stream="0-0-0"[^]*?scale\(1\.25\)[^]*?M0-3\.5L3\.5 0/);
+ assert.match(animatedSvg,/data-stream="0-0-0"[^]*?scale\(2\)[^]*?M0-3\.5L3\.5 0/);
 });
 test('API traffic uses small glyphs, soft fades and protocol-specific direction',()=>{
  const p=F.protocolTemplate(),legendMap=Object.fromEntries(p.legends.map(l=>[l.id,l]));
- assert.deepEqual(Object.values(legendMap).map(l=>[l.size,l.count]),Array.from({length:7},()=>[10,1]));
+ assert.deepEqual(Object.values(legendMap).map(l=>[l.size,l.count]),Array.from({length:7},()=>[16,1]));
  const demoSizes=F.featureTemplate().legends.filter(l=>['pulse','glow'].includes(l.effect)).map(l=>l.size);
  assert.ok(Object.values(legendMap).every(l=>demoSizes.includes(l.size)));
  assert.deepEqual(['rest','graphql','grpc','websocket','webhook','sse','mqtt'].map(id=>legendMap[id].speed),[1,1,1.08,.95,.8,.95,.95]);
@@ -136,7 +136,7 @@ test('API traffic legends use their protocol glyphs at the standard marker scale
   ['mqtt','MQTT','#65a30d','mqtt','<circle r="3.2"','◉']
  ];
  assert.deepEqual(p.legends.map(({id,label,color,shape})=>[id,label,color,shape]),expected.map(([id,label,color,shape])=>[id,label,color,shape]));
- assert.ok(p.legends.every(legend=>legend.size===10));
+ assert.ok(p.legends.every(legend=>legend.size===16));
 
  const svg=F.render(p,{static:true}),legendSvg=svg.slice(0,svg.indexOf('<g transform="translate(0 '));
  assert.equal((legendSvg.match(/class="legend-label"/g)||[]).length,7);

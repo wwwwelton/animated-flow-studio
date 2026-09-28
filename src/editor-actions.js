@@ -17,7 +17,7 @@ $('trafficSpeed').oninput=()=>$('speedReadout').textContent=$('trafficSpeed').va
 $('trafficSpeed').onchange=()=>{const speed=Number($('trafficSpeed').value);checkpoint();project.trafficSpeed=speed;clock=0;stopTraffic();board.replaceChildren();save();};
 $('restartTraffic').onclick=()=>{clock=0;stopTraffic();board.replaceChildren();draw();};
 $('toggleTraffic').onclick=()=>{paused=!paused;$('toggleTraffic').textContent=paused?'Reproduzir':'Pausar';draw();};
-$('addLegend').onclick=()=>{if(project.legends.length>=20){status('Limite de 20 legendas.');return;}checkpoint();project.legends.push({id:uid(),label:'Novo tráfego',color:'#ffca76',shape:'square',direction:'forward',effect:'packet',speed:1,size:10,count:1});save({legend:true});};
+$('addLegend').onclick=()=>{if(project.legends.length>=20){status('Limite de 20 legendas.');return;}checkpoint();project.legends.push({id:uid(),label:'Novo tráfego',color:'#ffca76',shape:'square',direction:'forward',effect:'packet',speed:1,size:16,count:1});save({legend:true});};
 $('connect').onclick=()=>{connecting=!connecting;connectFrom=null;$('connect').classList.toggle('active',connecting);viewport.classList.toggle('connecting',connecting);status(connecting?'Clique na origem e no destino, ou arraste uma porta azul.':'Conexão cancelada.');};
 $('delete').onclick=remove;
 function historyStep(undo){const from=undo?undoStack:redoStack,to=undo?redoStack:undoStack;if(!from.length)return;to.push(JSON.stringify(project));project=F.normalize(JSON.parse(from.pop()));selected=null;projectFields();legendEditor();inspect();save();FlowFonts.ensure(project).then(reportFontWarnings);}
@@ -50,9 +50,9 @@ $('svgExport').onclick=()=>exportAction(async()=>offer('fluxograma.svg',new Blob
 $('staticSvgExport').onclick=()=>exportAction(async()=>offer('fluxograma-estatico.svg',new Blob([await svgExport(true)],{type:'image/svg+xml;charset=utf-8'})));
 $('jsonExport').onclick=()=>offer('fluxograma.json',new Blob([JSON.stringify(project,null,2)],{type:'application/json'}));
 $('pngExport').onclick=()=>exportAction(async()=>{
- const svg=await svgExport(true),width=project.width,height=project.height+F.headerHeight(project),factor=Math.min(2,Math.sqrt(16000000/(width*height)));
+ const svg=await svgExport(true),width=project.width,height=project.height+F.headerHeight(project),factor=PNGExport.scale(width,height);
  const url=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml;charset=utf-8'}));
- try{const img=new Image();await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(Error('Não foi possível renderizar o SVG.'));img.src=url;});const canvas=document.createElement('canvas');canvas.width=Math.round(width*factor);canvas.height=Math.round(height*factor);canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!blob)throw Error('PNG indisponível.');offer('fluxograma.png',blob);}finally{URL.revokeObjectURL(url);}
+ try{const img=new Image();await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(Error('Não foi possível renderizar o SVG.'));img.src=url;});const canvas=document.createElement('canvas');canvas.width=Math.round(width*factor);canvas.height=Math.round(height*factor);canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!blob)throw Error('PNG indisponível.');const png=PNGExport.withDpi(await blob.arrayBuffer());offer('fluxograma.png',new Blob([png],{type:'image/png'}));if(factor<PNGExport.DPI/96)status('PNG exportado a 300 dpi; o limite de 16 MP reduziu o tamanho em pixels.');}finally{URL.revokeObjectURL(url);}
 });
 $('htmlExport').onclick=()=>exportAction(async()=>{
  const snapshot=F.clone(project),svg=await svgExport(false),clean=svg.replace(/<script><!\[CDATA\[[\s\S]*?\]\]><\/script>/g,'');
