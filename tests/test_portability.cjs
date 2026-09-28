@@ -8,10 +8,10 @@ test('font fixture uses bundled TTF from any working directory and explains bad 
  const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'afs-font-'));
  try{
   const env={...process.env};delete env.AFS_TEST_FONT_PATH;
-  const code=`const f=require(${JSON.stringify(fixture)}).readTestFont();if(f.readUInt32BE(0)!==0x10000)throw Error('Invalid TTF');console.log(f.length);`;
-  const r=spawnSync(process.execPath,['-e',code],{cwd:tmp,env,encoding:'utf8'});assert.equal(r.status,0,r.stderr);assert.ok(Number(r.stdout)>1000);
+  const code=`const f=require(${JSON.stringify(fixture)}).readTestFont();if(f.length<=1000||f.readUInt32BE(0)!==0x10000)throw Error('Invalid TTF');`;
+  const r=spawnSync(process.execPath,['-e',code],{cwd:tmp,env,encoding:'utf8'});assert.ifError(r.error);assert.equal(r.status,0,r.stderr);
   const custom=path.join(tmp,'custom.ttf');fs.copyFileSync(path.join(root,'tests/fixtures/DejaVuSans.ttf'),custom);
-  const valid=spawnSync(process.execPath,['-e',code],{cwd:tmp,env:{...env,AFS_TEST_FONT_PATH:custom},encoding:'utf8'});assert.equal(valid.status,0,valid.stderr);
+  const valid=spawnSync(process.execPath,['-e',code],{cwd:tmp,env:{...env,AFS_TEST_FONT_PATH:custom},encoding:'utf8'});assert.ifError(valid.error);assert.equal(valid.status,0,valid.stderr);
   const bad=spawnSync(process.execPath,['-e',code],{cwd:tmp,env:{...env,AFS_TEST_FONT_PATH:path.join(tmp,'missing.ttf')},encoding:'utf8'});assert.notEqual(bad.status,0);assert.match(bad.stderr,/Corrija AFS_TEST_FONT_PATH/);
  }finally{fs.rmSync(tmp,{recursive:true,force:true});}
 });
