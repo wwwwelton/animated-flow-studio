@@ -20,7 +20,7 @@
       "direction": "forward",
       "effect": "rest",
       "speed": 1,
-      "size": 10,
+      "size": 14,
       "count": 1
     },
     {
@@ -31,7 +31,7 @@
       "direction": "forward",
       "effect": "graphql",
       "speed": 1,
-      "size": 10,
+      "size": 14,
       "count": 1
     },
     {
@@ -41,9 +41,9 @@
       "shape": "grpc",
       "direction": "forward",
       "effect": "grpc",
-      "speed": 1.08,
-      "size": 10,
-      "count": 1
+      "speed": 1.25,
+      "size": 14,
+      "count": 3
     },
     {
       "id": "websocket",
@@ -52,8 +52,8 @@
       "shape": "websocket",
       "direction": "forward",
       "effect": "websocket",
-      "speed": 0.95,
-      "size": 10,
+      "speed": 1,
+      "size": 14,
       "count": 1
     },
     {
@@ -63,8 +63,8 @@
       "shape": "webhook",
       "direction": "forward",
       "effect": "webhook",
-      "speed": 0.8,
-      "size": 10,
+      "speed": 1,
+      "size": 14,
       "count": 1
     },
     {
@@ -74,9 +74,9 @@
       "shape": "sse",
       "direction": "forward",
       "effect": "sse",
-      "speed": 0.95,
-      "size": 10,
-      "count": 1
+      "speed": 0.9,
+      "size": 14,
+      "count": 3
     },
     {
       "id": "mqtt",
@@ -85,8 +85,8 @@
       "shape": "mqtt",
       "direction": "forward",
       "effect": "mqtt",
-      "speed": 0.95,
-      "size": 10,
+      "speed": 1,
+      "size": 14,
       "count": 1
     }
   ],

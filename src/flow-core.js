@@ -12,15 +12,16 @@ const LEGENDS=[{id:'request',label:'Solicitação',color:'#70a0ff',shape:'square
 const EFFECTS={packet:'Marcador',pulse:'Pulso',glow:'Brilho',trail:'Rastro',comet:'Cometa',dashed:'Fluxo tracejado',rest:'REST · solicitação/resposta',graphql:'GraphQL · seleção de dados',grpc:'gRPC · quadro tipado',websocket:'WebSocket · duas vias',webhook:'Webhook · notificação',sse:'SSE · fluxo contínuo',mqtt:'MQTT · publish/subscribe'};
 const SYMBOLS={square:'Quadrado',circle:'Círculo',diamond:'Losango',triangle:'Triângulo',arrow:'Seta',star:'Estrela',rest:'REST · API',graphql:'GraphQL · API',grpc:'gRPC · API',websocket:'WebSockets · API',webhook:'Webhooks · API',sse:'SSE · API',mqtt:'MQTT · API'};
 // One rem uses the browser default (16px); traffic defaults use the same SVG-unit size.
-const TRAFFIC_VISUAL={baseSize:8,defaultSize:16,protocolFlowSize:24,legendSize:16,legendGap:10,connectorArrowSize:10,connectorArrowStroke:1.15,protocolStrokeWidth:1.1,peakOpacity:.86,fadeIn:.06,fadeOut:.94};
+const FLOW_TOKEN_SIZE=14,FLOW_TOKEN_VIEWBOX=16;
+const TRAFFIC_VISUAL={baseSize:8,defaultSize:16,protocolFlowSize:FLOW_TOKEN_SIZE,legendSize:16,legendGap:10,connectorArrowSize:10,connectorArrowStroke:1.15,protocolStrokeWidth:1.5,peakOpacity:.86,fadeIn:.06,fadeOut:.94};
 const PROTOCOL_FLOW_STYLES={
- rest:{symbol:'→',legend:'<path d="M-3 0H3M1-2L3 0 1 2"/>',packet:'<circle cx="-3" r=".75" fill="currentColor" stroke="none"/><path d="M-1.5 0H3M1-2L3 0 1 2"/>',particle:'circle',direction:'request-response',paired:true,reverseDelay:.55,speed:1,mirrorOnReturn:true},
- graphql:{symbol:'◇',legend:'<path d="M0-3.5L3.5 0 0 3.5-3.5 0Z"/>',packet:'<path d="M0-3.5L3.5 0 0 3.5-3.5 0Z"/>',particle:'diamond',direction:'request-response',paired:true,reverseDelay:.65,speed:1},
- grpc:{symbol:'⇉',legend:'<path d="M-3 0H-.5M-2-1.5L-.5 0-2 1.5M.5 0H3M1-1.5L2.5 0 1 1.5"/>',packet:'<circle cx="-3" r=".45" fill="currentColor" stroke="none"/><circle cx="-1.5" r=".45" fill="currentColor" stroke="none"/><circle r=".45" fill="currentColor" stroke="none"/><circle cx="1.5" r=".45" fill="currentColor" stroke="none"/><circle cx="3" r=".45" fill="currentColor" stroke="none"/>',particle:'fast',direction:'request-response',paired:true,reverseDelay:.42,speed:1.08,mirrorOnReturn:true},
- websocket:{symbol:'↔',legend:'<path d="M-3 0H3M-1-2L-3 0-1 2M1-2L3 0 1 2"/><circle cx="-3.5" r=".55" fill="currentColor" stroke="none"/><circle cx="3.5" r=".55" fill="currentColor" stroke="none"/>',packet:'<circle r=".85" fill="currentColor" stroke="none"/><path d="M-2.5-1.7L-3.5 0-2.5 1.7M2.5-1.7L3.5 0 2.5 1.7"/>',particle:'circle',direction:'bidirectional',paired:true,reverseDelay:.7,speed:.95,rail:'dashed'},
- webhook:{symbol:'↪',legend:'<path d="M-3 2C-3-2 0-2 2-2V1M.5-.5L2 1 3.5-.5"/>',packet:'<circle cx="-2.5" r=".75" fill="currentColor" stroke="none"/><path d="M-1 2C-1-1 1-1 2-1V1M.5-.5L2 1 3.5-.5"/>',particle:'circle',direction:'event',paired:false,cycle:2,speed:.8},
- sse:{symbol:'⇒',legend:'<path d="M-3-1H2M-3 1H2M.5-2L2.5 0 .5 2"/>',packet:'<circle cx="-3" r=".55" fill="currentColor" stroke="none"/><circle cx="-1.3" r=".55" fill="currentColor" stroke="none"/><circle cx=".4" r=".55" fill="currentColor" stroke="none"/><path d="M1.4 0H3.5M2-1.2L3.5 0 2 1.2"/>',particle:'stream',direction:'server-to-client',paired:false,speed:.95},
- mqtt:{symbol:'◉',legend:'<circle r="3.2"/><circle r="1.15" fill="currentColor" stroke="none"/>',packet:'<circle r=".9" fill="currentColor" stroke="none"/>',particle:'broker',direction:'pub-sub',paired:false,relay:'broker',speed:.95}
+ rest:{shape:'circle',geometry:'<circle cx="8" cy="8" r="4" fill="currentColor" stroke="none"/>',direction:'request-response',paired:true,cycle:2.2,speed:1,rotateWithPath:false},
+ graphql:{shape:'diamond',geometry:'<path d="M8 4L12 8 8 12 4 8Z" fill="currentColor" stroke="none"/>',direction:'request-response',paired:true,cycle:2.2,speed:1,rotateWithPath:false},
+ grpc:{shape:'frame',geometry:'<rect x="3.5" y="5" width="9" height="6" rx="1" fill="currentColor" stroke="none"/>',direction:'request-response',paired:true,cycle:2.2,speed:1.25,rotateWithPath:false},
+ websocket:{shape:'ring',geometry:'<circle cx="8" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/>',direction:'bidirectional',paired:true,speed:1,rotateWithPath:false,rail:'dashed'},
+ webhook:{shape:'outline-diamond',geometry:'<path d="M8 4L12 8 8 12 4 8Z" fill="none" stroke="currentColor" stroke-width="1.5"/>',direction:'one-way-event',paired:false,cycle:2.2,speed:1,rotateWithPath:false},
+ sse:{shape:'triangle',geometry:'<path d="M5 4L12 8 5 12Z" fill="currentColor" stroke="none"/>',direction:'server-client-stream',paired:false,speed:.9,rotateWithPath:true},
+ mqtt:{shape:'dot-ring',geometry:'<circle cx="8" cy="8" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="1.5" fill="currentColor" stroke="none"/>',direction:'pub-sub',paired:false,relay:'broker',speed:1,rotateWithPath:false}
 };
 const CONNECTORS={out:'Seta saída',in:'Seta entrada',curve:'Seta em curva',both:'Seta bidirecional',line:'Linha',dashed:'Linha tracejada',dotted:'Linha pontilhada',double:'Linha dupla'};
 const FONTS=['Arial','Georgia','Verdana','Courier New','Inter','Roboto','Open Sans','Lato','Montserrat','Poppins','Nunito','Ubuntu','Merriweather','Playfair Display','Roboto Mono','JetBrains Mono','Fira Code','Source Code Pro'];
@@ -158,12 +159,21 @@ function symbol(kind,x,y,size,fill){
  return `<rect x="${x-r}" y="${y-r}" width="${size}" height="${size}" rx="2" ${a}/>`;
 }
 function streams(p){
- const result=[],nodes=new Map(p.nodes.map(node=>[node.id,node]));
+ const result=[],arrivals=new Map();
+ p.edges.forEach((edge,i)=>edge.traffic.forEach((id,j)=>{
+  const legend=p.legends.find(item=>item.id===id);if(legend?.effect!=='mqtt')return;
+  const rate=(p.trafficSpeed??1)*(legend.speed??1),key=`${id}\0${edge.target}`;
+  const arrival=(i*.18+j*.22+edge.duration)/rate;
+  arrivals.set(key,Math.min(arrivals.get(key)??Infinity,arrival));
+ }));
  p.edges.forEach((e,i)=>e.traffic.forEach((id,j)=>{
   const l=p.legends.find(l=>l.id===id);if(!l)return;
-  const duration=e.duration/((p.trafficSpeed??1)*(l.speed??1));
-  const flow=PROTOCOL_FLOW_STYLES[l.effect],brokerOutput=flow?.relay==='broker'&&nodes.get(e.source)?.type===`api-${l.effect}`,relayDelay=brokerOutput?duration+.35:0;
-  for(let k=0;k<(l.count??1);k++)result.push({edge:e,index:i,legend:l,duration,delay:(i*.18+j*.22)/((p.trafficSpeed??1)*(l.speed??1))+relayDelay+k*duration/(l.count??1),key:`${i}-${j}-${k}`,source:l.direction==='reverse'?e.target:e.source,target:l.direction==='reverse'?e.source:e.target});
+  const rate=(p.trafficSpeed??1)*(l.speed??1),duration=e.duration/rate;
+  const flow=PROTOCOL_FLOW_STYLES[l.effect],baseDelay=(i*.18+j*.22)/rate;
+  const arrival=flow?.relay==='broker'?arrivals.get(`${id}\0${e.source}`):undefined;
+  const delay=arrival===undefined?baseDelay:Math.max(baseDelay,arrival+.35);
+  const count=l.count??1;
+  for(let k=0;k<count;k++)result.push({edge:e,index:i,legend:l,duration,delay:delay+k*duration/count,key:`${i}-${j}-${k}`,source:l.direction==='reverse'?e.target:e.source,target:l.direction==='reverse'?e.source:e.target});
  }));return result;
 }
 function reactiveStates(p,time,streamList=null){
@@ -181,25 +191,29 @@ function reactiveStates(p,time,streamList=null){
 }
 function legendLayout(p){let x=32,y=0,rows=1;const items=[];for(const l of p.legends){const w=l.label.length*7+TRAFFIC_VISUAL.legendSize+TRAFFIC_VISUAL.legendGap+18;if(x+w>p.width-32&&x>32){x=32;y+=32;rows++;}items.push({l,x,y});x+=w;}return {items,rows:p.legends.length?rows:0};}
 function headerHeight(p){return 130+(p.description?Math.max(0,lines(p.description,Math.floor((p.width-64)/7)).length-1)*18:0)+(p.showLegend?legendLayout(p).rows*32:0);}
-const svgStyle=`:root{font-size:1rem}text{font-family:Arial,sans-serif;fill:#000}.kicker{font-family:monospace;font-size:10px;font-weight:600}.figure-title{font-size:21px;font-weight:700}.description{font-size:13px}.legend-label{font-size:13px}.edge-label{paint-order:stroke;stroke:white;stroke-width:4px;stroke-linejoin:round}.rail{fill:none;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round}.node-shape{stroke-linejoin:round}.selection{fill:none;stroke:#1675df;stroke-width:1.5;stroke-dasharray:4 3;pointer-events:none}.hit{stroke:transparent;stroke-width:16;fill:none;cursor:pointer}.node{cursor:move}.node text,.icon,.packet{pointer-events:none}.resize{fill:white;stroke:#1675df;cursor:nwse-resize}.port{fill:white;stroke:#2563eb;stroke-width:1.5;opacity:0;cursor:crosshair}.node:hover>.port,.node.selected>.port,.connecting .port{opacity:1}.diagram-controls{cursor:pointer}@media(prefers-reduced-motion:reduce){.packet{display:none}}`;
-function protocolGlyph(legend,effect=legend.effect,part='packet',reverse=false){
- const flow=PROTOCOL_FLOW_STYLES[effect],drawing=flow?.[part];if(!drawing)return '';
- const scale=legend.size/TRAFFIC_VISUAL.baseSize,stroke=color(legend.color);
- const mirror=reverse&&flow.mirrorOnReturn?'scale(-1 1) ':'';
- return `<g transform="${mirror}scale(${scale})" fill="none" stroke="${stroke}" stroke-width="${TRAFFIC_VISUAL.protocolStrokeWidth}" stroke-linecap="round" stroke-linejoin="round" style="color:${stroke}">${drawing}</g>`;
+const svgStyle=`:root{font-size:1rem}text{font-family:Arial,sans-serif;fill:#000}.kicker{font-family:monospace;font-size:10px;font-weight:600}.figure-title{font-size:21px;font-weight:700}.description{font-size:13px}.legend-label{font-size:13px}.edge-label{paint-order:stroke;stroke:white;stroke-width:4px;stroke-linejoin:round}.rail{fill:none;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round}.node-shape{stroke-linejoin:round}.selection{fill:none;stroke:#1675df;stroke-width:1.5;stroke-dasharray:4 3;pointer-events:none}.hit{stroke:transparent;stroke-width:16;fill:none;cursor:pointer}.node{cursor:move}.node text,.icon,.packet,.flow-token{pointer-events:none}.flow-token{overflow:visible}.resize{fill:white;stroke:#1675df;cursor:nwse-resize}.port{fill:white;stroke:#2563eb;stroke-width:1.5;opacity:0;cursor:crosshair}.node:hover>.port,.node.selected>.port,.connecting .port{opacity:1}.diagram-controls{cursor:pointer}@media(prefers-reduced-motion:reduce){.packet{display:none}.protocol-packet{display:inline;opacity:.5!important}}`;
+function createFlowToken(protocol,legend){
+ const flow=PROTOCOL_FLOW_STYLES[protocol],stroke=color(legend.color);
+ return `<svg class="flow-token" x="-7" y="-7" width="${FLOW_TOKEN_SIZE}" height="${FLOW_TOKEN_SIZE}" viewBox="0 0 ${FLOW_TOKEN_VIEWBOX} ${FLOW_TOKEN_VIEWBOX}" aria-hidden="true" style="color:${stroke}">${flow.geometry}</svg>`;
 }
 function symbolGlyph(legend,size=legend.size){
- if(PROTOCOL_FLOW_STYLES[legend.shape])return protocolGlyph({...legend,size},legend.shape,'legend');
+ if(PROTOCOL_FLOW_STYLES[legend.shape])return createFlowToken(legend.shape,legend);
  return symbol(legend.shape,0,0,size,legend.color);
 }
 function trafficGlyph(legend,reverse=false){
- return PROTOCOL_FLOW_STYLES[legend.effect]?protocolGlyph(legend,legend.effect,'packet',reverse):symbolGlyph(legend);
+ return PROTOCOL_FLOW_STYLES[legend.effect]?createFlowToken(legend.effect,legend):symbolGlyph(legend);
 }
 function legendGlyph(legend){return symbolGlyph(legend,TRAFFIC_VISUAL.legendSize);}
 function motionPacket(stream,prefix){
  const {legend:l,duration,delay,index,key}=stream,pid=`${prefix}-edge-${index}`;
  const behavior=PROTOCOL_FLOW_STYLES[l.effect]??{paired:false,reverseDelay:0},cycle=duration*(behavior.cycle??1),visible=duration/cycle;
- const motion=(lag=0,reverse=l.direction==='reverse')=>`<animateMotion dur="${duration}s" begin="${delay+lag}s" calcMode="linear" repeatCount="indefinite" rotate="auto" ${reverse?'keyPoints="1;0" keyTimes="0;1"':''}><mpath href="#${pid}"/></animateMotion>`;
+ if(PROTOCOL_FLOW_STYLES[l.effect]){
+  const token=(reverse,start,streamKey)=>`<g class="packet protocol-packet" data-stream="${streamKey}" data-path="${pid}" data-edge-id="${esc(stream.edge.id)}" data-start="${start}" data-duration="${duration}" data-cycle="${cycle}" data-event="${behavior.direction==='one-way-event'}" data-reverse="${reverse}" data-rotate="${behavior.rotateWithPath}" opacity="0">${createFlowToken(l.effect,l)}</g>`;
+  const reverse=l.direction==='reverse';
+  const returnStart=delay+(behavior.direction==='bidirectional'?0:duration+.2);
+  return token(reverse,delay,key)+(behavior.paired?token(!reverse,returnStart,`${key}-return`):'');
+ }
+ const motion=(lag=0,reverse=l.direction==='reverse')=>`<animateMotion dur="${duration}s" begin="${delay+lag}s" calcMode="linear" repeatCount="indefinite" rotate="${PROTOCOL_FLOW_STYLES[l.shape]&&l.shape!=='sse'?'0':'auto'}" ${reverse?'keyPoints="1;0" keyTimes="0;1"':''}><mpath href="#${pid}"/></animateMotion>`;
  const content=reverse=>{
   let body=trafficGlyph(l,reverse);
   if(l.effect==='glow')body=`<circle r="${l.size}" fill="${l.color}" opacity=".2"/><circle r="${l.size*.7}" fill="${l.color}" opacity=".2"/>`+body;
@@ -265,14 +279,14 @@ function featureTemplate(){
  return normalize({title:'Tabelas, eventos e componente reativo',kicker:'ANIMATED FLOW STUDIO 3',description:'Arraste as portas azuis para conectar. Ctrl + roda aplica zoom; arraste o fundo para navegar.',width:1100,height:600,nodes,legends,edges:[{id:'a',source:'client',target:'status',traffic:['request','response'],duration:4,connector:'both'},{id:'b',source:'status',target:'sql',traffic:['request'],duration:5,connector:'curve'},{id:'c',source:'status',target:'nosql',traffic:['cdc'],duration:6,connector:'dashed'},{id:'d',source:'schema',target:'status',traffic:['request'],duration:8,connector:'dotted'}]});
 }
 function protocolTemplate(){
- // Keep each traffic marker consistent with its protocol-specific animated glyph.
+ // Protocol tokens share one fixed SVG box, including on broker fan-out paths.
  const specs=[
   {id:'rest',type:'api-rest',title:'REST',effect:'rest',color:'#2563eb',shape:'rest',count:1,icon:'api',source:'Web e mobile',sourceNote:'Cliente HTTP.',target:'Recursos HTTP',targetNote:'Users · products · orders.',note:'CRUD com métodos HTTP e recursos.'},
   {id:'graphql',type:'api-graphql',title:'GraphQL',effect:'graphql',color:'#c026d3',shape:'graphql',count:1,icon:'database',source:'Aplicações clientes',sourceNote:'Pede apenas os campos necessários.',target:'API de dados',targetNote:'Resolvers e fontes de dados.',note:'Consulta campos sob demanda.'},
-  {id:'grpc',type:'api-grpc',title:'gRPC',effect:'grpc',color:'#0f766e',shape:'grpc',count:1,icon:'server',source:'Serviço interno A',sourceNote:'Chama com contrato Protobuf.',target:'Microsserviço B',targetNote:'Atende chamadas RPC tipadas.',note:'RPC tipada de baixa latência.'},
+  {id:'grpc',type:'api-grpc',title:'gRPC',effect:'grpc',color:'#0f766e',shape:'grpc',count:3,icon:'server',source:'Serviço interno A',sourceNote:'Chama com contrato Protobuf.',target:'Microsserviço B',targetNote:'Atende chamadas RPC tipadas.',note:'RPC tipada de baixa latência.'},
   {id:'websocket',type:'api-websocket',title:'WebSockets',effect:'websocket',color:'#ea580c',shape:'websocket',count:1,icon:'network',source:'Chat / multiplayer',sourceNote:'Mantém o canal aberto.',target:'Serviço em tempo real',targetNote:'Envia e recebe eventos.',note:'Conexão persistente, duas vias.'},
   {id:'webhook',type:'api-webhook',title:'Webhooks',effect:'webhook',color:'#dc2626',shape:'webhook',count:1,icon:'network',source:'Provedor de eventos',sourceNote:'Publica um evento.',target:'Agente de IA',targetNote:'Recebe um callback HTTP.',note:'Notificação enviada ao endpoint.'},
-  {id:'sse',type:'api-sse',title:'SSE',effect:'sse',color:'#0284c7',shape:'sse',count:1,icon:'server',source:'Servidor de eventos',sourceNote:'Envia eventos via HTTP.',target:'Feed / agente',targetNote:'Recebe o fluxo contínuo.',note:'Stream unidirecional do servidor.'},
+  {id:'sse',type:'api-sse',title:'SSE',effect:'sse',color:'#0284c7',shape:'sse',count:3,icon:'server',source:'Servidor de eventos',sourceNote:'Envia eventos via HTTP.',target:'Feed / agente',targetNote:'Recebe o fluxo contínuo.',note:'Stream unidirecional do servidor.'},
   {id:'mqtt',type:'api-mqtt',title:'MQTT',effect:'mqtt',color:'#65a30d',shape:'mqtt',count:1,icon:'network',source:'Sensores IoT',sourceNote:'Publica em tópicos.',target:'Assinantes',targetNote:'Consome tópicos inscritos.',note:'Pub/sub leve para redes instáveis.'}
  ];
  const nodes=[],edges=[],legends=[];

@@ -165,10 +165,16 @@ function legendEditor(){
  const box=$('legendEditor');box.replaceChildren();
  for(const l of project.legends){const row=document.createElement('details');row.className='legend-row';const title=document.createElement('summary');title.textContent=l.label;row.append(title);
   field(row,'Nome da legenda',l.label,v=>{l.label=v;title.textContent=v;});colorField(row,'Cor do tráfego',l,'color','#70a0ff');
-  field(row,'Símbolo',l.shape,v=>l.shape=v,{options:Object.entries(F.SYMBOLS)});field(row,'Efeito visual',l.effect,v=>l.effect=v,{options:Object.entries(F.EFFECTS)});
+  const shapeInput=field(row,'Símbolo',l.shape,v=>l.shape=v,{options:Object.entries(F.SYMBOLS)});
+  const effectInput=field(row,'Efeito visual',l.effect,v=>l.effect=v,{options:Object.entries(F.EFFECTS)});
   field(row,'Sentido',l.direction,v=>l.direction=v,{options:[['forward','Origem → destino'],['reverse','Destino → origem']]});
   field(row,'Velocidade desta legenda (×)',l.speed,v=>l.speed=v,{type:'number',min:.1,max:8,step:.1});
-  field(row,'Tamanho do marcador (px)',l.size,v=>l.size=v,{type:'number',min:3,max:32});field(row,'Marcadores simultâneos',l.count,v=>l.count=Math.round(v),{type:'number',min:1,max:8});
+  const sizeInput=field(row,'Tamanho do marcador (px)',l.size,v=>l.size=v,{type:'number',min:3,max:32});
+  const sizeHint=document.createElement('p');sizeHint.className='hint';sizeHint.textContent='Tokens de protocolo usam tamanho fixo de 14 × 14 px.';row.append(sizeHint);
+  const protocols=new Set(Object.keys(F.SYMBOLS).slice(-7));
+  function refreshTokenSize(){const fixed=protocols.has(l.effect)||protocols.has(l.shape);sizeInput.disabled=fixed;sizeInput.value=fixed?14:l.size;sizeHint.hidden=!fixed;}
+  shapeInput.addEventListener('change',refreshTokenSize);effectInput.addEventListener('change',refreshTokenSize);refreshTokenSize();
+  field(row,'Marcadores simultâneos',l.count,v=>l.count=Math.round(v),{type:'number',min:1,max:8});
   const del=document.createElement('button');del.textContent='Remover legenda';del.className='danger';del.onclick=()=>{checkpoint();project.legends=project.legends.filter(v=>v.id!==l.id);for(const e of project.edges)e.traffic=e.traffic.filter(id=>id!==l.id);for(const n of project.nodes)if(n.reactive)n.reactive.legends=n.reactive.legends.filter(id=>id!==l.id);save({legend:true,panel:true});};row.append(del);box.append(row);
  }
 }
@@ -254,7 +260,7 @@ async function svgExport(staticMode=false,component=null){
  const fonts=await FlowFonts.embed(component?{nodes:[component],edges:[]}:snapshot);
  let svg=component?F.componentSVG(component):F.render(snapshot,{static:staticMode,time:staticMode?time:0});
  if(fonts.css)svg=svg.replace('</style>',fonts.css+'</style>');
- if(!staticMode&&!component&&snapshot.nodes.some(n=>n.type==='reactive'))svg=svg.replace(/<\/svg>\s*$/,()=>'<script><![CDATA['+runtimeScript(snapshot,'document.documentElement').replace(/]]>/g,']]]]><![CDATA[>')+']]></script></svg>');
+ if(!staticMode&&!component&&(snapshot.nodes.some(n=>n.type==='reactive')||svg.includes('class="packet protocol-packet"')))svg=svg.replace(/<\/svg>\s*$/,()=>'<script><![CDATA['+runtimeScript(snapshot,'document.documentElement').replace(/]]>/g,']]]]><![CDATA[>')+']]></script></svg>');
  if(fonts.warnings.length)status('Exportado com fonte local de reserva: '+fonts.warnings.join('; '));else status('Exportação pronta.');
  return svg;
 }

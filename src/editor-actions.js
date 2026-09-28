@@ -41,7 +41,7 @@ async function svgExport(staticMode=false,component=null){
  const fonts=await FlowFonts.embed(component?{nodes:[component],edges:[]}:snapshot);
  let svg=component?F.componentSVG(component):F.render(snapshot,{static:staticMode,time:staticMode?time:0});
  if(fonts.css)svg=svg.replace('</style>',fonts.css+'</style>');
- if(!staticMode&&!component&&snapshot.nodes.some(n=>n.type==='reactive'))svg=svg.replace(/<\/svg>\s*$/,()=>'<script><![CDATA['+runtimeScript(snapshot,'document.documentElement').replace(/]]>/g,']]]]><![CDATA[>')+']]></script></svg>');
+ if(!staticMode&&!component&&(snapshot.nodes.some(n=>n.type==='reactive')||svg.includes('class="packet protocol-packet"')))svg=svg.replace(/<\/svg>\s*$/,()=>'<script><![CDATA['+runtimeScript(snapshot,'document.documentElement').replace(/]]>/g,']]]]><![CDATA[>')+']]></script></svg>');
  if(fonts.warnings.length)status('Exportado com fonte local de reserva: '+fonts.warnings.join('; '));else status('Exportação pronta.');
  return svg;
 }

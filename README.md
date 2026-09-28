@@ -35,7 +35,7 @@ Com o servidor acima em execução:
 | Catálogo System Design | Importe `examples/system-design-catalog.json` |
 | Cores personalizadas | Importe `examples/cores.json` |
 
-Os HTMLs também podem ser abertos diretamente. JSONs são projetos editáveis; SVGs e PNGs na mesma pasta são visualizações. Para reações de texto/cor, prefira o HTML: leitores que exibem SVG como imagem podem bloquear seu JavaScript. A exportação PNG registra 300 dpi e limita a imagem a 16 megapixels; diagramas grandes mostram um aviso se a resolução precisar ser reduzida. O tamanho padrão do tráfego usa 1rem (16 unidades SVG no padrão do navegador).
+Os HTMLs também podem ser abertos diretamente. JSONs são projetos editáveis; SVGs e PNGs na mesma pasta são visualizações. Para animações dos protocolos e reações de texto/cor, prefira o HTML: leitores que exibem SVG como imagem podem bloquear seu JavaScript. A exportação PNG registra 300 dpi e limita a imagem a 16 megapixels; diagramas grandes mostram um aviso se a resolução precisar ser reduzida. O tráfego genérico usa 1rem por padrão; os sete protocolos usam tokens SVG de 14 × 14 unidades, centralizados em um viewBox 16 × 16.
 
 ### Gerar um diagrama com Python
 

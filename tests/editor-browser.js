@@ -47,9 +47,44 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  const apiSymbols=await symbol.locator('option').evaluateAll(options=>options.slice(-7).map(option=>option.value));
  assert.deepEqual(apiSymbols,['rest','graphql','grpc','websocket','webhook','sse','mqtt']);
  await symbol.selectOption('graphql');const apiLegendId=await page.evaluate(()=>project.legends.at(-1).id);
- assert.ok((await page.locator(`#board svg .legend-marker[data-legend="${apiLegendId}"]`).innerHTML()).includes('M0-3.5L3.5 0 0 3.5'));
+ assert.ok((await page.locator(`#board svg .legend-marker[data-legend="${apiLegendId}"]`).innerHTML()).includes('M8 4L12 8 8 12 4 8Z'));
  assert.equal(await page.evaluate(()=>F.normalize(JSON.parse(JSON.stringify(project))).legends.at(-1).shape),'graphql');
  console.log('PASS API protocol glyph symbols render in the top legend and survive roundtrip');
+
+ const savedProject=await page.evaluate(()=>F.clone(project));
+ await page.evaluate(()=>{setProject(F.protocolTemplate());paused=true;draw();const svg=board.querySelector('svg');svg.pauseAnimations();svg.setCurrentTime(1);});
+ await page.waitForFunction(()=>document.querySelector('[data-stream="0-0-0"]')?.getAttribute('transform'));
+ const tokenState=await page.evaluate(()=>{
+  const svg=board.querySelector('svg'),token=svg.querySelector('[data-stream="0-0-0"]'),path=svg.querySelector('#af-edge-0');
+  const point=path.getPointAtLength(4+(path.getTotalLength()-12)*(1/5));
+  return {transform:token.getAttribute('transform'),point:{x:point.x,y:point.y},size:[...svg.querySelectorAll('.protocol-packet .flow-token')].every(el=>el.getAttribute('width')==='14'&&el.getAttribute('height')==='14'&&el.getAttribute('viewBox')==='0 0 16 16'),hit:getComputedStyle(token).pointerEvents};
+ });
+ const tokenX=Number(tokenState.transform.match(/translate\(([^ ]+)/)[1]);
+ assert.ok(Math.abs(tokenX-tokenState.point.x)<1);assert.equal(tokenState.size,true);assert.equal(tokenState.hit,'none');
+ await page.evaluate(()=>{project.nodes.find(n=>n.id==='rest-protocol').y+=40;draw();board.querySelector('svg').setCurrentTime(1);});
+ await page.waitForFunction(previous=>document.querySelector('[data-stream="0-0-0"]')?.getAttribute('transform')!==previous,tokenState.transform);
+ assert.notEqual(await page.locator('[data-stream="0-0-0"]').getAttribute('transform'),tokenState.transform);
+ await page.evaluate(()=>{project.edges[0].route='curve';draw();board.querySelector('svg').setCurrentTime(1);});
+ await page.waitForFunction(()=>document.querySelector('#af-edge-0')?.getAttribute('d')?.includes('C'));
+ assert.match(await page.locator('#af-edge-0').getAttribute('d'),/C/);
+ assert.equal(await page.locator('[data-stream="6-0-0"]').getAttribute('data-path'),await page.locator('[data-stream="6-0-0-return"]').getAttribute('data-path'));
+ assert.equal(await page.locator('[data-stream="6-0-0-return"]').getAttribute('data-reverse'),'true');
+ const sse=await page.locator('[data-stream="10-0-0"]');
+ await page.evaluate(()=>{const token=document.querySelector('[data-stream="10-0-0"]');board.querySelector('svg').setCurrentTime(Number(token.dataset.start)+.5);});
+ await page.waitForFunction(()=>document.querySelector('[data-stream="10-0-0"]')?.getAttribute('transform')?.includes('rotate('));
+ assert.match(await sse.getAttribute('transform'),/rotate\(/);
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.waitForFunction(()=>getComputedStyle(document.querySelector('[data-stream="0-0-0"]')).display!=='none');
+ await page.waitForFunction(()=>document.querySelector('[data-stream="0-0-0"]')?.getAttribute('opacity')==='.5');
+ assert.equal(await page.locator('[data-stream="0-0-0"]').getAttribute('opacity'),'.5');
+ await page.emulateMedia({reducedMotion:'no-preference'});
+ const protocolDownload=page.waitForEvent('download');await page.click('#svgExport');
+ const protocolFile=path.join(out,'protocol-tokens.svg');await (await protocolDownload).saveAs(protocolFile);
+ const protocolPage=await browser.newPage();await protocolPage.goto(require('node:url').pathToFileURL(protocolFile).href);
+ await protocolPage.waitForFunction(()=>document.querySelector('[data-stream="0-0-0"]')?.getAttribute('transform'));
+ assert.equal(await protocolPage.locator('parsererror').count(),0);await protocolPage.close();
+ await page.evaluate(saved=>setProject(saved),savedProject);
+ console.log('PASS protocol tokens follow moved and edited paths, both directions, SSE rotation and reduced motion');
 
  // Real mouse zoom keeps the point under the cursor; pan does not move nodes.
  await page.locator('#viewport').scrollIntoViewIfNeeded();const vp=await page.locator('#viewport').boundingBox();
