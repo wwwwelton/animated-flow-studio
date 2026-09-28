@@ -20,7 +20,7 @@
       "direction": "forward",
       "effect": "packet",
       "speed": 1,
-      "size": 8,
+      "size": 16,
       "count": 1
     },
     {
@@ -31,7 +31,7 @@
       "direction": "reverse",
       "effect": "packet",
       "speed": 1,
-      "size": 8,
+      "size": 16,
       "count": 1
     },
     {
@@ -42,7 +42,7 @@
       "direction": "forward",
       "effect": "packet",
       "speed": 1,
-      "size": 8,
+      "size": 16,
       "count": 1
     }
   ],

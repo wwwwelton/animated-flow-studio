@@ -11,4 +11,6 @@ Campos principais:
 - `legends[]` — identidade visual e comportamento de cada fluxo;
 - `trafficSpeed` e `showLegend`.
 
+`legends[].size` usa unidades SVG: 16 corresponde ao tamanho inicial de 1 rem exibido no editor. Valores antigos continuam válidos; a interface converte entre rem e unidades SVG ao editar.
+
 Compatibilidade deve ser preservada ao adicionar campos: novos campos devem possuir defaults e projetos antigos devem continuar normalizáveis.

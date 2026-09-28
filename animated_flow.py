@@ -19,7 +19,7 @@ class Legend:
     direction: str = "forward"
     effect: str = "packet"
     speed: float = 1
-    size: float = 16
+    size: float = 16  # SVG units; the editor displays this default as 1 rem.
     count: int = 1
 
 

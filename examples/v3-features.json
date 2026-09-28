@@ -20,7 +20,7 @@
       "direction": "forward",
       "effect": "comet",
       "speed": 1,
-      "size": 10,
+      "size": 16,
       "count": 1
     },
     {
@@ -31,7 +31,7 @@
       "direction": "reverse",
       "effect": "pulse",
       "speed": 0.8,
-      "size": 10,
+      "size": 16,
       "count": 1
     },
     {
@@ -42,7 +42,7 @@
       "direction": "forward",
       "effect": "glow",
       "speed": 1,
-      "size": 10,
+      "size": 16,
       "count": 1
     }
   ],

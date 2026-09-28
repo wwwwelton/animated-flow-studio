@@ -15,11 +15,6 @@ if(requested.some(name=>!Object.hasOwn(projects,name)))throw Error('Exemplo desc
  try{
  const page=await browser.newPage({viewport:{width:1600,height:1050}});
  for(const [name,p]of entries){
-  const previousFile=path.join(dir,name+'.json');
-  if(fs.existsSync(previousFile)){
-   const previous=JSON.parse(fs.readFileSync(previousFile,'utf8'));
-   for(const legend of p.legends){const saved=previous.legends?.find(item=>item.id===legend.id);if(saved?.size!==undefined)legend.size=saved.size;}
-  }
   const script=code+'\nFlowTraffic.mount(document.querySelector("svg"),'+JSON.stringify(p).replace(/</g,'\\u003c')+',FlowCore);';
   let svg=F.render(p);
   if(p.nodes.some(n=>n.type==='reactive')||svg.includes('class="packet protocol-packet"'))svg=svg.replace(/<\/svg>\s*$/,()=>'<script><![CDATA['+script.replace(/]]>/g,']]]]><![CDATA[>')+']]></script></svg>');

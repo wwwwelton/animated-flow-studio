@@ -43,11 +43,11 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  await page.locator('#trafficSpeed').fill('3');await page.locator('#trafficSpeed').dispatchEvent('change');
  assert.equal(await page.evaluate(()=>F.streams(project)[0].duration),4/6);assert.equal(await page.evaluate(()=>F.streams(project).filter(s=>s.index===0&&s.legend.id==='request').length),3);
  console.log('PASS traffic effects, symbols, speed and count');
- await page.click('#addLegend');const apiLegend=page.locator('#legendEditor details').last();await apiLegend.locator('summary').click();assert.equal(await apiLegend.getByLabel('Tamanho do marcador (px)',{exact:true}).inputValue(),'16');const symbol=apiLegend.getByLabel('Símbolo',{exact:true});
+ await page.click('#addLegend');const apiLegend=page.locator('#legendEditor details').last();await apiLegend.locator('summary').click();assert.equal(await apiLegend.getByLabel('Tamanho do marcador (rem)',{exact:true}).inputValue(),'1');const symbol=apiLegend.getByLabel('Símbolo',{exact:true});
  const apiSymbols=await symbol.locator('option').evaluateAll(options=>options.slice(-7).map(option=>option.value));
  assert.deepEqual(apiSymbols,['rest','graphql','grpc','websocket','webhook','sse','mqtt']);
  await symbol.selectOption('graphql');const apiLegendId=await page.evaluate(()=>project.legends.at(-1).id);
- assert.equal(await apiLegend.getByLabel('Tamanho do marcador (px)',{exact:true}).isEnabled(),true);
+ assert.equal(await apiLegend.getByLabel('Tamanho do marcador (rem)',{exact:true}).isEnabled(),true);
  assert.ok((await page.locator(`#board svg .legend-marker[data-legend="${apiLegendId}"]`).innerHTML()).includes('M8 0L16 8 8 16 0 8Z'));
  assert.equal(await page.evaluate(()=>F.normalize(JSON.parse(JSON.stringify(project))).legends.at(-1).shape),'graphql');
  console.log('PASS API protocol glyph symbols render in the top legend and survive roundtrip');
@@ -73,8 +73,8 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  await page.waitForFunction(()=>document.querySelector('[data-stream="0-0-0"]')?.getAttribute('transform'));
  const tokenState=await page.evaluate(()=>{
   const svg=board.querySelector('svg'),token=svg.querySelector('[data-stream="0-0-0"]'),path=svg.querySelector('#af-edge-0');
-  const point=path.getPointAtLength(11+(path.getTotalLength()-26)*(1/5));
-  return {transform:token.getAttribute('transform'),point:{x:point.x,y:point.y},size:[...svg.querySelectorAll('.protocol-packet .flow-token')].every(el=>el.getAttribute('width')==='14'&&el.getAttribute('height')==='14'&&el.getAttribute('viewBox')==='0 0 16 16'),hit:getComputedStyle(token).pointerEvents};
+  const point=path.getPointAtLength(12+(path.getTotalLength()-28)*(1/5));
+  return {transform:token.getAttribute('transform'),point:{x:point.x,y:point.y},size:[...svg.querySelectorAll('.protocol-packet .flow-token')].every(el=>el.getAttribute('width')==='16'&&el.getAttribute('height')==='16'&&el.getAttribute('viewBox')==='0 0 16 16'),hit:getComputedStyle(token).pointerEvents};
  });
  const tokenX=Number(tokenState.transform.match(/translate\(([^ ]+)/)[1]);
  assert.ok(Math.abs(tokenX-tokenState.point.x)<1);assert.equal(tokenState.size,true);assert.equal(tokenState.hit,'none');
@@ -97,8 +97,8 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  await page.emulateMedia({reducedMotion:'no-preference'});
  for(const [index,id]of ['rest','graphql','grpc','websocket','webhook','sse','mqtt'].entries()){
   const row=page.locator('#legendEditor details').nth(index);await row.locator('summary').click();
-  const size=8+index*4,input=row.getByLabel('Tamanho do marcador (px)',{exact:true});
-  assert.equal(await input.isEnabled(),true);await input.fill(String(size));await input.dispatchEvent('change');
+  const size=8+index*4,input=row.getByLabel('Tamanho do marcador (rem)',{exact:true});
+  assert.equal(await input.isEnabled(),true);await input.fill(String(size/16));await input.dispatchEvent('change');
   assert.equal(await page.evaluate(id=>project.legends.find(legend=>legend.id===id).size,id),size);
   assert.equal(await page.locator(`#board [data-legend="${id}"] .flow-token`).getAttribute('width'),String(size));
   assert.equal(await page.locator(`#board [data-edge-id="${id}-request"] .flow-token`).first().getAttribute('width'),String(size));

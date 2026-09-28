@@ -5,7 +5,7 @@ const vm=require('node:vm');
 const path=require('node:path');
 const source=fs.readFileSync(path.join(__dirname,'../src/traffic-runtime.js'),'utf8');
 
-function runtime(pathElement,{reverse=false,rotate=false,reduced=false,event=false,size=14}={}){
+function runtime(pathElement,{reverse=false,rotate=false,reduced=false,event=false,size=16}={}){
  const attributes=new Map(),listeners=new Map();
  const token={dataset:{path:'rail',edgeId:'webhook-link',size:String(size),start:'0',duration:'2',cycle:'4',event:String(event),reverse:String(reverse),rotate:String(rotate)},setAttribute(name,value){attributes.set(name,value);}};
  const media={matches:reduced,addEventListener(){},removeEventListener(){}};
@@ -25,8 +25,8 @@ test('tokens use path arc length, respect endpoint padding and reverse on the sa
  assert.equal(reverse.attributes.get('transform'),'translate(48 23.04)');
  forward.step(0);
  reverse.step(0);
- assert.equal(forward.attributes.get('transform'),'translate(11 1.21)');
- assert.equal(reverse.attributes.get('transform'),'translate(85 72.25)');
+ assert.equal(forward.attributes.get('transform'),'translate(12 1.44)');
+ assert.equal(reverse.attributes.get('transform'),'translate(84 70.56)');
  forward.step(2.5);
  assert.equal(forward.attributes.get('opacity'),'0');
  forward.stop();reverse.stop();
@@ -60,7 +60,7 @@ test('Webhook travels once and replays only when its event is triggered',()=>{
  flow.trigger('another-link');
  assert.equal(flow.attributes.get('opacity'),'0');
  flow.trigger('webhook-link');
- assert.equal(flow.attributes.get('transform'),'translate(11 0)');
+ assert.equal(flow.attributes.get('transform'),'translate(12 0)');
  assert.equal(flow.attributes.get('opacity'),'.86');
  flow.stop();
 });

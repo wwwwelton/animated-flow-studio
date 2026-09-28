@@ -9,7 +9,8 @@ test('all v3 settings survive JSON and invalid ranges are rejected',()=>{
 test('new traffic markers default to one rem and retain explicit sizes',()=>{
  const p=F.normalize({nodes:[F.systemNode('client',{id:'client'})],edges:[],legends:[{id:'default'},{id:'custom',size:8}]});
  assert.deepEqual(p.legends.map(legend=>legend.size),[16,8]);
- assert.ok(F.protocolTemplate().legends.every(legend=>legend.size===14));
+ assert.ok(F.protocolTemplate().legends.every(legend=>legend.size===16));
+ assert.ok(F.featureTemplate().legends.every(legend=>legend.size===16));
 });
 test('global speed and per-legend speed change actual travel durations',()=>{
  const p=simple();p.trafficSpeed=2;p.legends[0].speed=4;p.legends[0].count=3;
@@ -60,7 +61,7 @@ test('protocol shapes use one centered SVG box in legends and moving tokens',()=
  const names=['rest','graphql','grpc','websocket','webhook','sse','mqtt'];
  assert.deepEqual(Object.keys(F.SYMBOLS).slice(-7),names);
  const p=F.protocolTemplate(),svg=F.render(p);
- assert.ok(p.legends.every(legend=>legend.size===14));
+ assert.ok(p.legends.every(legend=>legend.size===16));
  for(const name of names){
   const legend=svg.match(new RegExp(`data-legend="${name}"[^]*?<svg class="flow-token"[^>]*>`));
   assert.ok(legend,`${name} legend`);
@@ -69,9 +70,20 @@ test('protocol shapes use one centered SVG box in legends and moving tokens',()=
  }
  const boxes=svg.match(/<svg class="flow-token"[^>]*>/g)||[];
  assert.ok(boxes.length>=names.length*3);
- for(const box of boxes)assert.match(box,/x="-7" y="-7" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"/);
+ for(const box of boxes)assert.match(box,/x="-8" y="-8" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"/);
  assert.doesNotMatch(svg,/[→⇉↪⇒↔]/);
  assert.match(svg,/\.flow-token\{overflow:visible\}/);
+});
+test('API tokens use solid silhouettes and the standard traffic opacity',()=>{
+ const svg=F.render(F.protocolTemplate());
+ for(const protocol of ['rest','graphql','grpc','websocket','webhook','sse','mqtt']){
+  const legend=svg.match(new RegExp(`data-legend="${protocol}"[^]*?<svg class="flow-token"[^>]*>([^]*?)<\\/svg>`));
+  assert.ok(legend,`${protocol} legend`);
+  assert.match(legend[1],/fill="currentColor"/);
+  assert.doesNotMatch(legend[1],/fill="none"/);
+ }
+ assert.match(svg,/data-peak-opacity="0\.86"/);
+ assert.match(F.render(F.studioTemplate()),/values="0;0\.86;0\.86;0"/);
 });
 test('all protocol legend and moving symbols honor the configured size',()=>{
  const p=F.protocolTemplate(),protocols=['rest','graphql','grpc','websocket','webhook','sse','mqtt'];

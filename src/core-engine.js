@@ -4,16 +4,16 @@ const LEGENDS=[{id:'request',label:'Solicitação',color:'#70a0ff',shape:'square
 const EFFECTS={packet:'Marcador',pulse:'Pulso',glow:'Brilho',trail:'Rastro',comet:'Cometa',dashed:'Fluxo tracejado',rest:'REST · solicitação/resposta',graphql:'GraphQL · seleção de dados',grpc:'gRPC · quadro tipado',websocket:'WebSocket · duas vias',webhook:'Webhook · notificação',sse:'SSE · fluxo contínuo',mqtt:'MQTT · publish/subscribe'};
 const SYMBOLS={square:'Quadrado',circle:'Círculo',diamond:'Losango',triangle:'Triângulo',arrow:'Seta',star:'Estrela',rest:'REST · API',graphql:'GraphQL · API',grpc:'gRPC · API',websocket:'WebSockets · API',webhook:'Webhooks · API',sse:'SSE · API',mqtt:'MQTT · API'};
 // One rem uses the browser default (16px); traffic defaults use the same SVG-unit size.
-const FLOW_TOKEN_SIZE=14,FLOW_TOKEN_VIEWBOX=16;
-const TRAFFIC_VISUAL={baseSize:8,defaultSize:16,protocolFlowSize:FLOW_TOKEN_SIZE,legendSize:16,legendGap:10,connectorArrowSize:10,connectorArrowStroke:1.15,protocolStrokeWidth:1.5,peakOpacity:.86,fadeIn:.06,fadeOut:.94};
+const FLOW_TOKEN_SIZE=16,FLOW_TOKEN_VIEWBOX=16;
+const TRAFFIC_VISUAL={baseSize:8,defaultSize:FLOW_TOKEN_SIZE,protocolFlowSize:FLOW_TOKEN_SIZE,legendSize:FLOW_TOKEN_SIZE,legendGap:10,connectorArrowSize:10,connectorArrowStroke:1.15,protocolStrokeWidth:1.5,peakOpacity:.86,fadeIn:.06,fadeOut:.94};
 const PROTOCOL_FLOW_STYLES={
  rest:{shape:'circle',geometry:'<circle cx="8" cy="8" r="8" fill="currentColor" stroke="none"/>',direction:'request-response',paired:true,cycle:2.2,speed:1,rotateWithPath:false},
  graphql:{shape:'diamond',geometry:'<path d="M8 0L16 8 8 16 0 8Z" fill="currentColor" stroke="none"/>',direction:'request-response',paired:true,cycle:2.2,speed:1,rotateWithPath:false},
  grpc:{shape:'frame',geometry:'<rect x="0" y="2" width="16" height="12" rx="1.5" fill="currentColor" stroke="none"/>',direction:'request-response',paired:true,cycle:2.2,speed:1.25,rotateWithPath:false},
- websocket:{shape:'ring',geometry:'<circle cx="8" cy="8" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5"/>',direction:'bidirectional',paired:true,speed:1,rotateWithPath:false,rail:'dashed'},
- webhook:{shape:'outline-diamond',geometry:'<path d="M8 .75L15.25 8 8 15.25 .75 8Z" fill="none" stroke="currentColor" stroke-width="1.5"/>',direction:'one-way-event',paired:false,cycle:2.2,speed:1,rotateWithPath:false},
+ websocket:{shape:'ring',geometry:'<circle cx="8" cy="8" r="8" fill="currentColor"/><circle cx="8" cy="8" r="2.25" fill="white"/>',direction:'bidirectional',paired:true,speed:1,rotateWithPath:false,rail:'dashed'},
+ webhook:{shape:'outline-diamond',geometry:'<path d="M8 0L16 8 8 16 0 8Z" fill="currentColor"/><circle cx="8" cy="8" r="2" fill="white"/>',direction:'one-way-event',paired:false,cycle:2.2,speed:1,rotateWithPath:false},
  sse:{shape:'triangle',geometry:'<path d="M0 0L16 8 0 16Z" fill="currentColor" stroke="none"/>',direction:'server-client-stream',paired:false,speed:.9,rotateWithPath:true},
- mqtt:{shape:'dot-ring',geometry:'<circle cx="8" cy="8" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2.5" fill="currentColor" stroke="none"/>',direction:'pub-sub',paired:false,relay:'broker',speed:1,rotateWithPath:false}
+ mqtt:{shape:'dot-ring',geometry:'<circle cx="8" cy="8" r="8" fill="currentColor"/><circle cx="8" cy="8" r="4" fill="white"/><circle cx="8" cy="8" r="2.5" fill="currentColor"/>',direction:'pub-sub',paired:false,relay:'broker',speed:1,rotateWithPath:false}
 };
 const CONNECTORS={out:'Seta saída',in:'Seta entrada',curve:'Seta em curva',both:'Seta bidirecional',line:'Linha',dashed:'Linha tracejada',dotted:'Linha pontilhada',double:'Linha dupla'};
 const FONTS=['Arial','Georgia','Verdana','Courier New','Inter','Roboto','Open Sans','Lato','Montserrat','Poppins','Nunito','Ubuntu','Merriweather','Playfair Display','Roboto Mono','JetBrains Mono','Fira Code','Source Code Pro'];
@@ -209,7 +209,7 @@ function motionPacket(stream,prefix){
  const {legend:l,duration,delay,index,key}=stream,pid=`${prefix}-edge-${index}`;
  const behavior=PROTOCOL_FLOW_STYLES[l.effect]??{paired:false,reverseDelay:0},cycle=duration*(behavior.cycle??1),visible=duration/cycle;
  if(PROTOCOL_FLOW_STYLES[l.effect]){
-  const token=(reverse,start,streamKey)=>`<g class="packet protocol-packet" data-stream="${streamKey}" data-path="${pid}" data-edge-id="${esc(stream.edge.id)}" data-size="${l.size}" data-start="${start}" data-duration="${duration}" data-cycle="${cycle}" data-event="${behavior.direction==='one-way-event'}" data-reverse="${reverse}" data-rotate="${behavior.rotateWithPath}" opacity="0">${createFlowToken(l.effect,l)}</g>`;
+  const token=(reverse,start,streamKey)=>`<g class="packet protocol-packet" data-stream="${streamKey}" data-path="${pid}" data-edge-id="${esc(stream.edge.id)}" data-size="${l.size}" data-peak-opacity="${TRAFFIC_VISUAL.peakOpacity}" data-start="${start}" data-duration="${duration}" data-cycle="${cycle}" data-event="${behavior.direction==='one-way-event'}" data-reverse="${reverse}" data-rotate="${behavior.rotateWithPath}" opacity="0">${createFlowToken(l.effect,l)}</g>`;
   const reverse=l.direction==='reverse';
   const returnStart=delay+(behavior.direction==='bidirectional'?0:duration+.2);
   return token(reverse,delay,key)+(behavior.paired?token(!reverse,returnStart,`${key}-return`):'');
@@ -276,7 +276,7 @@ function systemTemplate(){
 }
 function featureTemplate(){
  const nodes=[systemNode('client',{id:'client',x:40,y:160}),makeNode('reactive',{id:'status',x:365,y:160,label:'Aguardando tráfego',reactive:{enterText:'Pedido recebido',exitText:'Resposta enviada',enterColor:'#dcfce7',exitColor:'#dbeafe',hold:2}}),makeNode('table',{id:'sql',label:'orders · SQL',x:690,y:45,table:tablePreset('sql')}),makeNode('table',{id:'nosql',label:'events · NoSQL',x:690,y:325,table:tablePreset('nosql')}),makeNode('table',{id:'schema',label:'Contrato · Schema',x:40,y:325,table:tablePreset('schema')})];
- const legends=[{...LEGENDS[0],effect:'comet',size:10,speed:1},{...LEGENDS[1],effect:'pulse',speed:.8},{...LEGENDS[2],effect:'glow',shape:'star'}];
+ const legends=[{...LEGENDS[0],effect:'comet',speed:1},{...LEGENDS[1],effect:'pulse',speed:.8},{...LEGENDS[2],effect:'glow',shape:'star'}];
  return normalize({title:'Tabelas, eventos e componente reativo',kicker:'ANIMATED FLOW STUDIO 3',description:'Arraste as portas azuis para conectar. Ctrl + roda aplica zoom; arraste o fundo para navegar.',width:1100,height:600,nodes,legends,edges:[{id:'a',source:'client',target:'status',traffic:['request','response'],duration:4,connector:'both'},{id:'b',source:'status',target:'sql',traffic:['request'],duration:5,connector:'curve'},{id:'c',source:'status',target:'nosql',traffic:['cdc'],duration:6,connector:'dashed'},{id:'d',source:'schema',target:'status',traffic:['request'],duration:8,connector:'dotted'}]});
 }
 function protocolTemplate(){

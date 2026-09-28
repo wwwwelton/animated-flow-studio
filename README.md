@@ -35,7 +35,7 @@ Com o servidor acima em execução:
 | Catálogo System Design | Importe `examples/system-design-catalog.json` |
 | Cores personalizadas | Importe `examples/cores.json` |
 
-Os HTMLs também podem ser abertos diretamente. JSONs são projetos editáveis; SVGs e PNGs na mesma pasta são visualizações. Para animações dos protocolos e reações de texto/cor, prefira o HTML: leitores que exibem SVG como imagem podem bloquear seu JavaScript. A exportação PNG registra 300 dpi e limita a imagem a 16 megapixels; diagramas grandes mostram um aviso se a resolução precisar ser reduzida. O tráfego genérico usa 16 px por padrão e os sete protocolos usam 14 px por padrão. O tamanho de qualquer legenda pode ser editado entre 3 e 32 px; legenda e partículas usam o mesmo valor. Os símbolos de protocolo mantêm a geometria normalizada em um viewBox 16 × 16.
+Os HTMLs também podem ser abertos diretamente. JSONs são projetos editáveis; SVGs e PNGs na mesma pasta são visualizações. Para animações dos protocolos e reações de texto/cor, prefira o HTML: leitores que exibem SVG como imagem podem bloquear seu JavaScript. A exportação PNG registra 300 dpi e limita a imagem a 16 megapixels; diagramas grandes mostram um aviso se a resolução precisar ser reduzida. Todos os marcadores começam em 1 rem (16 unidades SVG). O tamanho de qualquer legenda pode ser editado entre 0,1875 e 2 rem; legenda e partículas usam o mesmo valor. O JSON e a API Python preservam o campo `size` em unidades SVG para manter projetos existentes compatíveis. Os símbolos de protocolo mantêm a geometria normalizada em um viewBox 16 × 16 e usam a mesma opacidade máxima de 0,86 dos marcadores de solicitação e resposta.
 
 ### Gerar um diagrama com Python
 

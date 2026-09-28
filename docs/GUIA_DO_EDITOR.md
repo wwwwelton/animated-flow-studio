@@ -34,7 +34,7 @@ Abra uma legenda pelo nome para editar efeito, símbolo, cor, sentido, velocidad
 
 - Efeitos: marcador, pulso, brilho, rastro de marcadores, cometa com cauda afilada e fluxo tracejado.
 - Símbolos: quadrado, círculo, losango, triângulo, seta e estrela.
-- Velocidades: 0,1×–8× global e por legenda; marcadores: 1–8; tamanho: 3–32 px.
+- Velocidades: 0,1×–8× global e por legenda; marcadores: 1–8; tamanho inicial: 1 rem, editável de 0,1875 a 2 rem. O JSON salva 16 unidades SVG para 1 rem.
 - Tempo efetivo do percurso = tempo base da conexão ÷ velocidade global ÷ velocidade da legenda.
 - Velocidade global reinicia o relógio. Pausa e reinício controlam animações e componentes reativos juntos.
 

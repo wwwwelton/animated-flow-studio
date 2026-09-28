@@ -12,12 +12,12 @@ flowchart LR
     State --> Persist[Persistência local]
 ```
 
-O renderer cria tokens SVG de 14 × 14 unidades por padrão para REST, GraphQL, gRPC,
+O renderer cria tokens SVG de 16 × 16 unidades (1 rem) por padrão para REST, GraphQL, gRPC,
 WebSockets, Webhooks, SSE e MQTT. O runtime posiciona cada token com
 `getPointAtLength` no path do próprio conector. A margem do centro do token
 inclui metade do tamanho configurado, mais 4 unidades na saída e 8 na chegada,
 para preservar a distância dos cards e das pontas de seta. O tamanho editado
-na legenda determina também o tamanho de cada partícula do protocolo. Ao mover
+na legenda, exibido em rem, determina também o tamanho de cada partícula do protocolo. O JSON guarda `size` em unidades SVG para compatibilidade. Ao mover
 cards ou editar conectores, o editor recria
 o SVG e o runtime passa a ler o novo path. O relógio do SVG controla pausa e
 retomada; com movimento reduzido, fica um indicador parado no meio do path.
