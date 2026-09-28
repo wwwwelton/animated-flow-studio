@@ -248,14 +248,15 @@ function featureTemplate(){
  return normalize({title:'Tabelas, eventos e componente reativo',kicker:'ANIMATED FLOW STUDIO 3',description:'Arraste as portas azuis para conectar. Ctrl + roda aplica zoom; arraste o fundo para navegar.',width:1100,height:600,nodes,legends,edges:[{id:'a',source:'client',target:'status',traffic:['request','response'],duration:4,connector:'both'},{id:'b',source:'status',target:'sql',traffic:['request'],duration:5,connector:'curve'},{id:'c',source:'status',target:'nosql',traffic:['cdc'],duration:6,connector:'dashed'},{id:'d',source:'schema',target:'status',traffic:['request'],duration:8,connector:'dotted'}]});
 }
 function protocolTemplate(){
+ // Reuse System Design's square/request, circle/response, and diamond/event markers.
  const specs=[
-  {id:'rest',type:'api-rest',title:'REST',effect:'rest',color:'#2563eb',shape:'square',speed:1,count:1,icon:'api',source:'Web e mobile',sourceNote:'Cliente HTTP.',target:'Recursos HTTP',targetNote:'Users · products · orders.',note:'CRUD com métodos HTTP e recursos.',link:'Métodos HTTP'},
-  {id:'graphql',type:'api-graphql',title:'GraphQL',effect:'graphql',color:'#c026d3',shape:'diamond',speed:1,count:1,icon:'database',source:'Aplicações clientes',sourceNote:'Pede apenas os campos necessários.',target:'API de dados',targetNote:'Resolvers e fontes de dados.',note:'Consulta campos sob demanda.',link:'Consulta tipada'},
-  {id:'grpc',type:'api-grpc',title:'gRPC',effect:'grpc',color:'#0f766e',shape:'square',speed:1.05,count:1,icon:'server',source:'Serviço interno A',sourceNote:'Chama com contrato Protobuf.',target:'Microsserviço B',targetNote:'Atende chamadas RPC tipadas.',note:'RPC tipada de baixa latência.',link:'RPC · Protobuf'},
-  {id:'websocket',type:'api-websocket',title:'WebSockets',effect:'websocket',color:'#ea580c',shape:'arrow',speed:.95,count:1,icon:'network',source:'Chat / multiplayer',sourceNote:'Mantém o canal aberto.',target:'Serviço em tempo real',targetNote:'Envia e recebe eventos.',note:'Conexão persistente, duas vias.',link:'Canal aberto'},
-  {id:'webhook',type:'api-webhook',title:'Webhooks',effect:'webhook',color:'#dc2626',shape:'star',speed:.8,count:1,icon:'network',source:'Provedor de eventos',sourceNote:'Publica um evento.',target:'Agente de IA',targetNote:'Recebe um callback HTTP.',note:'Notificação enviada ao endpoint.',link:'POST de evento'},
-  {id:'sse',type:'api-sse',title:'SSE',effect:'sse',color:'#0284c7',shape:'circle',speed:.95,count:1,icon:'server',source:'Servidor de eventos',sourceNote:'Envia eventos via HTTP.',target:'Feed / agente',targetNote:'Recebe o fluxo contínuo.',note:'Stream unidirecional do servidor.',link:'HTTP · stream'},
-  {id:'mqtt',type:'api-mqtt',title:'MQTT',effect:'mqtt',color:'#65a30d',shape:'triangle',speed:.95,count:1,icon:'network',source:'Sensores IoT',sourceNote:'Publica em tópicos.',target:'Assinantes',targetNote:'Consome tópicos inscritos.',note:'Pub/sub leve para redes instáveis.',link:'Tópico pub/sub'}
+  {id:'rest',type:'api-rest',title:'REST',effect:'rest',color:'#2563eb',shape:'square',speed:1,count:1,icon:'api',source:'Web e mobile',sourceNote:'Cliente HTTP.',target:'Recursos HTTP',targetNote:'Users · products · orders.',note:'CRUD com métodos HTTP e recursos.'},
+  {id:'graphql',type:'api-graphql',title:'GraphQL',effect:'graphql',color:'#c026d3',shape:'square',speed:1,count:1,icon:'database',source:'Aplicações clientes',sourceNote:'Pede apenas os campos necessários.',target:'API de dados',targetNote:'Resolvers e fontes de dados.',note:'Consulta campos sob demanda.'},
+  {id:'grpc',type:'api-grpc',title:'gRPC',effect:'grpc',color:'#0f766e',shape:'square',speed:1.05,count:1,icon:'server',source:'Serviço interno A',sourceNote:'Chama com contrato Protobuf.',target:'Microsserviço B',targetNote:'Atende chamadas RPC tipadas.',note:'RPC tipada de baixa latência.'},
+  {id:'websocket',type:'api-websocket',title:'WebSockets',effect:'websocket',color:'#ea580c',shape:'circle',speed:.95,count:1,icon:'network',source:'Chat / multiplayer',sourceNote:'Mantém o canal aberto.',target:'Serviço em tempo real',targetNote:'Envia e recebe eventos.',note:'Conexão persistente, duas vias.'},
+  {id:'webhook',type:'api-webhook',title:'Webhooks',effect:'webhook',color:'#dc2626',shape:'diamond',speed:.8,count:1,icon:'network',source:'Provedor de eventos',sourceNote:'Publica um evento.',target:'Agente de IA',targetNote:'Recebe um callback HTTP.',note:'Notificação enviada ao endpoint.'},
+  {id:'sse',type:'api-sse',title:'SSE',effect:'sse',color:'#0284c7',shape:'diamond',speed:.95,count:1,icon:'server',source:'Servidor de eventos',sourceNote:'Envia eventos via HTTP.',target:'Feed / agente',targetNote:'Recebe o fluxo contínuo.',note:'Stream unidirecional do servidor.'},
+  {id:'mqtt',type:'api-mqtt',title:'MQTT',effect:'mqtt',color:'#65a30d',shape:'diamond',speed:.95,count:1,icon:'network',source:'Sensores IoT',sourceNote:'Publica em tópicos.',target:'Assinantes',targetNote:'Consome tópicos inscritos.',note:'Pub/sub leve para redes instáveis.'}
  ];
  const nodes=[],edges=[],legends=[];
  for(const [i,s] of specs.entries()){
@@ -264,7 +265,7 @@ function protocolTemplate(){
   const frame={x:493,y:y+15,w:224,h:74},size=COMPONENTS[s.type];
   nodes.push(makeNode(s.type,{id:`${s.id}-protocol`,label:s.title,subtitle:s.note,x:frame.x+(frame.w-size.width)/2,y:frame.y+(frame.h-size.height)/2,color:'#ffffff'}));
   nodes.push(makeNode('card',{id:`${s.id}-target`,label:s.target,subtitle:s.targetNote,x:1110,y:y+15,w:224,h:74,color:'#ffffff',icon:s.icon}));
-  legends.push({id:s.id,label:s.title+' · '+s.link,color:s.color,shape:s.shape,direction:'forward',effect:s.effect,speed:s.speed,size:8,count:s.count});
+  legends.push({id:s.id,label:s.title,color:s.color,shape:s.shape,direction:'forward',effect:s.effect,speed:s.speed,size:8,count:s.count});
   const source=`${s.id}-source`,target=`${s.id}-target`;
   const connector=s.id==='websocket'?'both':'out';
   edges.push({id:`${s.id}-request`,source,target:`${s.id}-protocol`,traffic:[s.id],duration:5+i%3,connector});

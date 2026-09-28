@@ -70,6 +70,25 @@ test('API traffic uses small glyphs, soft fades and protocol-specific direction'
  assert.equal((svg.match(/data-stream="[^"]+-return"/g)||[]).length,4);
  assert.doesNotMatch(svg,/r="8" fill="#[0-9a-f]{6}" fill-opacity/);
 });
+test('API traffic legends reuse System Design names, shapes, and marker scale',()=>{
+ const p=F.protocolTemplate(),expected=[
+  ['rest','REST','#2563eb','square'],['graphql','GraphQL','#c026d3','square'],
+  ['grpc','gRPC','#0f766e','square'],['websocket','WebSockets','#ea580c','circle'],
+  ['webhook','Webhooks','#dc2626','diamond'],['sse','SSE','#0284c7','diamond'],
+  ['mqtt','MQTT','#65a30d','diamond']
+ ];
+ assert.deepEqual(p.legends.map(({id,label,color,shape})=>[id,label,color,shape]),expected);
+ assert.ok(p.legends.every(legend=>legend.size===8));
+
+ const svg=F.render(p,{static:true}),legendSvg=svg.slice(0,svg.indexOf('<g transform="translate(0 '));
+ assert.equal((legendSvg.match(/class="legend-label"/g)||[]).length,7);
+ assert.equal((legendSvg.match(/stroke-width="\.6"/g)||[]).length,7);
+ assert.equal((legendSvg.match(/width="14" height="14"/g)||[]).length,3);
+ assert.match(legendSvg,/<circle cx="[^"]+" cy="[^"]+" r="7" fill="#ea580c"/);
+ for(const color of ['#dc2626','#0284c7','#65a30d'])assert.match(legendSvg,new RegExp(`<path d="M[^\"]+" fill="${color}" stroke="#000000" stroke-width="\\.6"`));
+ for(const [,label] of expected)assert.ok(legendSvg.includes(`class="legend-label">${label}</text>`));
+ assert.equal(F.headerHeight(p),162);
+});
 test('API protocol components use System Design card dimensions, layout and canonical glyphs',()=>{
  const p=F.protocolTemplate(),types=['api-rest','api-graphql','api-grpc','api-websocket','api-webhook','api-sse','api-mqtt'];
  const diagram=F.render(p,{static:true});

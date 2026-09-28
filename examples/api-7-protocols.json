@@ -14,7 +14,7 @@
   "legends": [
     {
       "id": "rest",
-      "label": "REST · Métodos HTTP",
+      "label": "REST",
       "color": "#2563eb",
       "shape": "square",
       "direction": "forward",
@@ -25,9 +25,9 @@
     },
     {
       "id": "graphql",
-      "label": "GraphQL · Consulta tipada",
+      "label": "GraphQL",
       "color": "#c026d3",
-      "shape": "diamond",
+      "shape": "square",
       "direction": "forward",
       "effect": "graphql",
       "speed": 1,
@@ -36,7 +36,7 @@
     },
     {
       "id": "grpc",
-      "label": "gRPC · RPC · Protobuf",
+      "label": "gRPC",
       "color": "#0f766e",
       "shape": "square",
       "direction": "forward",
@@ -47,9 +47,9 @@
     },
     {
       "id": "websocket",
-      "label": "WebSockets · Canal aberto",
+      "label": "WebSockets",
       "color": "#ea580c",
-      "shape": "arrow",
+      "shape": "circle",
       "direction": "forward",
       "effect": "websocket",
       "speed": 0.95,
@@ -58,9 +58,9 @@
     },
     {
       "id": "webhook",
-      "label": "Webhooks · POST de evento",
+      "label": "Webhooks",
       "color": "#dc2626",
-      "shape": "star",
+      "shape": "diamond",
       "direction": "forward",
       "effect": "webhook",
       "speed": 0.8,
@@ -69,9 +69,9 @@
     },
     {
       "id": "sse",
-      "label": "SSE · HTTP · stream",
+      "label": "SSE",
       "color": "#0284c7",
-      "shape": "circle",
+      "shape": "diamond",
       "direction": "forward",
       "effect": "sse",
       "speed": 0.95,
@@ -80,9 +80,9 @@
     },
     {
       "id": "mqtt",
-      "label": "MQTT · Tópico pub/sub",
+      "label": "MQTT",
       "color": "#65a30d",
-      "shape": "triangle",
+      "shape": "diamond",
       "direction": "forward",
       "effect": "mqtt",
       "speed": 0.95,
