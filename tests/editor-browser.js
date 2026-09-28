@@ -46,7 +46,7 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  const apiSymbols=await symbol.locator('option').evaluateAll(options=>options.slice(-7).map(option=>option.value));
  assert.deepEqual(apiSymbols,['rest','graphql','grpc','websocket','webhook','sse','mqtt']);
  await symbol.selectOption('graphql');const apiLegendId=await page.evaluate(()=>project.legends.at(-1).id);
- assert.ok((await page.locator(`#board svg .legend-marker[data-legend="${apiLegendId}"]`).innerHTML()).includes('M-2-3H-3.5V3H-2'));
+ assert.ok((await page.locator(`#board svg .legend-marker[data-legend="${apiLegendId}"]`).innerHTML()).includes('M0-3.5L3.5 0 0 3.5'));
  assert.equal(await page.evaluate(()=>F.normalize(JSON.parse(JSON.stringify(project))).legends.at(-1).shape),'graphql');
  console.log('PASS API protocol glyph symbols render in the top legend and survive roundtrip');
  // Real mouse zoom keeps the point under the cursor; pan does not move nodes.

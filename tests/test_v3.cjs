@@ -63,17 +63,18 @@ test('API protocol glyphs can be selected as symbols and appear in the traffic l
  assert.deepEqual(F.normalize(JSON.parse(JSON.stringify(p))),p);
 
  const staticSvg=F.render(p,{static:true}),markerStart=staticSvg.indexOf('class="legend-marker"'),markerEnd=staticSvg.indexOf('<text',markerStart),marker=staticSvg.slice(markerStart,markerEnd);
- assert.match(marker,/scale\(1\.75\)/);assert.ok(marker.includes('L.9-1.1 3.5-1.1'));
+ assert.match(marker,/scale\(2\.25\)/);assert.ok(marker.includes('M0-3.5L3.5 0 0 3.5'));
  assert.match(marker,/stroke="#c026d3"/);
  const animatedSvg=F.render(p);
- assert.match(animatedSvg,/data-stream="0-0-0"[^]*?scale\(1\\?\)[^]*?L\.9-1\.1 3\.5-1\.1/);
+ assert.match(animatedSvg,/data-stream="0-0-0"[^]*?scale\(1\\?\)[^]*?M0-3\.5L3\.5 0/);
 });
 test('API traffic uses small glyphs, soft fades and protocol-specific direction',()=>{
  const p=F.protocolTemplate(),legendMap=Object.fromEntries(p.legends.map(l=>[l.id,l]));
  assert.deepEqual(Object.values(legendMap).map(l=>[l.size,l.count]),Array.from({length:7},()=>[8,1]));
  const demoSizes=F.featureTemplate().legends.filter(l=>['pulse','glow'].includes(l.effect)).map(l=>l.size);
  assert.ok(Object.values(legendMap).every(l=>demoSizes.includes(l.size)));
- assert.deepEqual(['rest','graphql','grpc','websocket','webhook','sse','mqtt'].map(id=>legendMap[id].speed),[1,1,1.05,.95,.8,.95,.95]);
+ assert.deepEqual(['rest','graphql','grpc','websocket','webhook','sse','mqtt'].map(id=>legendMap[id].speed),[1,1,1.08,.95,.8,.95,.95]);
+ assert.ok(legendMap.grpc.speed>legendMap.rest.speed);
  for(const n of p.nodes.filter(n=>n.type.startsWith('api-'))){assert.equal(n.color,'#ffffff');assert.equal(n.borderColor,'#000000');assert.equal(n.iconColor,'#333333');}
  const rest=p.edges.filter(e=>e.id.startsWith('rest-')),websocket=p.edges.filter(e=>e.id.startsWith('websocket-'));
  assert.ok(rest.every(e=>e.connector==='out'));assert.ok(websocket.every(e=>e.connector==='both'));
@@ -82,48 +83,64 @@ test('API traffic uses small glyphs, soft fades and protocol-specific direction'
  assert.equal(F.streams(p).find(s=>s.legend.id==='webhook').duration,7.5);
  const svg=F.render(p);assert.match(svg,/values="0;0\.86;0\.86;0" keyTimes="0;0\.06;0\.94;1"/);
  assert.match(svg,/data-stream="0-0-0-return"[^]*?begin="0\.55s"[^]*?keyPoints="1;0"/);
+ assert.match(svg,/data-stream="2-0-0-return"[^]*?begin="[0-9.]+s"[^]*?keyPoints="1;0"/);
+ assert.match(svg,/data-stream="4-0-0-return"[^]*?begin="[0-9.]+s"[^]*?keyPoints="1;0"/);
  assert.match(svg,/data-stream="6-0-0-return"[^]*?begin="[0-9.]+s"[^]*?keyPoints="1;0"/);
  assert.match(svg,/data-stream="8-0-0"[^]*?values="0;0\.86;0\.86;0;0" keyTimes="0;0\.03;0\.47;0\.5;1" dur="15s"/);
- assert.equal((svg.match(/data-stream="[^"]+-return"/g)||[]).length,4);
+ assert.equal((svg.match(/data-stream="[^"]+-return"/g)||[]).length,8);
  assert.doesNotMatch(svg,/r="8" fill="#[0-9a-f]{6}" fill-opacity/);
 });
 test('API traffic uses reference glyphs and protocol-specific visual motion',()=>{
  const p=F.protocolTemplate(),svg=F.render(p),streams=F.streams(p);
+ assert.match(svg,/@media\(prefers-reduced-motion:reduce\)\{\.packet\{display:none\}\}/);
+ assert.match(svg,/<animateMotion dur="[0-9.]+s"[^>]*calcMode="linear"/);
  const legendMap=Object.fromEntries(p.legends.map(legend=>[legend.id,legend]));
  assert.deepEqual(Object.entries(legendMap).map(([id,legend])=>[id,legend.shape]),[
   ['rest','rest'],['graphql','graphql'],['grpc','grpc'],['websocket','websocket'],
   ['webhook','webhook'],['sse','sse'],['mqtt','mqtt']
  ]);
- assert.match(svg,/data-stream="0-0-0"[^]*?type="rotate" values="0;360"/);
- assert.match(svg,/L\.9-1\.1 3\.5-1\.1/); // GraphQL selection star.
- assert.match(svg,/data-stream="2-0-0"[^]*?<circle cx="-3" r="\.55"/); // gRPC bead train.
+ assert.match(svg,/data-stream="0-0-0"[^]*?<circle cx="-3" r="\.75"[^]*?<path d="M-1\.5 0H3/); // REST request.
+ assert.match(svg,/data-stream="0-0-0-return"[^]*?scale\(-1 1\)/); // REST response.
+ assert.match(svg,/data-stream="2-0-0"[^]*?M0-3\.5L3\.5 0 0 3\.5-3\.5 0Z/); // GraphQL diamond.
+ assert.match(svg,/data-stream="4-0-0"[^]*?<circle cx="-3" r="\.45"[^]*?<circle cx="3" r="\.45"/); // gRPC bead train.
+ assert.match(svg,/data-stream="6-0-0"[^]*?<circle r="\.85"[^]*?M-2\.5-1\.7L-3\.5 0/); // WebSocket packet.
  assert.match(svg,/stroke-dasharray="6 4"/); // Persistent WebSocket channel.
  assert.match(svg,/data-stream="8-0-0"[^]*?dur="15s"/); // Sparse webhook event.
+ assert.match(svg,/data-stream="10-0-0"[^]*?<circle cx="-3" r="\.55"[^]*?M1\.4 0H3\.5/); // SSE stream packet.
+ assert.match(svg,/data-stream="12-0-0"[^]*?<circle r="\.9" fill="currentColor"/); // MQTT particle.
  const mqttRequest=streams.find(stream=>stream.legend.id==='mqtt'&&stream.edge.id==='mqtt-request');
  const mqttDelivery=streams.find(stream=>stream.legend.id==='mqtt'&&stream.edge.id==='mqtt-delivery');
  assert.equal(mqttDelivery.delay-mqttRequest.delay,mqttRequest.duration+.18/.95+.35);
+ const fanoutProject=F.normalize(JSON.parse(JSON.stringify(p)));
+ fanoutProject.nodes.push(F.systemNode('server',{id:'mqtt-subscriber-2',x:1110,y:1080}));
+ fanoutProject.edges.push({id:'mqtt-fanout',source:'mqtt-protocol',target:'mqtt-subscriber-2',traffic:['mqtt'],duration:5});
+ const fanout=F.streams(fanoutProject).filter(stream=>stream.source==='mqtt-protocol');
+ assert.deepEqual(fanout.map(stream=>stream.target),['mqtt-target','mqtt-subscriber-2']);
+ assert.ok(fanout[1].delay>fanout[0].delay);
  assert.deepEqual(streams.filter(stream=>stream.legend.id==='sse').map(stream=>[stream.source,stream.target]),[
   ['sse-source','sse-protocol'],['sse-protocol','sse-target']
  ]);
- assert.doesNotMatch(svg,/data-stream="5-[^\"]+return"/); // SSE stays one-way.
+ assert.equal(streams.filter(stream=>stream.legend.id==='sse'&&stream.key.includes('return')).length,0); // SSE stays one-way.
+ for(const edgeIndex of [6,7])assert.match(svg,new RegExp(`data-stream="${edgeIndex}-0-0-return"`));
 });
 test('API traffic legends use their protocol glyphs at the standard marker scale',()=>{
  const p=F.protocolTemplate(),expected=[
-  ['rest','REST','#2563eb','rest'],['graphql','GraphQL','#c026d3','graphql'],
-  ['grpc','gRPC','#0f766e','grpc'],['websocket','WebSockets','#ea580c','websocket'],
-  ['webhook','Webhooks','#dc2626','webhook'],['sse','SSE','#0284c7','sse'],
-  ['mqtt','MQTT','#65a30d','mqtt']
+  ['rest','REST','#2563eb','rest','M-3 0H3','→'],['graphql','GraphQL','#c026d3','graphql','M0-3.5L3.5 0','◇'],
+  ['grpc','gRPC','#0f766e','grpc','M-3 0H-.5','⇉'],['websocket','WebSockets','#ea580c','websocket','M-3 0H3','↔'],
+  ['webhook','Webhooks','#dc2626','webhook','M-3 2C-3-2','↪'],['sse','SSE','#0284c7','sse','M-3-1H2','⇒'],
+  ['mqtt','MQTT','#65a30d','mqtt','<circle r="3.2"','◉']
  ];
- assert.deepEqual(p.legends.map(({id,label,color,shape})=>[id,label,color,shape]),expected);
+ assert.deepEqual(p.legends.map(({id,label,color,shape})=>[id,label,color,shape]),expected.map(([id,label,color,shape])=>[id,label,color,shape]));
  assert.ok(p.legends.every(legend=>legend.size===8));
 
  const svg=F.render(p,{static:true}),legendSvg=svg.slice(0,svg.indexOf('<g transform="translate(0 '));
  assert.equal((legendSvg.match(/class="legend-label"/g)||[]).length,7);
- for(const [id,label,color] of expected){
+ for(const [id,label,color,,glyph,symbol] of expected){
   const start=legendSvg.indexOf(`data-legend="${id}"`),end=legendSvg.indexOf('</g>',start),marker=legendSvg.slice(start,end);
-  assert.match(marker,/scale\(1\.75\)/);
+  assert.match(marker,/scale\(2\.25\)/);
   assert.match(marker,/stroke-width="1\.1"/);
   assert.ok(marker.includes(`stroke="${color}"`),`${label} marker uses its protocol color`);
+  assert.ok(marker.includes(glyph),`${label} draws ${symbol}`);
  }
  for(const [,label] of expected)assert.ok(legendSvg.includes(`class="legend-label">${label}</text>`));
  assert.equal(F.headerHeight(p),162);

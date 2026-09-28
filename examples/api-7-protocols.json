@@ -41,7 +41,7 @@
       "shape": "grpc",
       "direction": "forward",
       "effect": "grpc",
-      "speed": 1.05,
+      "speed": 1.08,
       "size": 8,
       "count": 1
     },

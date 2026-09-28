@@ -12,18 +12,14 @@ const LEGENDS=[{id:'request',label:'Solicitação',color:'#70a0ff',shape:'square
 const EFFECTS={packet:'Marcador',pulse:'Pulso',glow:'Brilho',trail:'Rastro',comet:'Cometa',dashed:'Fluxo tracejado',rest:'REST · solicitação/resposta',graphql:'GraphQL · seleção de dados',grpc:'gRPC · quadro tipado',websocket:'WebSocket · duas vias',webhook:'Webhook · notificação',sse:'SSE · fluxo contínuo',mqtt:'MQTT · publish/subscribe'};
 const SYMBOLS={square:'Quadrado',circle:'Círculo',diamond:'Losango',triangle:'Triângulo',arrow:'Seta',star:'Estrela',rest:'REST · API',graphql:'GraphQL · API',grpc:'gRPC · API',websocket:'WebSockets · API',webhook:'Webhooks · API',sse:'SSE · API',mqtt:'MQTT · API'};
 const TRAFFIC_VISUAL={baseSize:8,protocolStrokeWidth:1.1,peakOpacity:.86,fadeIn:.06,fadeOut:.94};
-const EFFECT_BEHAVIOR={
- rest:{paired:true,reverseDelay:.55},graphql:{paired:false},grpc:{paired:false},
- websocket:{paired:true,reverseDelay:.7},webhook:{paired:false,cycle:2},sse:{paired:false},mqtt:{paired:false}
-};
-const PROTOCOL_GLYPHS={
- rest:'<path d="M2.5-1.3A3 3 0 1 0 2.8.8"/><path d="M2.8-1.5V.1H1.2"/>',
- graphql:'<path d="M0-3.5L.9-1.1 3.5-1.1 1.4.4 2.2 3 0 1.5-2.2 3-1.4.4-3.5-1.1H-.9Z"/>',
- grpc:'<circle cx="-3" r=".55"/><circle cx="-1.8" r=".55" fill="currentColor" stroke="none"/><circle cx="-.6" r=".55"/><circle cx=".6" r=".55" fill="currentColor" stroke="none"/><circle cx="1.8" r=".55"/><circle cx="3" r=".55" fill="currentColor" stroke="none"/>',
- websocket:'<path d="M-3.5-1.5H3.5M-3.5 1.5H3.5" stroke-dasharray="1 1"/><circle cx="-2.5" r=".65"/><circle cx="2.5" r=".65" fill="currentColor" stroke="none"/>',
- webhook:'<circle cx="-2.4" r="1" fill="currentColor" stroke="none"/><path d="M-1 0H3"/>',
- sse:'<circle cx="-3" r=".6" fill="currentColor" stroke="none"/><circle cx="-1" r=".6" fill="currentColor" stroke="none"/><circle cx="1" r=".6" fill="currentColor" stroke="none"/><path d="M2 0H4m-1.5-1.5L4 0 2.5 1.5"/>',
- mqtt:'<rect x="-3" y="-3" width="6" height="6" rx=".8"/><circle r=".8" fill="currentColor" stroke="none"/>'
+const PROTOCOL_FLOW_STYLES={
+ rest:{symbol:'→',legend:'<path d="M-3 0H3M1-2L3 0 1 2"/>',packet:'<circle cx="-3" r=".75" fill="currentColor" stroke="none"/><path d="M-1.5 0H3M1-2L3 0 1 2"/>',particle:'circle',direction:'request-response',paired:true,reverseDelay:.55,speed:1,mirrorOnReturn:true},
+ graphql:{symbol:'◇',legend:'<path d="M0-3.5L3.5 0 0 3.5-3.5 0Z"/>',packet:'<path d="M0-3.5L3.5 0 0 3.5-3.5 0Z"/>',particle:'diamond',direction:'request-response',paired:true,reverseDelay:.65,speed:1},
+ grpc:{symbol:'⇉',legend:'<path d="M-3 0H-.5M-2-1.5L-.5 0-2 1.5M.5 0H3M1-1.5L2.5 0 1 1.5"/>',packet:'<circle cx="-3" r=".45" fill="currentColor" stroke="none"/><circle cx="-1.5" r=".45" fill="currentColor" stroke="none"/><circle r=".45" fill="currentColor" stroke="none"/><circle cx="1.5" r=".45" fill="currentColor" stroke="none"/><circle cx="3" r=".45" fill="currentColor" stroke="none"/>',particle:'fast',direction:'request-response',paired:true,reverseDelay:.42,speed:1.08,mirrorOnReturn:true},
+ websocket:{symbol:'↔',legend:'<path d="M-3 0H3M-1-2L-3 0-1 2M1-2L3 0 1 2"/><circle cx="-3.5" r=".55" fill="currentColor" stroke="none"/><circle cx="3.5" r=".55" fill="currentColor" stroke="none"/>',packet:'<circle r=".85" fill="currentColor" stroke="none"/><path d="M-2.5-1.7L-3.5 0-2.5 1.7M2.5-1.7L3.5 0 2.5 1.7"/>',particle:'circle',direction:'bidirectional',paired:true,reverseDelay:.7,speed:.95,rail:'dashed'},
+ webhook:{symbol:'↪',legend:'<path d="M-3 2C-3-2 0-2 2-2V1M.5-.5L2 1 3.5-.5"/>',packet:'<circle cx="-2.5" r=".75" fill="currentColor" stroke="none"/><path d="M-1 2C-1-1 1-1 2-1V1M.5-.5L2 1 3.5-.5"/>',particle:'circle',direction:'event',paired:false,cycle:2,speed:.8},
+ sse:{symbol:'⇒',legend:'<path d="M-3-1H2M-3 1H2M.5-2L2.5 0 .5 2"/>',packet:'<circle cx="-3" r=".55" fill="currentColor" stroke="none"/><circle cx="-1.3" r=".55" fill="currentColor" stroke="none"/><circle cx=".4" r=".55" fill="currentColor" stroke="none"/><path d="M1.4 0H3.5M2-1.2L3.5 0 2 1.2"/>',particle:'stream',direction:'server-to-client',paired:false,speed:.95},
+ mqtt:{symbol:'◉',legend:'<circle r="3.2"/><circle r="1.15" fill="currentColor" stroke="none"/>',packet:'<circle r=".9" fill="currentColor" stroke="none"/>',particle:'broker',direction:'pub-sub',paired:false,relay:'broker',speed:.95}
 };
 const CONNECTORS={out:'Seta saída',in:'Seta entrada',curve:'Seta em curva',both:'Seta bidirecional',line:'Linha',dashed:'Linha tracejada',dotted:'Linha pontilhada',double:'Linha dupla'};
 const FONTS=['Arial','Georgia','Verdana','Courier New','Inter','Roboto','Open Sans','Lato','Montserrat','Poppins','Nunito','Ubuntu','Merriweather','Playfair Display','Roboto Mono','JetBrains Mono','Fira Code','Source Code Pro'];
@@ -165,7 +161,7 @@ function streams(p){
  p.edges.forEach((e,i)=>e.traffic.forEach((id,j)=>{
   const l=p.legends.find(l=>l.id===id);if(!l)return;
   const duration=e.duration/((p.trafficSpeed??1)*(l.speed??1));
-  const brokerOutput=l.effect==='mqtt'&&nodes.get(e.source)?.type==='api-mqtt',relayDelay=brokerOutput?duration+.35:0;
+  const flow=PROTOCOL_FLOW_STYLES[l.effect],brokerOutput=flow?.relay==='broker'&&nodes.get(e.source)?.type===`api-${l.effect}`,relayDelay=brokerOutput?duration+.35:0;
   for(let k=0;k<(l.count??1);k++)result.push({edge:e,index:i,legend:l,duration,delay:(i*.18+j*.22)/((p.trafficSpeed??1)*(l.speed??1))+relayDelay+k*duration/(l.count??1),key:`${i}-${j}-${k}`,source:l.direction==='reverse'?e.target:e.source,target:l.direction==='reverse'?e.source:e.target});
  }));return result;
 }
@@ -185,34 +181,37 @@ function reactiveStates(p,time,streamList=null){
 function legendLayout(p){let x=32,y=0,rows=1;const items=[];for(const l of p.legends){const w=l.label.length*7+45;if(x+w>p.width-32&&x>32){x=32;y+=32;rows++;}items.push({l,x,y});x+=w;}return {items,rows:p.legends.length?rows:0};}
 function headerHeight(p){return 130+(p.description?Math.max(0,lines(p.description,Math.floor((p.width-64)/7)).length-1)*18:0)+(p.showLegend?legendLayout(p).rows*32:0);}
 const svgStyle=`text{font-family:Arial,sans-serif;fill:#000}.kicker{font-family:monospace;font-size:10px;font-weight:600}.figure-title{font-size:21px;font-weight:700}.description{font-size:13px}.legend-label{font-size:13px}.edge-label{paint-order:stroke;stroke:white;stroke-width:4px;stroke-linejoin:round}.rail{fill:none;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round}.node-shape{stroke-linejoin:round}.selection{fill:none;stroke:#1675df;stroke-width:1.5;stroke-dasharray:4 3;pointer-events:none}.hit{stroke:transparent;stroke-width:16;fill:none;cursor:pointer}.node{cursor:move}.node text,.icon,.packet{pointer-events:none}.resize{fill:white;stroke:#1675df;cursor:nwse-resize}.port{fill:white;stroke:#2563eb;stroke-width:1.5;opacity:0;cursor:crosshair}.node:hover>.port,.node.selected>.port,.connecting .port{opacity:1}.diagram-controls{cursor:pointer}@media(prefers-reduced-motion:reduce){.packet{display:none}}`;
-function protocolGlyph(legend,effect=legend.effect){
- const drawing=PROTOCOL_GLYPHS[effect];if(!drawing)return '';
+function protocolGlyph(legend,effect=legend.effect,part='packet',reverse=false){
+ const flow=PROTOCOL_FLOW_STYLES[effect],drawing=flow?.[part];if(!drawing)return '';
  const scale=legend.size/TRAFFIC_VISUAL.baseSize,stroke=color(legend.color);
- return `<g transform="scale(${scale})" fill="none" stroke="${stroke}" stroke-width="${TRAFFIC_VISUAL.protocolStrokeWidth}" stroke-linecap="round" stroke-linejoin="round" style="color:${stroke}">${drawing}</g>`;
+ const mirror=reverse&&flow.mirrorOnReturn?'scale(-1 1) ':'';
+ return `<g transform="${mirror}scale(${scale})" fill="none" stroke="${stroke}" stroke-width="${TRAFFIC_VISUAL.protocolStrokeWidth}" stroke-linecap="round" stroke-linejoin="round" style="color:${stroke}">${drawing}</g>`;
 }
 function symbolGlyph(legend,size=legend.size){
- if(PROTOCOL_GLYPHS[legend.shape])return protocolGlyph({...legend,size},legend.shape);
+ if(PROTOCOL_FLOW_STYLES[legend.shape])return protocolGlyph({...legend,size},legend.shape,'legend');
  return symbol(legend.shape,0,0,size,legend.color);
 }
-function trafficGlyph(legend){
- return PROTOCOL_GLYPHS[legend.effect]?protocolGlyph(legend):symbolGlyph(legend);
+function trafficGlyph(legend,reverse=false){
+ return PROTOCOL_FLOW_STYLES[legend.effect]?protocolGlyph(legend,legend.effect,'packet',reverse):symbolGlyph(legend);
 }
-function legendGlyph(legend){return symbolGlyph(legend,14);}
+function legendGlyph(legend){return symbolGlyph(legend,PROTOCOL_FLOW_STYLES[legend.shape]?18:14);}
 function motionPacket(stream,prefix){
  const {legend:l,duration,delay,index,key}=stream,pid=`${prefix}-edge-${index}`;
- const behavior=EFFECT_BEHAVIOR[l.effect]??{paired:false,reverseDelay:0},cycle=duration*(behavior.cycle??1),visible=duration/cycle;
+ const behavior=PROTOCOL_FLOW_STYLES[l.effect]??{paired:false,reverseDelay:0},cycle=duration*(behavior.cycle??1),visible=duration/cycle;
  const motion=(lag=0,reverse=l.direction==='reverse')=>`<animateMotion dur="${duration}s" begin="${delay+lag}s" calcMode="linear" repeatCount="indefinite" rotate="auto" ${reverse?'keyPoints="1;0" keyTimes="0;1"':''}><mpath href="#${pid}"/></animateMotion>`;
- let body=trafficGlyph(l);
- if(l.effect==='rest')body=`<g>${body}<animateTransform attributeName="transform" type="rotate" values="0;360" calcMode="linear" dur="1.4s" begin="${delay}s" repeatCount="indefinite"/></g>`;
- if(l.effect==='glow')body=`<circle r="${l.size}" fill="${l.color}" opacity=".2"/><circle r="${l.size*.7}" fill="${l.color}" opacity=".2"/>`+body;
- if(l.effect==='pulse')body=`<g>${body}<animateTransform attributeName="transform" type="scale" values=".96;1;.96" dur="${duration/4}s" begin="${delay}s" repeatCount="indefinite"/></g>`;
- if(l.effect==='dashed')body=`<rect x="${-l.size}" y="-2" width="${l.size*2}" height="4" rx="2" fill="${l.color}"/>`;
- if(l.effect==='comet'){const tail=(l.direction==='reverse'?1:-1)*l.size*3;body=`<path class="comet-tail" d="M 0 ${-l.size*.4} Q ${tail*.45} 0 ${tail} 0 Q ${tail*.45} 0 0 ${l.size*.4} Z" fill="${l.color}" opacity=".45"/>`+body;}
+ const content=reverse=>{
+  let body=trafficGlyph(l,reverse);
+  if(l.effect==='glow')body=`<circle r="${l.size}" fill="${l.color}" opacity=".2"/><circle r="${l.size*.7}" fill="${l.color}" opacity=".2"/>`+body;
+  if(l.effect==='pulse')body=`<g>${body}<animateTransform attributeName="transform" type="scale" values=".96;1;.96" dur="${duration/4}s" begin="${delay}s" repeatCount="indefinite"/></g>`;
+  if(l.effect==='dashed')body=`<rect x="${-l.size}" y="-2" width="${l.size*2}" height="4" rx="2" fill="${l.color}"/>`;
+  if(l.effect==='comet'){const tail=(reverse?1:-1)*l.size*3;body=`<path class="comet-tail" d="M 0 ${-l.size*.4} Q ${tail*.45} 0 ${tail} 0 Q ${tail*.45} 0 0 ${l.size*.4} Z" fill="${l.color}" opacity=".45"/>`+body;}
+  return body;
+ };
  const fade=behavior.cycle>1?`0;${TRAFFIC_VISUAL.peakOpacity};${TRAFFIC_VISUAL.peakOpacity};0;0`:`0;${TRAFFIC_VISUAL.peakOpacity};${TRAFFIC_VISUAL.peakOpacity};0`;
  const fadeTimes=behavior.cycle>1?`0;${TRAFFIC_VISUAL.fadeIn*visible};${TRAFFIC_VISUAL.fadeOut*visible};${visible};1`:`0;${TRAFFIC_VISUAL.fadeIn};${TRAFFIC_VISUAL.fadeOut};1`;
  let ghosts='';if(l.effect==='trail')for(let i=4;i>=1;i--)ghosts+=`<g class="packet" opacity="0">${trafficGlyph({...l,size:l.size*(1-i*.13)})}${motion(i*duration*.013)}<animate attributeName="opacity" values="0;${(.4-i*.06).toFixed(2)};${(.4-i*.06).toFixed(2)};0" keyTimes="${fadeTimes}" begin="${delay+i*duration*.013}s" dur="${duration}s" repeatCount="indefinite"/></g>`;
- const packet=(content,reverse=false,lag=0,streamKey=key)=>`<g class="packet" data-stream="${streamKey}" opacity="0">${content}${motion(lag,reverse)}<animate attributeName="opacity" values="${fade}" keyTimes="${fadeTimes}" dur="${cycle}s" begin="${delay+lag}s" repeatCount="indefinite"/></g>`;
- return ghosts+packet(body,l.direction==='reverse')+(behavior.paired?packet(body,l.direction!=='reverse',behavior.reverseDelay,`${key}-return`):'');
+ const packet=(reverse=false,lag=0,streamKey=key)=>`<g class="packet" data-stream="${streamKey}" opacity="0">${content(reverse)}${motion(lag,reverse)}<animate attributeName="opacity" values="${fade}" keyTimes="${fadeTimes}" dur="${cycle}s" begin="${delay+lag}s" repeatCount="indefinite"/></g>`;
+ return ghosts+packet(l.direction==='reverse')+(behavior.paired?packet(l.direction!=='reverse',behavior.reverseDelay,`${key}-return`):'');
 }
 function render(p,options={}){
  const head=headerHeight(p),height=p.height+head,prefix=options.prefix??'af',sel=options.selected,staticMode=options.static===true;
@@ -230,8 +229,8 @@ function render(p,options={}){
   const path=route(a,b,e),pid=`${prefix}-edge-${i}`,stroke=color(e.strokeColor,'#000000'),kind=e.connector??'out';
   defs+=`<marker id="${pid}-arrow" viewBox="0 0 8 8" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1 1L7 4L1 7" fill="none" stroke="${stroke}" stroke-width="1.1"/></marker>`;
   const markers=(['out','curve','both'].includes(kind)?` marker-end="url(#${pid}-arrow)"`:'')+(['in','both'].includes(kind)?` marker-start="url(#${pid}-arrow)"`:'');
-  const websocket=e.traffic.some(id=>p.legends.find(legend=>legend.id===id)?.effect==='websocket');
-  const dash=kind==='dashed'?' stroke-dasharray="8 5"':kind==='dotted'?' stroke-dasharray="1 5"':websocket?' stroke-dasharray="6 4"':'';
+  const persistent=e.traffic.some(id=>PROTOCOL_FLOW_STYLES[p.legends.find(legend=>legend.id===id)?.effect]?.rail==='dashed');
+  const dash=kind==='dashed'?' stroke-dasharray="8 5"':kind==='dotted'?' stroke-dasharray="1 5"':persistent?' stroke-dasharray="6 4"':'';
   const width=e.lineWidth??1;
   if(kind==='double')body+=`<path d="${path.d}" fill="none" stroke="${stroke}" stroke-width="${width*2+3}" stroke-linejoin="round"/>`;
   body+=`<path d="${path.d}" id="${pid}" class="rail" style="stroke:${kind==='double'?'#ffffff':stroke};stroke-width:${kind==='double'?3:width}"${markers}${dash}/>`;
@@ -266,13 +265,13 @@ function featureTemplate(){
 function protocolTemplate(){
  // Keep each traffic marker consistent with its protocol-specific animated glyph.
  const specs=[
-  {id:'rest',type:'api-rest',title:'REST',effect:'rest',color:'#2563eb',shape:'rest',speed:1,count:1,icon:'api',source:'Web e mobile',sourceNote:'Cliente HTTP.',target:'Recursos HTTP',targetNote:'Users · products · orders.',note:'CRUD com métodos HTTP e recursos.'},
-  {id:'graphql',type:'api-graphql',title:'GraphQL',effect:'graphql',color:'#c026d3',shape:'graphql',speed:1,count:1,icon:'database',source:'Aplicações clientes',sourceNote:'Pede apenas os campos necessários.',target:'API de dados',targetNote:'Resolvers e fontes de dados.',note:'Consulta campos sob demanda.'},
-  {id:'grpc',type:'api-grpc',title:'gRPC',effect:'grpc',color:'#0f766e',shape:'grpc',speed:1.05,count:1,icon:'server',source:'Serviço interno A',sourceNote:'Chama com contrato Protobuf.',target:'Microsserviço B',targetNote:'Atende chamadas RPC tipadas.',note:'RPC tipada de baixa latência.'},
-  {id:'websocket',type:'api-websocket',title:'WebSockets',effect:'websocket',color:'#ea580c',shape:'websocket',speed:.95,count:1,icon:'network',source:'Chat / multiplayer',sourceNote:'Mantém o canal aberto.',target:'Serviço em tempo real',targetNote:'Envia e recebe eventos.',note:'Conexão persistente, duas vias.'},
-  {id:'webhook',type:'api-webhook',title:'Webhooks',effect:'webhook',color:'#dc2626',shape:'webhook',speed:.8,count:1,icon:'network',source:'Provedor de eventos',sourceNote:'Publica um evento.',target:'Agente de IA',targetNote:'Recebe um callback HTTP.',note:'Notificação enviada ao endpoint.'},
-  {id:'sse',type:'api-sse',title:'SSE',effect:'sse',color:'#0284c7',shape:'sse',speed:.95,count:1,icon:'server',source:'Servidor de eventos',sourceNote:'Envia eventos via HTTP.',target:'Feed / agente',targetNote:'Recebe o fluxo contínuo.',note:'Stream unidirecional do servidor.'},
-  {id:'mqtt',type:'api-mqtt',title:'MQTT',effect:'mqtt',color:'#65a30d',shape:'mqtt',speed:.95,count:1,icon:'network',source:'Sensores IoT',sourceNote:'Publica em tópicos.',target:'Assinantes',targetNote:'Consome tópicos inscritos.',note:'Pub/sub leve para redes instáveis.'}
+  {id:'rest',type:'api-rest',title:'REST',effect:'rest',color:'#2563eb',shape:'rest',count:1,icon:'api',source:'Web e mobile',sourceNote:'Cliente HTTP.',target:'Recursos HTTP',targetNote:'Users · products · orders.',note:'CRUD com métodos HTTP e recursos.'},
+  {id:'graphql',type:'api-graphql',title:'GraphQL',effect:'graphql',color:'#c026d3',shape:'graphql',count:1,icon:'database',source:'Aplicações clientes',sourceNote:'Pede apenas os campos necessários.',target:'API de dados',targetNote:'Resolvers e fontes de dados.',note:'Consulta campos sob demanda.'},
+  {id:'grpc',type:'api-grpc',title:'gRPC',effect:'grpc',color:'#0f766e',shape:'grpc',count:1,icon:'server',source:'Serviço interno A',sourceNote:'Chama com contrato Protobuf.',target:'Microsserviço B',targetNote:'Atende chamadas RPC tipadas.',note:'RPC tipada de baixa latência.'},
+  {id:'websocket',type:'api-websocket',title:'WebSockets',effect:'websocket',color:'#ea580c',shape:'websocket',count:1,icon:'network',source:'Chat / multiplayer',sourceNote:'Mantém o canal aberto.',target:'Serviço em tempo real',targetNote:'Envia e recebe eventos.',note:'Conexão persistente, duas vias.'},
+  {id:'webhook',type:'api-webhook',title:'Webhooks',effect:'webhook',color:'#dc2626',shape:'webhook',count:1,icon:'network',source:'Provedor de eventos',sourceNote:'Publica um evento.',target:'Agente de IA',targetNote:'Recebe um callback HTTP.',note:'Notificação enviada ao endpoint.'},
+  {id:'sse',type:'api-sse',title:'SSE',effect:'sse',color:'#0284c7',shape:'sse',count:1,icon:'server',source:'Servidor de eventos',sourceNote:'Envia eventos via HTTP.',target:'Feed / agente',targetNote:'Recebe o fluxo contínuo.',note:'Stream unidirecional do servidor.'},
+  {id:'mqtt',type:'api-mqtt',title:'MQTT',effect:'mqtt',color:'#65a30d',shape:'mqtt',count:1,icon:'network',source:'Sensores IoT',sourceNote:'Publica em tópicos.',target:'Assinantes',targetNote:'Consome tópicos inscritos.',note:'Pub/sub leve para redes instáveis.'}
  ];
  const nodes=[],edges=[],legends=[];
  for(const [i,s] of specs.entries()){
@@ -281,7 +280,7 @@ function protocolTemplate(){
   const frame={x:493,y:y+15,w:224,h:74},size=COMPONENTS[s.type];
   nodes.push(makeNode(s.type,{id:`${s.id}-protocol`,label:s.title,subtitle:s.note,x:frame.x+(frame.w-size.width)/2,y:frame.y+(frame.h-size.height)/2,color:'#ffffff'}));
   nodes.push(makeNode('card',{id:`${s.id}-target`,label:s.target,subtitle:s.targetNote,x:1110,y:y+15,w:224,h:74,color:'#ffffff',icon:s.icon}));
-  legends.push({id:s.id,label:s.title,color:s.color,shape:s.shape,direction:'forward',effect:s.effect,speed:s.speed,size:8,count:s.count});
+  legends.push({id:s.id,label:s.title,color:s.color,shape:s.shape,direction:'forward',effect:s.effect,speed:PROTOCOL_FLOW_STYLES[s.effect].speed,size:8,count:s.count});
   const source=`${s.id}-source`,target=`${s.id}-target`;
   const connector=s.id==='websocket'?'both':'out';
   edges.push({id:`${s.id}-request`,source,target:`${s.id}-protocol`,traffic:[s.id],duration:5+i%3,connector});
