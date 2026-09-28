@@ -80,9 +80,7 @@ function textBlock(n,text,x,y,width,height,{subtitle=false,anchor='start',limit=
  const t=typography(n),size=subtitle?t.subtitleSize:t.fontSize,lineHeight=size*1.22;
  const wrapped=wrapText(text,width,size).slice(0,limit),total=wrapped.length*lineHeight,scale=Math.min(1,height/Math.max(total,1));
  const xText=anchor==='middle'?width/2:0;
- const content=wrapped.map((s,i)=>`<text x="${xText}" y="${size+i*lineHeight}" text-anchor="${anchor}" style="${textStyle(n,subtitle)}">${esc(s)}</text>`).join('');
- if(anchor==='middle')return `<g transform="translate(${x+width/2} ${y+(height-total*scale)/2})"><g transform="scale(${scale}) translate(${-width/2} 0)">${content}</g></g>`;
- return `<g transform="translate(${x} ${y+(height-total*scale)/2})"><g transform="scale(${scale})">${content}</g></g>`;
+ return `<g transform="translate(${x} ${y+(height-total*scale)/2})"><g transform="scale(${scale})">${wrapped.map((s,i)=>`<text x="${xText}" y="${size+i*lineHeight}" text-anchor="${anchor}" style="${textStyle(n,subtitle)}">${esc(s)}</text>`).join('')}</g></g>`;
 }
 function systemGlyph(id,x=0,y=0,size=64,stroke='#333333'){
  const entry=owns(SYSTEM_DESIGN,id)?SYSTEM_DESIGN[id]:null;if(!entry)return '';
@@ -94,14 +92,8 @@ function shape(n){
  return `<svg width="${n.w}" height="${n.h}" viewBox="0 0 100 100" preserveAspectRatio="none" overflow="visible">${body}</svg>`;
 }
 function nodeLabels(n,label=n.label){
- const t=typography(n),compact=['card','system','reactive'].includes(n.type),hasIcon=n.icon!=='none'&&compact;
- if(COMPONENTS[n.type]?.renderer==='protocol'){
-  const pad=72,width=Math.max(12,n.w-pad-12),titleHeight=Math.max(20,t.fontSize*1.5);
-  let result=textBlock(n,label,pad,6,width,titleHeight,{limit:2,anchor:'middle'});
-  if(n.subtitle)result+=textBlock(n,n.subtitle,pad,29,width,n.h-34,{subtitle:true,limit:3,anchor:'middle'});
-  result+=systemGlyph(n.type,12,(n.h-28)/2,28,n.iconColor);
-  return result;
- }
+ const t=typography(n),protocol=COMPONENTS[n.type]?.renderer==='protocol';
+ const compact=['card','system','reactive'].includes(n.type)||protocol,hasIcon=protocol||(n.icon!=='none'&&compact);
  if(compact&&(n.w<140||n.h<46)){const w=Math.max(140,n.w),h=Math.max(46,n.h),s=Math.min(n.w/w,n.h/h);return `<g transform="translate(${(n.w-w*s)/2} ${(n.h-h*s)/2}) scale(${s})">${nodeLabels({...n,w,h},label)}</g>`;}
  const grouped=['group','swimlane'].includes(n.type);
  const pad=grouped?12:hasIcon?50:Math.max(12,n.w*(COMPONENTS[n.type]?.textInset??.07));
@@ -114,7 +106,7 @@ function nodeLabels(n,label=n.label){
  content+=subLines.map((v,i)=>`<text class="node-subtitle" x="${textX}" y="${titleH+t.subtitleSize+i*t.subtitleSize*1.22}" text-anchor="${anchor}" style="${textStyle(n,true)}">${esc(v)}</text>`).join('');
  const cx=anchor==='middle'?width/2:0;
  let result=`<g class="node-copy" transform="translate(${pad+cx} ${areaY+(areaH-total*scale)/2}) scale(${scale}) translate(${-cx} 0)">${content}</g>`;
- if(hasIcon)result+=n.icon.startsWith('sd:')?systemGlyph(n.icon.slice(3),12,(n.h-28)/2,28,n.iconColor):icon(n.icon,14,(n.h-20)/2,n.iconColor);
+ if(hasIcon)result+=protocol?systemGlyph(n.type,12,(n.h-28)/2,28,n.iconColor):n.icon.startsWith('sd:')?systemGlyph(n.icon.slice(3),12,(n.h-28)/2,28,n.iconColor):icon(n.icon,14,(n.h-20)/2,n.iconColor);
  return result;
 }
 function tableBody(n){
@@ -240,7 +232,8 @@ function render(p,options={}){
 function systemNode(id,overrides={}){if(!owns(SYSTEM_DESIGN,id))throw Error('Símbolo desconhecido: '+id);return {id:'sd-'+id,type:'system',icon:'sd:'+id,label:SYSTEM_DESIGN[id].label,subtitle:'',x:40,y:40,w:190,h:62,color:'#ffffff',borderColor:'#000000',textColor:'#000000',subtitleColor:'#000000',iconColor:'#333333',parent:null,...overrides};}
 function makeNode(type,overrides={}){
  const c=COMPONENTS[type];if(!c)throw Error('Componente desconhecido.');
- return {id:type,type,label:c.label,subtitle:'',x:40,y:40,w:c.width,h:c.height,color:'#ffffff',icon:type==='reactive'?'sd:server':'none',...(type==='table'?{table:tablePreset()}:{}),...overrides};
+ const defaultIcon=type==='reactive'?'sd:server':c.renderer==='protocol'?`sd:${type}`:'none';
+ return {id:type,type,label:c.label,subtitle:'',x:40,y:40,w:c.width,h:c.height,color:'#ffffff',icon:defaultIcon,...(type==='table'?{table:tablePreset()}:{}),...overrides};
 }
 function componentSVG(n){return `<svg xmlns="http://www.w3.org/2000/svg" width="${n.w+2}" height="${n.h+2}" viewBox="-1 -1 ${n.w+2} ${n.h+2}" role="img" aria-label="${esc(n.label)}"><title>${esc(n.label)}</title><style>${svgStyle}</style>${node({...n,x:0,y:0})}</svg>`;}
 function systemGallery(){const nodes=Object.keys(SYSTEM_DESIGN).map((id,i)=>systemNode(id,{x:40+i%5*220,y:30+Math.floor(i/5)*90}));return normalize({title:'Componentes de System Design',kicker:'ANIMATED FLOW STUDIO · CATÁLOGO',description:'81 símbolos vetoriais originais, incluindo sete protocolos de API.',width:1160,height:1580,nodes,edges:[]});}
@@ -268,7 +261,8 @@ function protocolTemplate(){
  for(const [i,s] of specs.entries()){
   const y=36+i*142;
   nodes.push(makeNode('card',{id:`${s.id}-source`,label:s.source,subtitle:s.sourceNote,x:42,y:y+15,w:224,h:74,color:'#ffffff',icon:s.icon}));
-  nodes.push(makeNode(s.type,{id:`${s.id}-protocol`,label:s.title,subtitle:s.note,x:493,y:y+15,w:224,h:74,color:'#ffffff',icon:`sd:${s.type}`}));
+  const frame={x:493,y:y+15,w:224,h:74},size=COMPONENTS[s.type];
+  nodes.push(makeNode(s.type,{id:`${s.id}-protocol`,label:s.title,subtitle:s.note,x:frame.x+(frame.w-size.width)/2,y:frame.y+(frame.h-size.height)/2,color:'#ffffff'}));
   nodes.push(makeNode('card',{id:`${s.id}-target`,label:s.target,subtitle:s.targetNote,x:1110,y:y+15,w:224,h:74,color:'#ffffff',icon:s.icon}));
   legends.push({id:s.id,label:s.title+' · '+s.link,color:s.color,shape:s.shape,direction:'forward',effect:s.effect,speed:s.speed,size:8,count:s.count});
   const source=`${s.id}-source`,target=`${s.id}-target`;

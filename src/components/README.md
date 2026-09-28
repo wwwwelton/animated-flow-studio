@@ -7,7 +7,7 @@ Para adicionar uma forma:
 1. Crie `flowchart/minha-forma.svg` ou `custom/minha-forma.svg` com `viewBox="0 0 100 100"` e `preserveAspectRatio="none"`.
 2. Use `{{fill}}` e `{{stroke}}` para cores editáveis, `vector-effect="non-scaling-stroke"` nas bordas.
 3. Adicione ao `manifest.json` um objeto com `id` único, `label`, `category: "flowchart"`, `file: "flowchart/minha-forma.svg"`, `renderer: "standard"`, `width`, `height` e `textInset` (fração da largura usada como margem).
-4. Use `category: "flowchart"` ou `category: "custom"` no manifesto e execute o build. A forma entra no catálogo, na paleta, na validação JSON e nas exportações. `renderer: "protocol"` mantém ícones à esquerda e texto à direita como nos cartões padrão; use `width: 224`, `height: 74` e deixe o desenho do ícone na faixa esquerda do SVG. Confira o texto dentro da geometria e as conexões laterais.
+4. Use `category: "flowchart"` ou `category: "custom"` no manifesto e execute o build. A forma entra no catálogo, na paleta, na validação JSON e nas exportações. Os sete componentes de protocolo de API usam `renderer: "protocol"` com as medidas System Design (`190 × 62`): o motor aplica o símbolo canônico em `28 × 28`, a `12 px` da esquerda, e posiciona o texto em `x=50`. O SVG do componente deve conter somente a forma do cartão; não desenhe o ícone nele.
 
 São permitidos svg, g, path, rect, circle, ellipse, polygon, polyline e line. Scripts, eventos, estilos arbitrários e recursos externos são rejeitados. O renderer usa a geometria original e aplica a tipografia separadamente.
 

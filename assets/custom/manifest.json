@@ -17,8 +17,8 @@
       "category": "custom",
       "file": "api-rest.svg",
       "renderer": "protocol",
-      "width": 224,
-      "height": 74,
+      "width": 190,
+      "height": 62,
       "textInset": 0.07
     },
     {
@@ -27,8 +27,8 @@
       "category": "custom",
       "file": "api-graphql.svg",
       "renderer": "protocol",
-      "width": 224,
-      "height": 74,
+      "width": 190,
+      "height": 62,
       "textInset": 0.07
     },
     {
@@ -37,8 +37,8 @@
       "category": "custom",
       "file": "api-grpc.svg",
       "renderer": "protocol",
-      "width": 224,
-      "height": 74,
+      "width": 190,
+      "height": 62,
       "textInset": 0.07
     },
     {
@@ -47,8 +47,8 @@
       "category": "custom",
       "file": "api-websocket.svg",
       "renderer": "protocol",
-      "width": 224,
-      "height": 74,
+      "width": 190,
+      "height": 62,
       "textInset": 0.07
     },
     {
@@ -57,8 +57,8 @@
       "category": "custom",
       "file": "api-webhook.svg",
       "renderer": "protocol",
-      "width": 224,
-      "height": 74,
+      "width": 190,
+      "height": 62,
       "textInset": 0.07
     },
     {
@@ -67,8 +67,8 @@
       "category": "custom",
       "file": "api-sse.svg",
       "renderer": "protocol",
-      "width": 224,
-      "height": 74,
+      "width": 190,
+      "height": 62,
       "textInset": 0.07
     },
     {
@@ -77,8 +77,8 @@
       "category": "custom",
       "file": "api-mqtt.svg",
       "renderer": "protocol",
-      "width": 224,
-      "height": 74,
+      "width": 190,
+      "height": 62,
       "textInset": 0.07
     }
   ]

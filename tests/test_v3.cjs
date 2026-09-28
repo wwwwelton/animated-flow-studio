@@ -70,36 +70,38 @@ test('API traffic uses small glyphs, soft fades and protocol-specific direction'
  assert.equal((svg.match(/data-stream="[^"]+-return"/g)||[]).length,4);
  assert.doesNotMatch(svg,/r="8" fill="#[0-9a-f]{6}" fill-opacity/);
 });
-test('API protocol cards use canonical System Design glyphs at a preserved 28px scale',()=>{
+test('API protocol components use System Design card dimensions, layout and canonical glyphs',()=>{
  const p=F.protocolTemplate(),types=['api-rest','api-graphql','api-grpc','api-websocket','api-webhook','api-sse','api-mqtt'];
  const diagram=F.render(p,{static:true});
  assert.equal(p.edges.length,14);
  for(const [index,id] of types.entries()){
   const n=p.nodes.find(node=>node.id===id.replace('api-','')+'-protocol'),source=path.join(__dirname,'../src/components/custom',id+'.svg');
-  assert.ok(n,`${id} node exists`);assert.equal(n.icon,'sd:'+id);assert.deepEqual([n.x,n.y,n.w,n.h],[493,51+index*142,224,74]);
+  assert.ok(n,`${id} node exists`);assert.equal(n.icon,'sd:'+id);assert.deepEqual([n.x,n.y,n.w,n.h],[510,57+index*142,190,62]);
+  assert.deepEqual([n.x+n.w/2,n.y+n.h/2],[605,88+index*142]);
+  const paletteNode=F.makeNode(id);assert.deepEqual([paletteNode.w,paletteNode.h,paletteNode.icon],[190,62,'sd:'+id]);
   const template=fs.readFileSync(source,'utf8'),component=F.COMPONENTS[id].svg;
-  assert.match(template,/viewBox="0 0 100 100"/);assert.equal((template.match(/<rect\b/g)||[]).length,1);
+  assert.match(template,/viewBox="0 0 100 100" width="190" height="62" preserveAspectRatio="none"/);
+  assert.equal(component,F.COMPONENTS.card.svg);assert.equal((template.match(/<rect\b/g)||[]).length,1);
   assert.doesNotMatch(template,/<(?:path|circle|ellipse|polygon|polyline|line)\b/);
-  assert.equal((component.match(/<rect\b/g)||[]).length,1);assert.doesNotMatch(component,/<(?:path|circle|ellipse|polygon|polyline|line)\b/);
-  const glyph=F.systemGlyph(id,12,23,28,n.iconColor);
-  assert.match(glyph,/transform="translate\(12 23\) scale\(0\.4375\)"/);
+  const glyph=F.systemGlyph(id,12,17,28,n.iconColor);
+  assert.match(glyph,/transform="translate\(12 17\) scale\(0\.4375\)"/);
   assert.equal((glyph.match(/scale\(0\.4375\)/g)||[]).length,1);
   assert.ok(glyph.includes(F.SYSTEM_DESIGN[id].svg),`${id} uses the canonical catalog geometry`);
-  assert.ok(F.nodeLabels(F.systemNode(id,{id:`catalog-${id}`,w:224,h:74})).includes(glyph),`${id} matches the System Design node renderer`);
+  assert.ok(F.nodeLabels(F.systemNode(id,{id:`catalog-${id}`})).includes(glyph),`${id} matches the System Design node renderer`);
   const labels=F.nodeLabels(n),textLines=[...labels.matchAll(/<text\b[^>]*>/g)].map(([tag])=>tag);
-  assert.ok(textLines.length>1);for(const line of textLines)assert.match(line,/x="70"[^>]*text-anchor="middle"/);
-  assert.ok(labels.includes('translate(142 '),`${id} text is centered at x=142 in the text area`);
+  assert.ok(textLines.length>1);for(const line of textLines)assert.match(line,/x="0"[^>]*text-anchor="start"/);
+  assert.ok(labels.includes('translate(50 '),`${id} text starts in the System Design text column`);
   const exported=F.componentSVG(n);
   assert.ok(exported.includes(glyph),`${id} component SVG export includes the catalog glyph`);
-  assert.ok(exported.includes(labels)&&diagram.includes(labels),`${id} keeps centered text in component and diagram exports`);
-  assert.match(exported,/width="226" height="76" viewBox="-1 -1 226 76"/);
+  assert.ok(exported.includes(labels)&&diagram.includes(labels),`${id} keeps System Design layout in component and diagram exports`);
+  assert.match(exported,/width="192" height="64" viewBox="-1 -1 192 64"/);
  }
  const wider=F.makeNode('api-rest',{id:'wide-protocol',w:300,h:74,label:'REST',subtitle:'Wide card'}),wideLabels=F.nodeLabels(wider);
- assert.match(wideLabels,/translate\(180 /);assert.match(wideLabels,/<text x="108"[^>]*text-anchor="middle"/);
- const source=p.nodes.find(n=>n.id==='rest-source');assert.match(F.nodeLabels(source),/text-anchor="start"/);
+ assert.match(wideLabels,/translate\(50 /);assert.match(wideLabels,/text-anchor="start"/);assert.match(wideLabels,/translate\(12 23\) scale\(0\.4375\)/);
+ const source=p.nodes.find(n=>n.id==='rest-source');assert.deepEqual([source.w,source.h],[224,74]);assert.match(F.nodeLabels(source),/text-anchor="start"/);
  const legacy=F.clone(p);for(const n of legacy.nodes.filter(node=>types.includes(node.type)))n.icon='sd:server';
  const legacySvg=F.render(F.normalize(legacy),{static:true});
- for(const id of types)assert.ok(legacySvg.includes(F.systemGlyph(id,12,23,28,'#333333')),`${id} keeps its canonical glyph when legacy icon metadata differs`);
+ for(const id of types)assert.ok(legacySvg.includes(F.systemGlyph(id,12,17,28,'#333333')),`${id} keeps its canonical glyph when legacy icon metadata differs`);
 });
 test('SVG catalog separates custom from flowchart and compiled templates are safe',()=>{
  assert.equal(F.COMPONENTS.reactive.category,'custom');assert.equal(F.COMPONENTS.table.category,'flowchart');
