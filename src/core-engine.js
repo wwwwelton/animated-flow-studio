@@ -4,7 +4,7 @@ const LEGENDS=[{id:'request',label:'Solicitação',color:'#70a0ff',shape:'square
 const EFFECTS={packet:'Marcador',pulse:'Pulso',glow:'Brilho',trail:'Rastro',comet:'Cometa',dashed:'Fluxo tracejado',rest:'REST · solicitação/resposta',graphql:'GraphQL · seleção de dados',grpc:'gRPC · quadro tipado',websocket:'WebSocket · duas vias',webhook:'Webhook · notificação',sse:'SSE · fluxo contínuo',mqtt:'MQTT · publish/subscribe'};
 const SYMBOLS={square:'Quadrado',circle:'Círculo',diamond:'Losango',triangle:'Triângulo',arrow:'Seta',star:'Estrela',rest:'REST · API',graphql:'GraphQL · API',grpc:'gRPC · API',websocket:'WebSockets · API',webhook:'Webhooks · API',sse:'SSE · API',mqtt:'MQTT · API'};
 // One rem uses the browser default (16px); traffic defaults use the same SVG-unit size.
-const TRAFFIC_VISUAL={baseSize:8,defaultSize:16,legendSize:16,legendGap:10,connectorArrowSize:10,connectorArrowStroke:1.15,protocolStrokeWidth:1.1,peakOpacity:.86,fadeIn:.06,fadeOut:.94};
+const TRAFFIC_VISUAL={baseSize:8,defaultSize:16,protocolFlowSize:24,legendSize:16,legendGap:10,connectorArrowSize:10,connectorArrowStroke:1.15,protocolStrokeWidth:1.1,peakOpacity:.86,fadeIn:.06,fadeOut:.94};
 const PROTOCOL_FLOW_STYLES={
  rest:{symbol:'→',legend:'<path d="M-3 0H3M1-2L3 0 1 2"/>',packet:'<circle cx="-3" r=".75" fill="currentColor" stroke="none"/><path d="M-1.5 0H3M1-2L3 0 1 2"/>',particle:'circle',direction:'request-response',paired:true,reverseDelay:.55,speed:1,mirrorOnReturn:true},
  graphql:{symbol:'◇',legend:'<path d="M0-3.5L3.5 0 0 3.5-3.5 0Z"/>',packet:'<path d="M0-3.5L3.5 0 0 3.5-3.5 0Z"/>',particle:'diamond',direction:'request-response',paired:true,reverseDelay:.65,speed:1},
@@ -274,7 +274,7 @@ function protocolTemplate(){
   const frame={x:493,y:y+15,w:224,h:74},size=COMPONENTS[s.type];
   nodes.push(makeNode(s.type,{id:`${s.id}-protocol`,label:s.title,subtitle:s.note,x:frame.x+(frame.w-size.width)/2,y:frame.y+(frame.h-size.height)/2,color:'#ffffff'}));
   nodes.push(makeNode('card',{id:`${s.id}-target`,label:s.target,subtitle:s.targetNote,x:1110,y:y+15,w:224,h:74,color:'#ffffff',icon:s.icon}));
-  legends.push({id:s.id,label:s.title,color:s.color,shape:s.shape,direction:'forward',effect:s.effect,speed:PROTOCOL_FLOW_STYLES[s.effect].speed,size:TRAFFIC_VISUAL.defaultSize,count:s.count});
+  legends.push({id:s.id,label:s.title,color:s.color,shape:s.shape,direction:'forward',effect:s.effect,speed:PROTOCOL_FLOW_STYLES[s.effect].speed,size:TRAFFIC_VISUAL.protocolFlowSize,count:s.count});
   const source=`${s.id}-source`,target=`${s.id}-target`;
   const connector=s.id==='websocket'?'both':'out';
   edges.push({id:`${s.id}-request`,source,target:`${s.id}-protocol`,traffic:[s.id],duration:5+i%3,connector});

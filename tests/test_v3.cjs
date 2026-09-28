@@ -9,7 +9,7 @@ test('all v3 settings survive JSON and invalid ranges are rejected',()=>{
 test('new traffic markers default to one rem and retain explicit sizes',()=>{
  const p=F.normalize({nodes:[F.systemNode('client',{id:'client'})],edges:[],legends:[{id:'default'},{id:'custom',size:8}]});
  assert.deepEqual(p.legends.map(legend=>legend.size),[16,8]);
- assert.ok(F.protocolTemplate().legends.every(legend=>legend.size===16));
+ assert.ok(F.protocolTemplate().legends.every(legend=>legend.size===24));
 });
 test('global speed and per-legend speed change actual travel durations',()=>{
  const p=simple();p.trafficSpeed=2;p.legends[0].speed=4;p.legends[0].count=3;
@@ -73,11 +73,10 @@ test('API protocol glyphs can be selected as symbols and appear in the traffic l
  const animatedSvg=F.render(p);
  assert.match(animatedSvg,/data-stream="0-0-0"[^]*?scale\(2\)[^]*?M0-3\.5L3\.5 0/);
 });
-test('API traffic uses small glyphs, soft fades and protocol-specific direction',()=>{
+test('API traffic uses enlarged glyphs, soft fades and protocol-specific direction',()=>{
  const p=F.protocolTemplate(),legendMap=Object.fromEntries(p.legends.map(l=>[l.id,l]));
- assert.deepEqual(Object.values(legendMap).map(l=>[l.size,l.count]),Array.from({length:7},()=>[16,1]));
- const demoSizes=F.featureTemplate().legends.filter(l=>['pulse','glow'].includes(l.effect)).map(l=>l.size);
- assert.ok(Object.values(legendMap).every(l=>demoSizes.includes(l.size)));
+ assert.deepEqual(Object.values(legendMap).map(l=>[l.size,l.count]),Array.from({length:7},()=>[24,1]));
+ assert.ok(Object.values(legendMap).every(l=>l.size>F.featureTemplate().legends[0].size));
  assert.deepEqual(['rest','graphql','grpc','websocket','webhook','sse','mqtt'].map(id=>legendMap[id].speed),[1,1,1.08,.95,.8,.95,.95]);
  assert.ok(legendMap.grpc.speed>legendMap.rest.speed);
  for(const n of p.nodes.filter(n=>n.type.startsWith('api-'))){assert.equal(n.color,'#ffffff');assert.equal(n.borderColor,'#000000');assert.equal(n.iconColor,'#333333');}
@@ -128,7 +127,7 @@ test('API traffic uses reference glyphs and protocol-specific visual motion',()=
  assert.equal(streams.filter(stream=>stream.legend.id==='sse'&&stream.key.includes('return')).length,0); // SSE stays one-way.
  for(const edgeIndex of [6,7])assert.match(svg,new RegExp(`data-stream="${edgeIndex}-0-0-return"`));
 });
-test('API traffic legends use their protocol glyphs at the standard marker scale',()=>{
+test('API protocol template uses large flow glyphs while keeping compact legend glyphs',()=>{
  const p=F.protocolTemplate(),expected=[
   ['rest','REST','#2563eb','rest','M-3 0H3','→'],['graphql','GraphQL','#c026d3','graphql','M0-3.5L3.5 0','◇'],
   ['grpc','gRPC','#0f766e','grpc','M-3 0H-.5','⇉'],['websocket','WebSockets','#ea580c','websocket','M-3 0H3','↔'],
@@ -136,7 +135,7 @@ test('API traffic legends use their protocol glyphs at the standard marker scale
   ['mqtt','MQTT','#65a30d','mqtt','<circle r="3.2"','◉']
  ];
  assert.deepEqual(p.legends.map(({id,label,color,shape})=>[id,label,color,shape]),expected.map(([id,label,color,shape])=>[id,label,color,shape]));
- assert.ok(p.legends.every(legend=>legend.size===16));
+ assert.ok(p.legends.every(legend=>legend.size===24));
 
  const svg=F.render(p,{static:true}),legendSvg=svg.slice(0,svg.indexOf('<g transform="translate(0 '));
  assert.equal((legendSvg.match(/class="legend-label"/g)||[]).length,7);
@@ -149,6 +148,19 @@ test('API traffic legends use their protocol glyphs at the standard marker scale
  }
  for(const [,label] of expected)assert.ok(legendSvg.includes(`class="legend-label">${label}</text>`));
  assert.equal(F.headerHeight(p),162);
+ const animated=F.render(p);
+ for(const id of expected.map(([id])=>id)){
+  const legend=p.legends.find(item=>item.id===id);
+  assert.equal(legend.size,24);
+ }
+ assert.match(animated,/data-stream="0-0-0"[\s\S]*?scale\(3\)/);
+});
+test('editor exposes a guarded local cache reset action',()=>{
+ const html=fs.readFileSync(path.join(__dirname,'../editor.html'),'utf8');
+ assert.match(html,/id="resetApp"[^>]*>Limpar cache \/ Reset<\/button>/);
+ assert.match(html,/localStorage\.removeItem\(KEY\)/);
+ assert.match(html,/localStorage\.removeItem\(OLD\)/);
+ assert.match(html,/confirm\('Limpar o projeto salvo neste navegador/);
 });
 test('API protocol components use System Design card dimensions, layout and canonical glyphs',()=>{
  const p=F.protocolTemplate(),types=['api-rest','api-graphql','api-grpc','api-websocket','api-webhook','api-sse','api-mqtt'];
