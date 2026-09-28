@@ -15,7 +15,7 @@
     {
       "id": "rest",
       "label": "REST",
-      "color": "#2563eb",
+      "color": "#0d6efd",
       "shape": "rest",
       "direction": "forward",
       "effect": "rest",
@@ -26,7 +26,7 @@
     {
       "id": "graphql",
       "label": "GraphQL",
-      "color": "#c026d3",
+      "color": "#d63384",
       "shape": "graphql",
       "direction": "forward",
       "effect": "graphql",
@@ -37,7 +37,7 @@
     {
       "id": "grpc",
       "label": "gRPC",
-      "color": "#0f766e",
+      "color": "#6f42c1",
       "shape": "grpc",
       "direction": "forward",
       "effect": "grpc",
@@ -48,7 +48,7 @@
     {
       "id": "websocket",
       "label": "WebSockets",
-      "color": "#ea580c",
+      "color": "#fd7e14",
       "shape": "websocket",
       "direction": "forward",
       "effect": "websocket",
@@ -59,7 +59,7 @@
     {
       "id": "webhook",
       "label": "Webhooks",
-      "color": "#dc2626",
+      "color": "#dc3545",
       "shape": "webhook",
       "direction": "forward",
       "effect": "webhook",
@@ -70,7 +70,7 @@
     {
       "id": "sse",
       "label": "SSE",
-      "color": "#0284c7",
+      "color": "#0dcaf0",
       "shape": "sse",
       "direction": "forward",
       "effect": "sse",
@@ -81,7 +81,7 @@
     {
       "id": "mqtt",
       "label": "MQTT",
-      "color": "#65a30d",
+      "color": "#198754",
       "shape": "mqtt",
       "direction": "forward",
       "effect": "mqtt",

@@ -22,7 +22,9 @@ cards ou editar conectores, o editor recria
 o SVG e o runtime passa a ler o novo path. O relógio do SVG controla pausa e
 retomada; com movimento reduzido, fica um indicador parado no meio do path.
 
-O Webhook executa uma vez ao montar o diagrama. Para disparar outra entrega em
-um conector, use `FlowTraffic.trigger(svg, edgeId)`; sem `edgeId`, a chamada
-dispara todos os conectores Webhook do diagrama. O fluxo MQTT aguarda a chegada
+O Webhook repete o percurso de origem para destino, com uma pausa curta entre
+entregas. Para reiniciar o ciclo em um conector, use `FlowTraffic.trigger(svg, edgeId)`;
+sem `edgeId`, a chamada reinicia todos os conectores Webhook do diagrama.
+As cores iniciais dos sete protocolos seguem a paleta Bootstrap e podem ser
+editadas por legenda. O fluxo MQTT aguarda a chegada
 ao broker antes de iniciar os caminhos de saída para os assinantes.

@@ -31,7 +31,7 @@
    lastTokenTime=time;
    for(const item of tokens){
     if(reduced.matches){placeToken(item.token,item.path,item.length,.5,item.reverse,item.rotate,item.size);item.token.setAttribute('opacity','.5');item.visible=undefined;continue;}
-    const elapsed=item.event?time-item.start:((time-item.start)%item.cycle+item.cycle)%item.cycle;
+    const elapsed=((time-item.start)%item.cycle+item.cycle)%item.cycle;
     const visible=time>=item.start&&elapsed<item.duration;
     if(item.visible!==visible){item.token.setAttribute('opacity',visible?item.peakOpacity:'0');item.visible=visible;}
     if(visible)placeToken(item.token,item.path,item.length,elapsed/item.duration,item.reverse,item.rotate,item.size);
@@ -59,7 +59,7 @@
   svg.addEventListener('flow-traffic-event',trigger);
   update();return ()=>{stopped=true;cancelAnimationFrame(frame);document.removeEventListener('visibilitychange',resume);reduced.removeEventListener('change',resume);svg.removeEventListener('flow-traffic-event',trigger);};
  }
- /** Replay a one-way Webhook event on one edge, or on every Webhook edge. */
+ /** Restart the Webhook loop on one edge, or on every Webhook edge. */
  function trigger(svg,edgeId){svg.dispatchEvent(new CustomEvent('flow-traffic-event',{detail:{edgeId}}));}
  root.FlowTraffic={mount,trigger};
 })(typeof globalThis!=='undefined'?globalThis:this);
