@@ -148,7 +148,7 @@ Os testes de fontes usam respostas de rede controladas, incluindo bytes de fonte
 
 ## 5. Git e histórico de commits
 
-O ZIP 3.0.1 contém um repositório Git completo em **`.git/`**, com os commits anteriores e as correções desta versão. Após extrair em uma pasta nova:
+O ZIP de distribuição contém um repositório Git completo em **`.git/`**, com o histórico de commits. Após extrair em uma pasta nova:
 
 ```bash
 cd animated_flow
@@ -167,7 +167,7 @@ cd ../animated-flow-recuperado
 git log --oneline
 ```
 
-Esse comando recupera os arquivos commitados no bundle. Alterações locais que você fez na pasta antiga devem ser copiadas depois para a nova pasta. O bundle continua incluído como cópia portátil do histórico.
+Esse comando recupera os arquivos commitados no bundle do pacote antigo. Alterações locais que você fez na pasta antiga devem ser copiadas depois para a nova pasta. Os pacotes atuais já incluem o histórico em `.git/` e não precisam de um bundle separado.
 
 ## 6. Estrutura e extensão
 
@@ -186,7 +186,7 @@ Esse comando recupera os arquivos commitados no bundle. Alterações locais que 
 
 Para adicionar uma forma SVG, siga [src/components/README.md](src/components/README.md) e execute `uv run python build.py`. `src/flow-core.js`, `src/editor.js` e `editor.html` são gerados: altere os módulos de origem.
 
-Para gerar o ZIP de distribuição, com Git completo e bundle:
+Para gerar o ZIP de distribuição, com o histórico Git completo:
 
 ```bash
 uv run python tools/package_release.py

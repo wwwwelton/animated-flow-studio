@@ -1,4 +1,4 @@
-"""Package a clean committed checkout with a self-contained .git and history bundle."""
+"""Package a clean committed checkout with a self-contained Git history."""
 
 from __future__ import annotations
 import argparse
@@ -51,8 +51,6 @@ def package(output: Path) -> Path:
             "\tbare = false\n\tlogallrefupdates = true\n",
             encoding="utf-8",
         )
-        git(ROOT, "bundle", "create", str(checkout / "history.bundle"), "--all")
-        git(checkout, "bundle", "verify", "history.bundle")
         if git(checkout, "status", "--porcelain"):
             raise ValueError("O checkout de distribuição não está limpo.")
         temporary_zip = Path(temp) / "release.zip"
