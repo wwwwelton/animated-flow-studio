@@ -143,6 +143,38 @@ test('protocol traffic uses the rail path with correct direction and cadence',()
  fanout.edges.push({id:'fanout',source:'mqtt-protocol',target:'subscriber-2',traffic:['mqtt'],duration:5});
  assert.deepEqual(F.streams(fanout).filter(stream=>stream.source==='mqtt-protocol').map(stream=>stream.target),['mqtt-target','subscriber-2']);
 });
+test('API flow stages wait for arrival and responses return through both connectors',()=>{
+ const streams=F.streams(F.protocolTemplate());
+ const traffic=id=>streams.filter(stream=>stream.legend.id===id);
+ for(const id of ['rest','graphql','grpc','websocket','webhook','sse','mqtt']){
+  const group=traffic(id),incoming=group.filter(stream=>stream.edge.id===`${id}-request`),outgoing=group.filter(stream=>stream.edge.id===`${id}-delivery`);
+  assert.equal(incoming.length,outgoing.length);
+  for(let i=0;i<incoming.length;i++){
+   assert.ok(outgoing[i].delay>=incoming[i].delay+incoming[i].duration,`${id} arrives before the next stage`);
+   assert.equal(incoming[i].cycle,outgoing[i].cycle);
+  }
+ }
+ for(const id of ['rest','graphql','grpc']){
+  const group=traffic(id),incoming=group.filter(stream=>stream.edge.id===`${id}-request`),outgoing=group.filter(stream=>stream.edge.id===`${id}-delivery`);
+  for(let i=0;i<incoming.length;i++){
+   assert.ok(outgoing[i].returnDelay>=outgoing[i].delay+outgoing[i].duration);
+   assert.ok(incoming[i].returnDelay>=outgoing[i].returnDelay+outgoing[i].duration);
+   assert.ok(incoming[i].returnDelay+incoming[i].duration<incoming[i].delay+incoming[i].cycle);
+  }
+ }
+ const websocket=traffic('websocket');
+ assert.equal(websocket[1].returnDelay,websocket[0].delay);
+ assert.ok(websocket[0].returnDelay>=websocket[1].returnDelay+websocket[1].duration);
+ assert.ok(websocket[0].cycle<=websocket[0].duration);
+ assert.ok(websocket[0].delay+websocket[0].cycle<websocket[0].returnDelay+websocket[0].duration);
+ for(const id of ['webhook','sse','mqtt'])assert.ok(traffic(id).every(stream=>stream.returnDelay===undefined));
+ const webhook=traffic('webhook');
+ assert.ok(webhook[0].delay+webhook[0].cycle>webhook[1].delay+webhook[1].duration);
+ const frames=traffic('grpc').filter(stream=>stream.edge.id==='grpc-request');
+ assert.ok(frames[0].delay<frames[1].delay&&frames[1].delay<frames[2].delay);
+ const sse=traffic('sse').filter(stream=>stream.edge.id==='sse-request');
+ assert.ok(Math.abs((sse[1].delay-sse[0].delay)-(sse[2].delay-sse[1].delay))<1e-8);
+});
 test('protocol symbols are also available as ordinary legend shapes',()=>{
  const p=simple();p.legends[0].shape='graphql';
  const svg=F.render(p);

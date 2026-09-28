@@ -20,7 +20,7 @@
   const streamList=reactiveNodes.length?core.streams(project):[];
   const tokens=Array.from(svg.querySelectorAll('.protocol-packet')).map(token=>{
    const path=svg.querySelector(`[id="${token.dataset.path}"]`);
-   return path?{token,path,length:path.getTotalLength(),size:Number(token.dataset.size)||16,peakOpacity:token.dataset.peakOpacity||'.86',start:Number(token.dataset.start),duration:Number(token.dataset.duration),cycle:Number(token.dataset.cycle),event:token.dataset.event==='true',edgeId:token.dataset.edgeId,reverse:token.dataset.reverse==='true',rotate:token.dataset.rotate==='true'}:null;
+   return path?{token,path,length:path.getTotalLength(),size:Number(token.dataset.size)||16,peakOpacity:token.dataset.peakOpacity||'.86',start:Number(token.dataset.start),initialStart:Number(token.dataset.start),duration:Number(token.dataset.duration),cycle:Number(token.dataset.cycle),event:token.dataset.event==='true',edgeId:token.dataset.edgeId,reverse:token.dataset.reverse==='true',rotate:token.dataset.rotate==='true'}:null;
   }).filter(Boolean);
   if(!reactiveNodes.length&&!tokens.length)return ()=>{};
   let frame=0,stopped=false,previous=Object.create(null),lastTokenTime=-1;
@@ -54,7 +54,13 @@
    if(!reduced.matches)frame=requestAnimationFrame(update);
   }
   function resume(){if(stopped)return;lastTokenTime=-1;cancelAnimationFrame(frame);update();}
-  function trigger(event){for(const item of tokens)if(item.event&&(!event.detail?.edgeId||event.detail.edgeId===item.edgeId))item.start=svg.getCurrentTime();resume();}
+  function trigger(event){
+   const selected=tokens.filter(item=>item.event&&(!event.detail?.edgeId||event.detail.edgeId===item.edgeId));
+   if(!selected.length)return;
+   const origin=Math.min(...selected.map(item=>item.initialStart)),now=svg.getCurrentTime();
+   for(const item of selected)item.start=now+item.initialStart-origin;
+   resume();
+  }
   document.addEventListener('visibilitychange',resume);reduced.addEventListener('change',resume);
   svg.addEventListener('flow-traffic-event',trigger);
   update();return ()=>{stopped=true;cancelAnimationFrame(frame);document.removeEventListener('visibilitychange',resume);reduced.removeEventListener('change',resume);svg.removeEventListener('flow-traffic-event',trigger);};

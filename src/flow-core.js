@@ -173,8 +173,51 @@ function streams(p){
   const arrival=flow?.relay==='broker'?arrivals.get(`${id}\0${e.source}`):undefined;
   const delay=arrival===undefined?baseDelay:Math.max(baseDelay,arrival+.35);
   const count=l.count??1;
-  for(let k=0;k<count;k++)result.push({edge:e,index:i,legend:l,duration,delay:delay+k*duration/count,key:`${i}-${j}-${k}`,source:l.direction==='reverse'?e.target:e.source,target:l.direction==='reverse'?e.source:e.target});
- }));return result;
+  for(let k=0;k<count;k++)result.push({edge:e,index:i,legend:l,duration,delay:delay+k*duration/count,particleIndex:k,key:`${i}-${j}-${k}`,source:l.direction==='reverse'?e.target:e.source,target:l.direction==='reverse'?e.source:e.target});
+ }));
+ scheduleProtocolRelays(p,result);
+ return result;
+}
+function scheduleProtocolRelays(p,result){
+ const relayGap=.35,groups=new Map(),nodes=new Map(p.nodes.map(node=>[node.id,node]));
+ for(const stream of result){
+  if(!PROTOCOL_FLOW_STYLES[stream.legend.effect])continue;
+  let group=groups.get(stream.legend.id);
+  if(!group){group={incoming:new Map(),outgoing:new Map()};groups.set(stream.legend.id,group);}
+  if(!group.incoming.has(stream.target))group.incoming.set(stream.target,[]);
+  if(!group.outgoing.has(stream.source))group.outgoing.set(stream.source,[]);
+  group.incoming.get(stream.target).push(stream);
+  group.outgoing.get(stream.source).push(stream);
+ }
+ for(const legend of p.legends){
+  const flow=PROTOCOL_FLOW_STYLES[legend.effect],group=groups.get(legend.id);
+  if(!flow||!group||legend.direction==='reverse')continue;
+  for(const [nodeId,incoming] of group.incoming){
+   const node=nodes.get(nodeId),outgoing=group.outgoing.get(nodeId);
+   if(!node||!outgoing)continue;
+   if(node.type!==`api-${legend.effect}`&&flow.relay!=='broker')continue;
+   const first=incoming[0],outDuration=Math.max(...outgoing.map(s=>s.duration));
+   const transit=first.duration+relayGap+outDuration;
+   const response=flow.direction==='request-response',bidirectional=flow.direction==='bidirectional';
+   const streaming=flow.direction==='server-client-stream';
+   const returnTransit=response?outDuration+relayGap+first.duration+relayGap:0;
+   const pause=streaming||bidirectional?0:flow.direction==='one-way-event'?1.25:1;
+   const baseCycle=bidirectional?Math.min(first.duration,outDuration):transit+returnTransit+pause;
+   const spacing=response?first.duration/(legend.count+1):baseCycle/legend.count;
+   const cycle=baseCycle+(response?(legend.count-1)*spacing:0);
+   for(const stream of incoming){
+    stream.delay=first.delay+stream.particleIndex*spacing;stream.cycle=cycle;
+    if(response)stream.returnDelay=stream.delay+transit+relayGap+outDuration+relayGap;
+    if(bidirectional)stream.returnDelay=stream.delay+outDuration+relayGap;
+   }
+   for(const stream of outgoing){
+    stream.delay=first.delay+stream.particleIndex*spacing+first.duration+relayGap;
+    stream.cycle=cycle;
+    if(response)stream.returnDelay=stream.delay+stream.duration+relayGap;
+    if(bidirectional)stream.returnDelay=first.delay+stream.particleIndex*spacing;
+   }
+  }
+ }
 }
 function reactiveStates(p,time,streamList=null){
  const result=Object.create(null),events=Object.create(null);
@@ -215,11 +258,11 @@ function trafficGlyph(legend,reverse=false){
 function legendGlyph(legend){return symbolGlyph(legend,legend.size);}
 function motionPacket(stream,prefix){
  const {legend:l,duration,delay,index,key}=stream,pid=`${prefix}-edge-${index}`;
- const behavior=PROTOCOL_FLOW_STYLES[l.effect]??{paired:false,reverseDelay:0},cycle=duration*(behavior.cycle??1),visible=duration/cycle;
+ const behavior=PROTOCOL_FLOW_STYLES[l.effect]??{paired:false,reverseDelay:0},cycle=stream.cycle??duration*(behavior.cycle??1),visible=duration/cycle;
  if(PROTOCOL_FLOW_STYLES[l.effect]){
   const token=(reverse,start,streamKey)=>`<g class="packet protocol-packet" data-stream="${streamKey}" data-path="${pid}" data-edge-id="${esc(stream.edge.id)}" data-size="${l.size}" data-peak-opacity="${TRAFFIC_VISUAL.peakOpacity}" data-start="${start}" data-duration="${duration}" data-cycle="${cycle}" data-event="${behavior.direction==='one-way-event'}" data-reverse="${reverse}" data-rotate="${behavior.rotateWithPath}" opacity="0">${createFlowToken(l.effect,l)}</g>`;
   const reverse=l.direction==='reverse';
-  const returnStart=delay+(behavior.direction==='bidirectional'?0:duration+.2);
+  const returnStart=stream.returnDelay??delay+(behavior.direction==='bidirectional'?0:duration+.2);
   return token(reverse,delay,key)+(behavior.paired?token(!reverse,returnStart,`${key}-return`):'');
  }
  const motion=(lag=0,reverse=l.direction==='reverse')=>`<animateMotion dur="${duration}s" begin="${delay+lag}s" calcMode="linear" repeatCount="indefinite" rotate="${PROTOCOL_FLOW_STYLES[l.shape]&&l.shape!=='sse'?'0':'auto'}" ${reverse?'keyPoints="1;0" keyTimes="0;1"':''}><mpath href="#${pid}"/></animateMotion>`;

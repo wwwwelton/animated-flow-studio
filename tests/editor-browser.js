@@ -78,6 +78,27 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  });
  const tokenX=Number(tokenState.transform.match(/translate\(([^ ]+)/)[1]);
  assert.ok(Math.abs(tokenX-tokenState.point.x)<1);assert.equal(tokenState.size,true);assert.equal(tokenState.hit,'none');
+ const apiTiming=await page.evaluate(()=>{
+  const svg=board.querySelector('svg'),packet=key=>svg.querySelector(`[data-stream="${key}"]`);
+  const timing=key=>{const token=packet(key);return {start:Number(token.dataset.start),duration:Number(token.dataset.duration),cycle:Number(token.dataset.cycle)};};
+  return {webhookIn:timing('8-0-0'),webhookOut:timing('9-0-0'),restIn:timing('0-0-0'),restOut:timing('1-0-0'),restResponseOut:timing('1-0-0-return'),restResponseIn:timing('0-0-0-return'),websocketIn:timing('6-0-0'),websocketReverse:timing('6-0-0-return')};
+ });
+ assert.ok(apiTiming.webhookOut.start>=apiTiming.webhookIn.start+apiTiming.webhookIn.duration);
+ assert.ok(apiTiming.restOut.start>=apiTiming.restIn.start+apiTiming.restIn.duration);
+ assert.ok(apiTiming.restResponseOut.start>=apiTiming.restOut.start+apiTiming.restOut.duration);
+ assert.ok(apiTiming.restResponseIn.start>=apiTiming.restResponseOut.start+apiTiming.restResponseOut.duration);
+ await page.evaluate(time=>board.querySelector('svg').setCurrentTime(time),apiTiming.webhookOut.start-.1);
+ await page.waitForFunction(()=>document.querySelector('[data-stream="9-0-0"]')?.getAttribute('opacity')==='0');
+ await page.evaluate(time=>board.querySelector('svg').setCurrentTime(time),apiTiming.webhookOut.start+.1);
+ await page.waitForFunction(()=>document.querySelector('[data-stream="9-0-0"]')?.getAttribute('opacity')==='0.86');
+ await page.evaluate(time=>board.querySelector('svg').setCurrentTime(time),apiTiming.webhookIn.start+apiTiming.webhookIn.cycle+.1);
+ await page.waitForFunction(()=>document.querySelector('[data-stream="8-0-0"]')?.getAttribute('opacity')==='0.86');
+ await page.evaluate(()=>{const svg=board.querySelector('svg');svg.setCurrentTime(30);FlowTraffic.trigger(svg);});
+ await page.waitForFunction(()=>document.querySelector('[data-stream="8-0-0"]')?.getAttribute('opacity')==='0.86'&&document.querySelector('[data-stream="9-0-0"]')?.getAttribute('opacity')==='0');
+ await page.evaluate(time=>board.querySelector('svg').setCurrentTime(time),30+apiTiming.webhookIn.duration+.45);
+ await page.waitForFunction(()=>document.querySelector('[data-stream="9-0-0"]')?.getAttribute('opacity')==='0.86');
+ await page.evaluate(time=>board.querySelector('svg').setCurrentTime(time),apiTiming.websocketReverse.start+.1);
+ await page.waitForFunction(()=>document.querySelector('[data-stream="6-0-0"]')?.getAttribute('opacity')==='0.86'&&document.querySelector('[data-stream="6-0-0-return"]')?.getAttribute('opacity')==='0.86');
  await page.evaluate(()=>{project.nodes.find(n=>n.id==='rest-protocol').y+=40;draw();board.querySelector('svg').setCurrentTime(1);});
  await page.waitForFunction(previous=>document.querySelector('[data-stream="0-0-0"]')?.getAttribute('transform')!==previous,tokenState.transform);
  assert.notEqual(await page.locator('[data-stream="0-0-0"]').getAttribute('transform'),tokenState.transform);

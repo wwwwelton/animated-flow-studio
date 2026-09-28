@@ -52,13 +52,18 @@ test('SSE follows the tangent and reduced motion keeps a still protocol marker',
  assert.equal(flow.listeners.has('visibilitychange'),false);
 });
 
-test('Webhook travels once and replays only when its event is triggered',()=>{
+test('Webhook repeats on the same rail and its event restarts the loop',()=>{
  const pathElement={getTotalLength:()=>100,getPointAtLength(distance){return {x:distance,y:0};}};
  const flow=runtime(pathElement,{event:true});
  flow.step(2.5);
  assert.equal(flow.attributes.get('opacity'),'0');
+ flow.step(4);
+ assert.equal(flow.attributes.get('transform'),'translate(12 0)');
+ assert.equal(flow.attributes.get('opacity'),'.86');
+ flow.step(4.5);
+ assert.equal(flow.attributes.get('transform'),'translate(30 0)');
  flow.trigger('another-link');
- assert.equal(flow.attributes.get('opacity'),'0');
+ assert.equal(flow.attributes.get('transform'),'translate(30 0)');
  flow.trigger('webhook-link');
  assert.equal(flow.attributes.get('transform'),'translate(12 0)');
  assert.equal(flow.attributes.get('opacity'),'.86');

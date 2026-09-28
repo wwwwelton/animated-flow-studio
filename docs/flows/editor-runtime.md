@@ -24,7 +24,11 @@ retomada; com movimento reduzido, fica um indicador parado no meio do path.
 
 O Webhook repete o percurso de origem para destino, com uma pausa curta entre
 entregas. Para reiniciar o ciclo em um conector, use `FlowTraffic.trigger(svg, edgeId)`;
-sem `edgeId`, a chamada reinicia todos os conectores Webhook do diagrama.
+sem `edgeId`, a chamada reinicia todos os conectores Webhook do diagrama e
+preserva o intervalo entre as etapas do fluxo.
 As cores iniciais dos sete protocolos seguem a paleta Bootstrap e podem ser
-editadas por legenda. O fluxo MQTT aguarda a chegada
-ao broker antes de iniciar os caminhos de saída para os assinantes.
+editadas por legenda. No modelo de API, cada trecho começa depois da chegada
+ao componente anterior. REST, GraphQL e gRPC fazem a resposta retornar pelo
+mesmo caminho após a solicitação alcançar o destino; WebSockets mantém os dois
+sentidos simultâneos; SSE e Webhook seguem apenas da origem ao destino.
+MQTT aguarda a chegada ao broker antes de iniciar os caminhos para assinantes.
