@@ -42,7 +42,7 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  await page.locator('#trafficSpeed').fill('3');await page.locator('#trafficSpeed').dispatchEvent('change');
  assert.equal(await page.evaluate(()=>F.streams(project)[0].duration),4/6);assert.equal(await page.evaluate(()=>F.streams(project).filter(s=>s.index===0&&s.legend.id==='request').length),3);
  console.log('PASS traffic effects, symbols, speed and count');
- await page.click('#addLegend');const apiLegend=page.locator('#legendEditor details').last();await apiLegend.locator('summary').click();const symbol=apiLegend.getByLabel('Símbolo',{exact:true});
+ await page.click('#addLegend');const apiLegend=page.locator('#legendEditor details').last();await apiLegend.locator('summary').click();assert.equal(await apiLegend.getByLabel('Tamanho do marcador (px)',{exact:true}).inputValue(),'10');const symbol=apiLegend.getByLabel('Símbolo',{exact:true});
  const apiSymbols=await symbol.locator('option').evaluateAll(options=>options.slice(-7).map(option=>option.value));
  assert.deepEqual(apiSymbols,['rest','graphql','grpc','websocket','webhook','sse','mqtt']);
  await symbol.selectOption('graphql');const apiLegendId=await page.evaluate(()=>project.legends.at(-1).id);

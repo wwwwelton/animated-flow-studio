@@ -24,7 +24,7 @@ const TYPES={...Object.fromEntries(Object.entries(COMPONENTS).map(([id,c])=>[id,
 const LEGENDS=[{id:'request',label:'Solicitação',color:'#70a0ff',shape:'square',direction:'forward'},{id:'response',label:'Resposta',color:'#9ae8c5',shape:'circle',direction:'reverse'},{id:'cdc',label:'Alterações (CDC)',color:'#bb8ae8',shape:'diamond',direction:'forward'}];
 const EFFECTS={packet:'Marcador',pulse:'Pulso',glow:'Brilho',trail:'Rastro',comet:'Cometa',dashed:'Fluxo tracejado',rest:'REST · solicitação/resposta',graphql:'GraphQL · seleção de dados',grpc:'gRPC · quadro tipado',websocket:'WebSocket · duas vias',webhook:'Webhook · notificação',sse:'SSE · fluxo contínuo',mqtt:'MQTT · publish/subscribe'};
 const SYMBOLS={square:'Quadrado',circle:'Círculo',diamond:'Losango',triangle:'Triângulo',arrow:'Seta',star:'Estrela',rest:'REST · API',graphql:'GraphQL · API',grpc:'gRPC · API',websocket:'WebSockets · API',webhook:'Webhooks · API',sse:'SSE · API',mqtt:'MQTT · API'};
-const TRAFFIC_VISUAL={baseSize:8,protocolStrokeWidth:1.1,peakOpacity:.86,fadeIn:.06,fadeOut:.94};
+const TRAFFIC_VISUAL={baseSize:8,defaultSize:10,protocolStrokeWidth:1.1,peakOpacity:.86,fadeIn:.06,fadeOut:.94};
 const PROTOCOL_FLOW_STYLES={
  rest:{symbol:'→',legend:'<path d="M-3 0H3M1-2L3 0 1 2"/>',packet:'<circle cx="-3" r=".75" fill="currentColor" stroke="none"/><path d="M-1.5 0H3M1-2L3 0 1 2"/>',particle:'circle',direction:'request-response',paired:true,reverseDelay:.55,speed:1,mirrorOnReturn:true},
  graphql:{symbol:'◇',legend:'<path d="M0-3.5L3.5 0 0 3.5-3.5 0Z"/>',packet:'<path d="M0-3.5L3.5 0 0 3.5-3.5 0Z"/>',particle:'diamond',direction:'request-response',paired:true,reverseDelay:.65,speed:1},
@@ -63,7 +63,7 @@ function normalize(input){
  const ids=new Set(),lids=new Set(),eids=new Set();
  for(const l of legends){
   if(!l||typeof l.id!=='string'||!l.id||l.id.length>100||lids.has(l.id))throw Error('ID de legenda inválido ou duplicado.');lids.add(l.id);
-  p.legends.push({id:l.id,label:String(l.label??'Tráfego').slice(0,80),color:color(l.color),shape:enumValue(l.shape,SYMBOLS,'square'),direction:l.direction==='reverse'?'reverse':'forward',effect:enumValue(l.effect,EFFECTS,'packet'),speed:number(l.speed,1,.1,8,'Velocidade da legenda'),size:number(l.size,8,3,32,'Tamanho do marcador'),count:Math.round(number(l.count,1,1,8,'Quantidade de marcadores'))});
+  p.legends.push({id:l.id,label:String(l.label??'Tráfego').slice(0,80),color:color(l.color),shape:enumValue(l.shape,SYMBOLS,'square'),direction:l.direction==='reverse'?'reverse':'forward',effect:enumValue(l.effect,EFFECTS,'packet'),speed:number(l.speed,1,.1,8,'Velocidade da legenda'),size:number(l.size,TRAFFIC_VISUAL.defaultSize,3,32,'Tamanho do marcador'),count:Math.round(number(l.count,1,1,8,'Quantidade de marcadores'))});
  }
  for(const n of input.nodes){
   if(!n||typeof n.id!=='string'||!n.id||ids.has(n.id)||n.id.length>100)throw Error('ID de bloco inválido ou duplicado.');ids.add(n.id);
@@ -293,7 +293,7 @@ function protocolTemplate(){
   const frame={x:493,y:y+15,w:224,h:74},size=COMPONENTS[s.type];
   nodes.push(makeNode(s.type,{id:`${s.id}-protocol`,label:s.title,subtitle:s.note,x:frame.x+(frame.w-size.width)/2,y:frame.y+(frame.h-size.height)/2,color:'#ffffff'}));
   nodes.push(makeNode('card',{id:`${s.id}-target`,label:s.target,subtitle:s.targetNote,x:1110,y:y+15,w:224,h:74,color:'#ffffff',icon:s.icon}));
-  legends.push({id:s.id,label:s.title,color:s.color,shape:s.shape,direction:'forward',effect:s.effect,speed:PROTOCOL_FLOW_STYLES[s.effect].speed,size:8,count:s.count});
+  legends.push({id:s.id,label:s.title,color:s.color,shape:s.shape,direction:'forward',effect:s.effect,speed:PROTOCOL_FLOW_STYLES[s.effect].speed,size:TRAFFIC_VISUAL.defaultSize,count:s.count});
   const source=`${s.id}-source`,target=`${s.id}-target`;
   const connector=s.id==='websocket'?'both':'out';
   edges.push({id:`${s.id}-request`,source,target:`${s.id}-protocol`,traffic:[s.id],duration:5+i%3,connector});
@@ -655,7 +655,7 @@ $('trafficSpeed').oninput=()=>$('speedReadout').textContent=$('trafficSpeed').va
 $('trafficSpeed').onchange=()=>{const speed=Number($('trafficSpeed').value);checkpoint();project.trafficSpeed=speed;clock=0;stopTraffic();board.replaceChildren();save();};
 $('restartTraffic').onclick=()=>{clock=0;stopTraffic();board.replaceChildren();draw();};
 $('toggleTraffic').onclick=()=>{paused=!paused;$('toggleTraffic').textContent=paused?'Reproduzir':'Pausar';draw();};
-$('addLegend').onclick=()=>{if(project.legends.length>=20){status('Limite de 20 legendas.');return;}checkpoint();project.legends.push({id:uid(),label:'Novo tráfego',color:'#ffca76',shape:'square',direction:'forward',effect:'packet',speed:1,size:8,count:1});save({legend:true});};
+$('addLegend').onclick=()=>{if(project.legends.length>=20){status('Limite de 20 legendas.');return;}checkpoint();project.legends.push({id:uid(),label:'Novo tráfego',color:'#ffca76',shape:'square',direction:'forward',effect:'packet',speed:1,size:10,count:1});save({legend:true});};
 $('connect').onclick=()=>{connecting=!connecting;connectFrom=null;$('connect').classList.toggle('active',connecting);viewport.classList.toggle('connecting',connecting);status(connecting?'Clique na origem e no destino, ou arraste uma porta azul.':'Conexão cancelada.');};
 $('delete').onclick=remove;
 function historyStep(undo){const from=undo?undoStack:redoStack,to=undo?redoStack:undoStack;if(!from.length)return;to.push(JSON.stringify(project));project=F.normalize(JSON.parse(from.pop()));selected=null;projectFields();legendEditor();inspect();save();FlowFonts.ensure(project).then(reportFontWarnings);}

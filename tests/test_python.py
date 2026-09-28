@@ -36,6 +36,10 @@ class PythonAPI(unittest.TestCase):
         self.assertEqual(data["edges"][0]["traffic"], ["request", "response"])
         self.assertEqual(data["nodes"][0]["w"], 190)
 
+    def test_traffic_icon_defaults_to_ten_pixels(self):
+        diagram = Diagram("Fluxo").add_legend(Legend("events", "Eventos"))
+        self.assertEqual(diagram.to_dict()["legends"][0]["size"], 10)
+
     def test_growth_settings(self):
         d = Diagram("Canvas", auto_grow=False, growth_margin=80)
         self.assertFalse(d.to_dict()["autoGrow"])

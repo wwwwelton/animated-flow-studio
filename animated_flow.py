@@ -19,7 +19,7 @@ class Legend:
     direction: str = "forward"
     effect: str = "packet"
     speed: float = 1
-    size: float = 8
+    size: float = 10
     count: int = 1
 
 
