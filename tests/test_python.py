@@ -64,6 +64,15 @@ class PythonAPI(unittest.TestCase):
         d.add_edge(Edge("a", "b", traffic=("error",)))
         self.assertEqual(d.to_dict()["edges"][0]["traffic"], ["error"])
 
+    def test_api_protocol_symbols_are_valid_legend_shapes(self):
+        protocols = ("rest", "graphql", "grpc", "websocket", "webhook", "sse", "mqtt")
+        diagram = Diagram("Protocolos")
+        for protocol in protocols:
+            diagram.add_legend(Legend(f"traffic-{protocol}", protocol, shape=protocol))
+
+        shapes = [legend["shape"] for legend in diagram.to_dict()["legends"][-len(protocols) :]]
+        self.assertEqual(shapes, list(protocols))
+
 
 if __name__ == "__main__":
     unittest.main()

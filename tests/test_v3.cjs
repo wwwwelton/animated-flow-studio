@@ -51,6 +51,23 @@ test('many-to-many permits shared ports and repeated node pairs with distinct ed
 test('all marker shapes and effects remain valid standalone SVG geometry',()=>{
  const p=simple();for(const effect of Object.keys(F.EFFECTS))for(const shape of Object.keys(F.SYMBOLS)){p.legends[0].effect=effect;p.legends[0].shape=shape;const svg=F.render(p);assert.ok(!/NaN|undefined/.test(svg));assert.match(svg,/animateMotion/);}
 });
+test('API protocol glyphs can be selected as symbols and appear in the traffic legend',()=>{
+ const protocols=['rest','graphql','grpc','websocket','webhook','sse','mqtt'];
+ assert.deepEqual(Object.keys(F.SYMBOLS).slice(-protocols.length),protocols);
+ const p=F.normalize({
+  title:'Protocol glyph',width:600,height:300,
+  legends:[{id:'api',label:'Novo tráfego',color:'#c026d3',shape:'graphql',effect:'packet'}],
+  nodes:[F.systemNode('client',{id:'source',x:30,y:90}),F.systemNode('server',{id:'target',x:350,y:90})],
+  edges:[{id:'link',source:'source',target:'target',traffic:['api']}]
+ });
+ assert.deepEqual(F.normalize(JSON.parse(JSON.stringify(p))),p);
+
+ const staticSvg=F.render(p,{static:true}),markerStart=staticSvg.indexOf('class="legend-marker"'),markerEnd=staticSvg.indexOf('<text',markerStart),marker=staticSvg.slice(markerStart,markerEnd);
+ assert.match(marker,/scale\(1\.75\)/);assert.ok(marker.includes('M-2-3H-3.5V3H-2'));
+ assert.match(marker,/stroke="#c026d3"/);
+ const animatedSvg=F.render(p);
+ assert.match(animatedSvg,/data-stream="0-0-0"[^]*?scale\(1\\?\)[^]*?M-2-3H-3\.5/);
+});
 test('API traffic uses small glyphs, soft fades and protocol-specific direction',()=>{
  const p=F.protocolTemplate(),legendMap=Object.fromEntries(p.legends.map(l=>[l.id,l]));
  assert.deepEqual(Object.values(legendMap).map(l=>[l.size,l.count]),Array.from({length:7},()=>[8,1]));

@@ -9,7 +9,7 @@
 <section><h2>Arquivo</h2><div class="stack"><button id="jsonExport">Salvar projeto JSON</button><label for="import">Abrir projeto JSON</label><input id="import" type="file" accept=".json,application/json"></div></section></aside>
 <main class="canvas-pane" id="viewport" aria-label="Canvas do diagrama"><div class="board-wrap" id="board"></div><div class="canvas-toolbar"><button id="centerCanvas" title="Centralizar na tela">Centralizar</button><select id="zoom" aria-label="Zoom"><option value="fit">Ajustar à tela</option><option value=".5">50%</option><option value=".75">75%</option><option value="1">100%</option><option value="1.5">150%</option><option value="2">200%</option></select><span id="zoomReadout">100%</span></div><div class="canvas-hint">Ctrl + roda: zoom · Arrastar fundo: mover · Espaço + arrastar: mover</div></main>
 <aside class="right"><section><h2>Diagrama</h2><label for="diagramTitle">Título</label><input id="diagramTitle"><label for="kicker">Identificação da figura</label><input id="kicker"><label for="description">Descrição</label><textarea id="description"></textarea><h3>Área de desenho</h3><div class="row"><div><label for="canvasWidth">Largura (px)</label><input id="canvasWidth" type="number" min="300" max="5000"></div><div><label for="canvasHeight">Altura (px)</label><input id="canvasHeight" type="number" min="300" max="5000"></div></div><label class="check-option"><input id="autoGrow" type="checkbox"> Crescer automaticamente</label><label for="growthMargin">Margem de expansão (px)</label><input id="growthMargin" type="number" min="0" max="500"><button id="fitContent">Ajustar ao conteúdo</button><label class="check-option"><input id="grid" type="checkbox"> Fundo pontilhado</label></section>
-<section><h2>Legendas de tráfego</h2><label class="check-option"><input id="showLegend" type="checkbox"> Mostrar legendas</label><label for="trafficSpeed">Velocidade global <strong id="speedReadout">1×</strong></label><input id="trafficSpeed" type="range" min=".1" max="8" step=".1"><div class="row"><button id="toggleTraffic">Pausar</button><button id="restartTraffic">Reiniciar</button></div><div id="legendEditor"></div><button id="addLegend">+ Nova legenda</button><p class="hint">Tempo efetivo = tempo da conexão ÷ velocidade global ÷ velocidade da legenda. Há efeitos visuais para REST, GraphQL, gRPC, WebSockets, Webhooks, SSE e MQTT. Clique no nome da legenda para editar.</p></section>
+<section><h2>Legendas de tráfego</h2><label class="check-option"><input id="showLegend" type="checkbox"> Mostrar legendas</label><label for="trafficSpeed">Velocidade global <strong id="speedReadout">1×</strong></label><input id="trafficSpeed" type="range" min=".1" max="8" step=".1"><div class="row"><button id="toggleTraffic">Pausar</button><button id="restartTraffic">Reiniciar</button></div><div id="legendEditor"></div><button id="addLegend">+ Nova legenda</button><p class="hint">O campo Símbolo inclui pictogramas de REST, GraphQL, gRPC, WebSockets, Webhooks, SSE e MQTT; o desenho escolhido aparece no topo da legenda.</p></section>
 <section id="inspector"></section><section><h2>Exportar</h2><div class="stack"><button id="componentExport" disabled>Componente selecionado (SVG)</button><button id="svgExport">SVG animado</button><button id="staticSvgExport">SVG estático</button><button id="pngExport">PNG</button><button id="mdExport">Markdown + SVG</button><button id="pdfExport">Imprimir / salvar PDF</button><button id="htmlExport">HTML de apresentação</button></div><div id="downloadLinks" class="downloads"></div><p class="hint">HTML preserva todas as reações. PNG e PDF registram o estado atual. Fontes baixadas são incorporadas quando disponíveis.</p></section></aside></div><datalist id="fontFamilies"></datalist>
 <script id="flowCoreSource">(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.FlowCore=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
 'use strict';
@@ -23,7 +23,7 @@ const SYSTEM_DESIGN={"client":{"id":"client","label":"Cliente","english":"Client
 const TYPES={...Object.fromEntries(Object.entries(COMPONENTS).map(([id,c])=>[id,c.label])),system:'System Design'};
 const LEGENDS=[{id:'request',label:'Solicitação',color:'#70a0ff',shape:'square',direction:'forward'},{id:'response',label:'Resposta',color:'#9ae8c5',shape:'circle',direction:'reverse'},{id:'cdc',label:'Alterações (CDC)',color:'#bb8ae8',shape:'diamond',direction:'forward'}];
 const EFFECTS={packet:'Marcador',pulse:'Pulso',glow:'Brilho',trail:'Rastro',comet:'Cometa',dashed:'Fluxo tracejado',rest:'REST · solicitação/resposta',graphql:'GraphQL · seleção de dados',grpc:'gRPC · quadro tipado',websocket:'WebSocket · duas vias',webhook:'Webhook · notificação',sse:'SSE · fluxo contínuo',mqtt:'MQTT · publish/subscribe'};
-const SYMBOLS={square:'Quadrado',circle:'Círculo',diamond:'Losango',triangle:'Triângulo',arrow:'Seta',star:'Estrela'};
+const SYMBOLS={square:'Quadrado',circle:'Círculo',diamond:'Losango',triangle:'Triângulo',arrow:'Seta',star:'Estrela',rest:'REST · API',graphql:'GraphQL · API',grpc:'gRPC · API',websocket:'WebSockets · API',webhook:'Webhooks · API',sse:'SSE · API',mqtt:'MQTT · API'};
 const TRAFFIC_VISUAL={baseSize:8,protocolStrokeWidth:1.1,peakOpacity:.86,fadeIn:.06,fadeOut:.94};
 const EFFECT_BEHAVIOR={
  rest:{paired:true,reverseDelay:.55},graphql:{paired:false},grpc:{paired:false},
@@ -197,14 +197,19 @@ function reactiveStates(p,time,streamList=null){
 function legendLayout(p){let x=32,y=0,rows=1;const items=[];for(const l of p.legends){const w=l.label.length*7+45;if(x+w>p.width-32&&x>32){x=32;y+=32;rows++;}items.push({l,x,y});x+=w;}return {items,rows:p.legends.length?rows:0};}
 function headerHeight(p){return 130+(p.description?Math.max(0,lines(p.description,Math.floor((p.width-64)/7)).length-1)*18:0)+(p.showLegend?legendLayout(p).rows*32:0);}
 const svgStyle=`text{font-family:Arial,sans-serif;fill:#000}.kicker{font-family:monospace;font-size:10px;font-weight:600}.figure-title{font-size:21px;font-weight:700}.description{font-size:13px}.legend-label{font-size:13px}.edge-label{paint-order:stroke;stroke:white;stroke-width:4px;stroke-linejoin:round}.rail{fill:none;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round}.node-shape{stroke-linejoin:round}.selection{fill:none;stroke:#1675df;stroke-width:1.5;stroke-dasharray:4 3;pointer-events:none}.hit{stroke:transparent;stroke-width:16;fill:none;cursor:pointer}.node{cursor:move}.node text,.icon,.packet{pointer-events:none}.resize{fill:white;stroke:#1675df;cursor:nwse-resize}.port{fill:white;stroke:#2563eb;stroke-width:1.5;opacity:0;cursor:crosshair}.node:hover>.port,.node.selected>.port,.connecting .port{opacity:1}.diagram-controls{cursor:pointer}@media(prefers-reduced-motion:reduce){.packet{display:none}}`;
-function protocolGlyph(legend){
- const drawing=PROTOCOL_GLYPHS[legend.effect];if(!drawing)return '';
+function protocolGlyph(legend,effect=legend.effect){
+ const drawing=PROTOCOL_GLYPHS[effect];if(!drawing)return '';
  const scale=legend.size/TRAFFIC_VISUAL.baseSize,stroke=color(legend.color);
  return `<g transform="scale(${scale})" fill="none" stroke="${stroke}" stroke-width="${TRAFFIC_VISUAL.protocolStrokeWidth}" stroke-linecap="round" stroke-linejoin="round" style="color:${stroke}">${drawing}</g>`;
 }
-function trafficGlyph(legend){
- return PROTOCOL_GLYPHS[legend.effect]?protocolGlyph(legend):symbol(legend.shape,0,0,legend.size,legend.color);
+function symbolGlyph(legend,size=legend.size){
+ if(PROTOCOL_GLYPHS[legend.shape])return protocolGlyph({...legend,size},legend.shape);
+ return symbol(legend.shape,0,0,size,legend.color);
 }
+function trafficGlyph(legend){
+ return PROTOCOL_GLYPHS[legend.effect]?protocolGlyph(legend):symbolGlyph(legend);
+}
+function legendGlyph(legend){return symbolGlyph(legend,14);}
 function motionPacket(stream,prefix){
  const {legend:l,duration,delay,index,key}=stream,pid=`${prefix}-edge-${index}`;
  const behavior=EFFECT_BEHAVIOR[l.effect]??{paired:false,reverseDelay:0},cycle=duration*(behavior.cycle??1),visible=duration/cycle;
@@ -216,7 +221,7 @@ function motionPacket(stream,prefix){
  if(l.effect==='comet'){const tail=(l.direction==='reverse'?1:-1)*l.size*3;body=`<path class="comet-tail" d="M 0 ${-l.size*.4} Q ${tail*.45} 0 ${tail} 0 Q ${tail*.45} 0 0 ${l.size*.4} Z" fill="${l.color}" opacity=".45"/>`+body;}
  const fade=behavior.cycle>1?`0;${TRAFFIC_VISUAL.peakOpacity};${TRAFFIC_VISUAL.peakOpacity};0;0`:`0;${TRAFFIC_VISUAL.peakOpacity};${TRAFFIC_VISUAL.peakOpacity};0`;
  const fadeTimes=behavior.cycle>1?`0;${TRAFFIC_VISUAL.fadeIn*visible};${TRAFFIC_VISUAL.fadeOut*visible};${visible};1`:`0;${TRAFFIC_VISUAL.fadeIn};${TRAFFIC_VISUAL.fadeOut};1`;
- let ghosts='';if(l.effect==='trail')for(let i=4;i>=1;i--)ghosts+=`<g class="packet" opacity="0">${symbol(l.shape,0,0,l.size*(1-i*.13),l.color)}${motion(i*duration*.013)}<animate attributeName="opacity" values="0;${(.4-i*.06).toFixed(2)};${(.4-i*.06).toFixed(2)};0" keyTimes="${fadeTimes}" begin="${delay+i*duration*.013}s" dur="${duration}s" repeatCount="indefinite"/></g>`;
+ let ghosts='';if(l.effect==='trail')for(let i=4;i>=1;i--)ghosts+=`<g class="packet" opacity="0">${trafficGlyph({...l,size:l.size*(1-i*.13)})}${motion(i*duration*.013)}<animate attributeName="opacity" values="0;${(.4-i*.06).toFixed(2)};${(.4-i*.06).toFixed(2)};0" keyTimes="${fadeTimes}" begin="${delay+i*duration*.013}s" dur="${duration}s" repeatCount="indefinite"/></g>`;
  const packet=(content,reverse=false,lag=0,streamKey=key)=>`<g class="packet" data-stream="${streamKey}" opacity="0">${content}${motion(lag,reverse)}<animate attributeName="opacity" values="${fade}" keyTimes="${fadeTimes}" dur="${cycle}s" begin="${delay+lag}s" repeatCount="indefinite"/></g>`;
  return ghosts+packet(body,l.direction==='reverse')+(behavior.paired?packet(body,l.direction!=='reverse',behavior.reverseDelay,`${key}-return`):'');
 }
@@ -225,7 +230,7 @@ function render(p,options={}){
  let defs=`<defs><pattern id="${prefix}-grid" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".45" fill="#e2e2e2"/></pattern>`;
  let body=`<rect width="${p.width}" height="${height}" fill="white"/><text x="32" y="44" class="kicker">${esc(p.kicker.toUpperCase())}</text><text x="32" y="86" class="figure-title">${esc(p.title)}</text>`;
  body+=lines(p.description,Math.max(8,Math.floor((p.width-64)/7))).map((s,i)=>`<text x="32" y="${115+i*18}" class="description">${esc(s)}</text>`).join('');
- if(p.showLegend){const layout=legendLayout(p);for(const {l,x,y}of layout.items){const ly=head-layout.rows*32+15+y;body+=symbol(l.shape,x+7,ly,14,l.color)+`<text x="${x+22}" y="${ly+4}" class="legend-label">${esc(l.label)}</text>`;}}
+ if(p.showLegend){const layout=legendLayout(p);for(const {l,x,y}of layout.items){const ly=head-layout.rows*32+15+y;body+=`<g class="legend-marker" data-legend="${esc(l.id)}" transform="translate(${x+7} ${ly})">${legendGlyph(l)}</g><text x="${x+22}" y="${ly+4}" class="legend-label">${esc(l.label)}</text>`;}}
  if(options.controls)body+=`<g class="diagram-controls" data-play="true"><rect x="${p.width-113}" y="63" width="81" height="34" rx="9" fill="white" stroke="black"/><text x="${p.width-72}" y="84" text-anchor="middle" font-size="11">${options.paused?'▶ Reproduzir':'Ⅱ Pausar'}</text></g>`;
  body+=`<g transform="translate(0 ${head})" id="${prefix}-board"><rect width="${p.width}" height="${p.height}" fill="${p.grid?'url(#'+prefix+'-grid)':'white'}"/>`;
  const groups=p.nodes.filter(n=>['group','swimlane'].includes(n.type));

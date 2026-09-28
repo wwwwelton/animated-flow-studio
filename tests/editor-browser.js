@@ -42,6 +42,13 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  await page.locator('#trafficSpeed').fill('3');await page.locator('#trafficSpeed').dispatchEvent('change');
  assert.equal(await page.evaluate(()=>F.streams(project)[0].duration),4/6);assert.equal(await page.evaluate(()=>F.streams(project).filter(s=>s.index===0&&s.legend.id==='request').length),3);
  console.log('PASS traffic effects, symbols, speed and count');
+ await page.click('#addLegend');const apiLegend=page.locator('#legendEditor details').last();await apiLegend.locator('summary').click();const symbol=apiLegend.getByLabel('Símbolo',{exact:true});
+ const apiSymbols=await symbol.locator('option').evaluateAll(options=>options.slice(-7).map(option=>option.value));
+ assert.deepEqual(apiSymbols,['rest','graphql','grpc','websocket','webhook','sse','mqtt']);
+ await symbol.selectOption('graphql');const apiLegendId=await page.evaluate(()=>project.legends.at(-1).id);
+ assert.ok((await page.locator(`#board svg .legend-marker[data-legend="${apiLegendId}"]`).innerHTML()).includes('M-2-3H-3.5V3H-2'));
+ assert.equal(await page.evaluate(()=>F.normalize(JSON.parse(JSON.stringify(project))).legends.at(-1).shape),'graphql');
+ console.log('PASS API protocol glyph symbols render in the top legend and survive roundtrip');
  // Real mouse zoom keeps the point under the cursor; pan does not move nodes.
  await page.locator('#viewport').scrollIntoViewIfNeeded();const vp=await page.locator('#viewport').boundingBox();
  const before=await page.evaluate(()=>({...view}));await page.mouse.move(vp.x+vp.width*.45,vp.y+vp.height*.4);await page.keyboard.down('Control');await page.mouse.wheel(0,-260);await page.keyboard.up('Control');await page.waitForFunction(()=>zoomTarget===null);

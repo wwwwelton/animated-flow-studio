@@ -110,6 +110,13 @@ class Diagram:
             "triangle",
             "arrow",
             "star",
+            "rest",
+            "graphql",
+            "grpc",
+            "websocket",
+            "webhook",
+            "sse",
+            "mqtt",
         ) or legend.direction not in ("forward", "reverse"):
             raise ValueError("Invalid legend symbol or direction")
         self.legends[legend.id] = legend
