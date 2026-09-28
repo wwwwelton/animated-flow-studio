@@ -63,10 +63,10 @@ test('API protocol glyphs can be selected as symbols and appear in the traffic l
  assert.deepEqual(F.normalize(JSON.parse(JSON.stringify(p))),p);
 
  const staticSvg=F.render(p,{static:true}),markerStart=staticSvg.indexOf('class="legend-marker"'),markerEnd=staticSvg.indexOf('<text',markerStart),marker=staticSvg.slice(markerStart,markerEnd);
- assert.match(marker,/scale\(1\.75\)/);assert.ok(marker.includes('M-2-3H-3.5V3H-2'));
+ assert.match(marker,/scale\(1\.75\)/);assert.ok(marker.includes('L.9-1.1 3.5-1.1'));
  assert.match(marker,/stroke="#c026d3"/);
  const animatedSvg=F.render(p);
- assert.match(animatedSvg,/data-stream="0-0-0"[^]*?scale\(1\\?\)[^]*?M-2-3H-3\.5/);
+ assert.match(animatedSvg,/data-stream="0-0-0"[^]*?scale\(1\\?\)[^]*?L\.9-1\.1 3\.5-1\.1/);
 });
 test('API traffic uses small glyphs, soft fades and protocol-specific direction',()=>{
  const p=F.protocolTemplate(),legendMap=Object.fromEntries(p.legends.map(l=>[l.id,l]));
@@ -87,22 +87,44 @@ test('API traffic uses small glyphs, soft fades and protocol-specific direction'
  assert.equal((svg.match(/data-stream="[^"]+-return"/g)||[]).length,4);
  assert.doesNotMatch(svg,/r="8" fill="#[0-9a-f]{6}" fill-opacity/);
 });
-test('API traffic legends reuse System Design names, shapes, and marker scale',()=>{
+test('API traffic uses reference glyphs and protocol-specific visual motion',()=>{
+ const p=F.protocolTemplate(),svg=F.render(p),streams=F.streams(p);
+ const legendMap=Object.fromEntries(p.legends.map(legend=>[legend.id,legend]));
+ assert.deepEqual(Object.entries(legendMap).map(([id,legend])=>[id,legend.shape]),[
+  ['rest','rest'],['graphql','graphql'],['grpc','grpc'],['websocket','websocket'],
+  ['webhook','webhook'],['sse','sse'],['mqtt','mqtt']
+ ]);
+ assert.match(svg,/data-stream="0-0-0"[^]*?type="rotate" values="0;360"/);
+ assert.match(svg,/L\.9-1\.1 3\.5-1\.1/); // GraphQL selection star.
+ assert.match(svg,/data-stream="2-0-0"[^]*?<circle cx="-3" r="\.55"/); // gRPC bead train.
+ assert.match(svg,/stroke-dasharray="6 4"/); // Persistent WebSocket channel.
+ assert.match(svg,/data-stream="8-0-0"[^]*?dur="15s"/); // Sparse webhook event.
+ const mqttRequest=streams.find(stream=>stream.legend.id==='mqtt'&&stream.edge.id==='mqtt-request');
+ const mqttDelivery=streams.find(stream=>stream.legend.id==='mqtt'&&stream.edge.id==='mqtt-delivery');
+ assert.equal(mqttDelivery.delay-mqttRequest.delay,mqttRequest.duration+.18/.95+.35);
+ assert.deepEqual(streams.filter(stream=>stream.legend.id==='sse').map(stream=>[stream.source,stream.target]),[
+  ['sse-source','sse-protocol'],['sse-protocol','sse-target']
+ ]);
+ assert.doesNotMatch(svg,/data-stream="5-[^\"]+return"/); // SSE stays one-way.
+});
+test('API traffic legends use their protocol glyphs at the standard marker scale',()=>{
  const p=F.protocolTemplate(),expected=[
-  ['rest','REST','#2563eb','square'],['graphql','GraphQL','#c026d3','square'],
-  ['grpc','gRPC','#0f766e','square'],['websocket','WebSockets','#ea580c','circle'],
-  ['webhook','Webhooks','#dc2626','diamond'],['sse','SSE','#0284c7','diamond'],
-  ['mqtt','MQTT','#65a30d','diamond']
+  ['rest','REST','#2563eb','rest'],['graphql','GraphQL','#c026d3','graphql'],
+  ['grpc','gRPC','#0f766e','grpc'],['websocket','WebSockets','#ea580c','websocket'],
+  ['webhook','Webhooks','#dc2626','webhook'],['sse','SSE','#0284c7','sse'],
+  ['mqtt','MQTT','#65a30d','mqtt']
  ];
  assert.deepEqual(p.legends.map(({id,label,color,shape})=>[id,label,color,shape]),expected);
  assert.ok(p.legends.every(legend=>legend.size===8));
 
  const svg=F.render(p,{static:true}),legendSvg=svg.slice(0,svg.indexOf('<g transform="translate(0 '));
  assert.equal((legendSvg.match(/class="legend-label"/g)||[]).length,7);
- assert.equal((legendSvg.match(/stroke-width="\.6"/g)||[]).length,7);
- assert.equal((legendSvg.match(/width="14" height="14"/g)||[]).length,3);
- assert.match(legendSvg,/<circle cx="[^"]+" cy="[^"]+" r="7" fill="#ea580c"/);
- for(const color of ['#dc2626','#0284c7','#65a30d'])assert.match(legendSvg,new RegExp(`<path d="M[^\"]+" fill="${color}" stroke="#000000" stroke-width="\\.6"`));
+ for(const [id,label,color] of expected){
+  const start=legendSvg.indexOf(`data-legend="${id}"`),end=legendSvg.indexOf('</g>',start),marker=legendSvg.slice(start,end);
+  assert.match(marker,/scale\(1\.75\)/);
+  assert.match(marker,/stroke-width="1\.1"/);
+  assert.ok(marker.includes(`stroke="${color}"`),`${label} marker uses its protocol color`);
+ }
  for(const [,label] of expected)assert.ok(legendSvg.includes(`class="legend-label">${label}</text>`));
  assert.equal(F.headerHeight(p),162);
 });

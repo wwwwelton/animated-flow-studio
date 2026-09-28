@@ -17,13 +17,13 @@ const EFFECT_BEHAVIOR={
  websocket:{paired:true,reverseDelay:.7},webhook:{paired:false,cycle:2},sse:{paired:false},mqtt:{paired:false}
 };
 const PROTOCOL_GLYPHS={
- rest:'<rect x="-4" y="-3" width="4" height="6" rx="1"/><path d="M0 0H4m-1.5-1.5L4 0 2.5 1.5"/>',
- graphql:'<path d="M-2-3H-3.5V3H-2M2-3H3.5V3H2M-1-1H1M-1 1H1"/>',
- grpc:'<rect x="-3.5" y="-3" width="7" height="6" rx="1.2"/><circle cx="-1.5" r=".6" fill="currentColor" stroke="none"/><path d="M-.2 0H2"/>',
- websocket:'<path d="M-4-1H2m-1.4-1.4L2-1 .6.4M4 1H-2m1.4-1.4L-2 1-.6 2.4"/>',
- webhook:'<circle cx="-2" r="1.5" fill="currentColor" stroke="none"/><path d="M-.2 0H4m-1.5-1.5L4 0 2.5 1.5"/>',
+ rest:'<path d="M2.5-1.3A3 3 0 1 0 2.8.8"/><path d="M2.8-1.5V.1H1.2"/>',
+ graphql:'<path d="M0-3.5L.9-1.1 3.5-1.1 1.4.4 2.2 3 0 1.5-2.2 3-1.4.4-3.5-1.1H-.9Z"/>',
+ grpc:'<circle cx="-3" r=".55"/><circle cx="-1.8" r=".55" fill="currentColor" stroke="none"/><circle cx="-.6" r=".55"/><circle cx=".6" r=".55" fill="currentColor" stroke="none"/><circle cx="1.8" r=".55"/><circle cx="3" r=".55" fill="currentColor" stroke="none"/>',
+ websocket:'<path d="M-3.5-1.5H3.5M-3.5 1.5H3.5" stroke-dasharray="1 1"/><circle cx="-2.5" r=".65"/><circle cx="2.5" r=".65" fill="currentColor" stroke="none"/>',
+ webhook:'<circle cx="-2.4" r="1" fill="currentColor" stroke="none"/><path d="M-1 0H3"/>',
  sse:'<circle cx="-3" r=".6" fill="currentColor" stroke="none"/><circle cx="-1" r=".6" fill="currentColor" stroke="none"/><circle cx="1" r=".6" fill="currentColor" stroke="none"/><path d="M2 0H4m-1.5-1.5L4 0 2.5 1.5"/>',
- mqtt:'<path d="M0-3.5L3.5 0 0 3.5-3.5 0Z"/><circle r=".7" fill="currentColor" stroke="none"/>'
+ mqtt:'<rect x="-3" y="-3" width="6" height="6" rx=".8"/><circle r=".8" fill="currentColor" stroke="none"/>'
 };
 const CONNECTORS={out:'Seta saída',in:'Seta entrada',curve:'Seta em curva',both:'Seta bidirecional',line:'Linha',dashed:'Linha tracejada',dotted:'Linha pontilhada',double:'Linha dupla'};
 const FONTS=['Arial','Georgia','Verdana','Courier New','Inter','Roboto','Open Sans','Lato','Montserrat','Poppins','Nunito','Ubuntu','Merriweather','Playfair Display','Roboto Mono','JetBrains Mono','Fira Code','Source Code Pro'];
@@ -161,11 +161,12 @@ function symbol(kind,x,y,size,fill){
  return `<rect x="${x-r}" y="${y-r}" width="${size}" height="${size}" rx="2" ${a}/>`;
 }
 function streams(p){
- const result=[];
+ const result=[],nodes=new Map(p.nodes.map(node=>[node.id,node]));
  p.edges.forEach((e,i)=>e.traffic.forEach((id,j)=>{
   const l=p.legends.find(l=>l.id===id);if(!l)return;
   const duration=e.duration/((p.trafficSpeed??1)*(l.speed??1));
-  for(let k=0;k<(l.count??1);k++)result.push({edge:e,index:i,legend:l,duration,delay:(i*.18+j*.22)/((p.trafficSpeed??1)*(l.speed??1))+k*duration/(l.count??1),key:`${i}-${j}-${k}`,source:l.direction==='reverse'?e.target:e.source,target:l.direction==='reverse'?e.source:e.target});
+  const brokerOutput=l.effect==='mqtt'&&nodes.get(e.source)?.type==='api-mqtt',relayDelay=brokerOutput?duration+.35:0;
+  for(let k=0;k<(l.count??1);k++)result.push({edge:e,index:i,legend:l,duration,delay:(i*.18+j*.22)/((p.trafficSpeed??1)*(l.speed??1))+relayDelay+k*duration/(l.count??1),key:`${i}-${j}-${k}`,source:l.direction==='reverse'?e.target:e.source,target:l.direction==='reverse'?e.source:e.target});
  }));return result;
 }
 function reactiveStates(p,time,streamList=null){
@@ -202,6 +203,7 @@ function motionPacket(stream,prefix){
  const behavior=EFFECT_BEHAVIOR[l.effect]??{paired:false,reverseDelay:0},cycle=duration*(behavior.cycle??1),visible=duration/cycle;
  const motion=(lag=0,reverse=l.direction==='reverse')=>`<animateMotion dur="${duration}s" begin="${delay+lag}s" calcMode="linear" repeatCount="indefinite" rotate="auto" ${reverse?'keyPoints="1;0" keyTimes="0;1"':''}><mpath href="#${pid}"/></animateMotion>`;
  let body=trafficGlyph(l);
+ if(l.effect==='rest')body=`<g>${body}<animateTransform attributeName="transform" type="rotate" values="0;360" calcMode="linear" dur="1.4s" begin="${delay}s" repeatCount="indefinite"/></g>`;
  if(l.effect==='glow')body=`<circle r="${l.size}" fill="${l.color}" opacity=".2"/><circle r="${l.size*.7}" fill="${l.color}" opacity=".2"/>`+body;
  if(l.effect==='pulse')body=`<g>${body}<animateTransform attributeName="transform" type="scale" values=".96;1;.96" dur="${duration/4}s" begin="${delay}s" repeatCount="indefinite"/></g>`;
  if(l.effect==='dashed')body=`<rect x="${-l.size}" y="-2" width="${l.size*2}" height="4" rx="2" fill="${l.color}"/>`;
@@ -228,7 +230,8 @@ function render(p,options={}){
   const path=route(a,b,e),pid=`${prefix}-edge-${i}`,stroke=color(e.strokeColor,'#000000'),kind=e.connector??'out';
   defs+=`<marker id="${pid}-arrow" viewBox="0 0 8 8" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1 1L7 4L1 7" fill="none" stroke="${stroke}" stroke-width="1.1"/></marker>`;
   const markers=(['out','curve','both'].includes(kind)?` marker-end="url(#${pid}-arrow)"`:'')+(['in','both'].includes(kind)?` marker-start="url(#${pid}-arrow)"`:'');
-  const dash=kind==='dashed'?' stroke-dasharray="8 5"':kind==='dotted'?' stroke-dasharray="1 5"':'';
+  const websocket=e.traffic.some(id=>p.legends.find(legend=>legend.id===id)?.effect==='websocket');
+  const dash=kind==='dashed'?' stroke-dasharray="8 5"':kind==='dotted'?' stroke-dasharray="1 5"':websocket?' stroke-dasharray="6 4"':'';
   const width=e.lineWidth??1;
   if(kind==='double')body+=`<path d="${path.d}" fill="none" stroke="${stroke}" stroke-width="${width*2+3}" stroke-linejoin="round"/>`;
   body+=`<path d="${path.d}" id="${pid}" class="rail" style="stroke:${kind==='double'?'#ffffff':stroke};stroke-width:${kind==='double'?3:width}"${markers}${dash}/>`;
@@ -261,15 +264,15 @@ function featureTemplate(){
  return normalize({title:'Tabelas, eventos e componente reativo',kicker:'ANIMATED FLOW STUDIO 3',description:'Arraste as portas azuis para conectar. Ctrl + roda aplica zoom; arraste o fundo para navegar.',width:1100,height:600,nodes,legends,edges:[{id:'a',source:'client',target:'status',traffic:['request','response'],duration:4,connector:'both'},{id:'b',source:'status',target:'sql',traffic:['request'],duration:5,connector:'curve'},{id:'c',source:'status',target:'nosql',traffic:['cdc'],duration:6,connector:'dashed'},{id:'d',source:'schema',target:'status',traffic:['request'],duration:8,connector:'dotted'}]});
 }
 function protocolTemplate(){
- // Reuse System Design's square/request, circle/response, and diamond/event markers.
+ // Keep each traffic marker consistent with its protocol-specific animated glyph.
  const specs=[
-  {id:'rest',type:'api-rest',title:'REST',effect:'rest',color:'#2563eb',shape:'square',speed:1,count:1,icon:'api',source:'Web e mobile',sourceNote:'Cliente HTTP.',target:'Recursos HTTP',targetNote:'Users · products · orders.',note:'CRUD com métodos HTTP e recursos.'},
-  {id:'graphql',type:'api-graphql',title:'GraphQL',effect:'graphql',color:'#c026d3',shape:'square',speed:1,count:1,icon:'database',source:'Aplicações clientes',sourceNote:'Pede apenas os campos necessários.',target:'API de dados',targetNote:'Resolvers e fontes de dados.',note:'Consulta campos sob demanda.'},
-  {id:'grpc',type:'api-grpc',title:'gRPC',effect:'grpc',color:'#0f766e',shape:'square',speed:1.05,count:1,icon:'server',source:'Serviço interno A',sourceNote:'Chama com contrato Protobuf.',target:'Microsserviço B',targetNote:'Atende chamadas RPC tipadas.',note:'RPC tipada de baixa latência.'},
-  {id:'websocket',type:'api-websocket',title:'WebSockets',effect:'websocket',color:'#ea580c',shape:'circle',speed:.95,count:1,icon:'network',source:'Chat / multiplayer',sourceNote:'Mantém o canal aberto.',target:'Serviço em tempo real',targetNote:'Envia e recebe eventos.',note:'Conexão persistente, duas vias.'},
-  {id:'webhook',type:'api-webhook',title:'Webhooks',effect:'webhook',color:'#dc2626',shape:'diamond',speed:.8,count:1,icon:'network',source:'Provedor de eventos',sourceNote:'Publica um evento.',target:'Agente de IA',targetNote:'Recebe um callback HTTP.',note:'Notificação enviada ao endpoint.'},
-  {id:'sse',type:'api-sse',title:'SSE',effect:'sse',color:'#0284c7',shape:'diamond',speed:.95,count:1,icon:'server',source:'Servidor de eventos',sourceNote:'Envia eventos via HTTP.',target:'Feed / agente',targetNote:'Recebe o fluxo contínuo.',note:'Stream unidirecional do servidor.'},
-  {id:'mqtt',type:'api-mqtt',title:'MQTT',effect:'mqtt',color:'#65a30d',shape:'diamond',speed:.95,count:1,icon:'network',source:'Sensores IoT',sourceNote:'Publica em tópicos.',target:'Assinantes',targetNote:'Consome tópicos inscritos.',note:'Pub/sub leve para redes instáveis.'}
+  {id:'rest',type:'api-rest',title:'REST',effect:'rest',color:'#2563eb',shape:'rest',speed:1,count:1,icon:'api',source:'Web e mobile',sourceNote:'Cliente HTTP.',target:'Recursos HTTP',targetNote:'Users · products · orders.',note:'CRUD com métodos HTTP e recursos.'},
+  {id:'graphql',type:'api-graphql',title:'GraphQL',effect:'graphql',color:'#c026d3',shape:'graphql',speed:1,count:1,icon:'database',source:'Aplicações clientes',sourceNote:'Pede apenas os campos necessários.',target:'API de dados',targetNote:'Resolvers e fontes de dados.',note:'Consulta campos sob demanda.'},
+  {id:'grpc',type:'api-grpc',title:'gRPC',effect:'grpc',color:'#0f766e',shape:'grpc',speed:1.05,count:1,icon:'server',source:'Serviço interno A',sourceNote:'Chama com contrato Protobuf.',target:'Microsserviço B',targetNote:'Atende chamadas RPC tipadas.',note:'RPC tipada de baixa latência.'},
+  {id:'websocket',type:'api-websocket',title:'WebSockets',effect:'websocket',color:'#ea580c',shape:'websocket',speed:.95,count:1,icon:'network',source:'Chat / multiplayer',sourceNote:'Mantém o canal aberto.',target:'Serviço em tempo real',targetNote:'Envia e recebe eventos.',note:'Conexão persistente, duas vias.'},
+  {id:'webhook',type:'api-webhook',title:'Webhooks',effect:'webhook',color:'#dc2626',shape:'webhook',speed:.8,count:1,icon:'network',source:'Provedor de eventos',sourceNote:'Publica um evento.',target:'Agente de IA',targetNote:'Recebe um callback HTTP.',note:'Notificação enviada ao endpoint.'},
+  {id:'sse',type:'api-sse',title:'SSE',effect:'sse',color:'#0284c7',shape:'sse',speed:.95,count:1,icon:'server',source:'Servidor de eventos',sourceNote:'Envia eventos via HTTP.',target:'Feed / agente',targetNote:'Recebe o fluxo contínuo.',note:'Stream unidirecional do servidor.'},
+  {id:'mqtt',type:'api-mqtt',title:'MQTT',effect:'mqtt',color:'#65a30d',shape:'mqtt',speed:.95,count:1,icon:'network',source:'Sensores IoT',sourceNote:'Publica em tópicos.',target:'Assinantes',targetNote:'Consome tópicos inscritos.',note:'Pub/sub leve para redes instáveis.'}
  ];
  const nodes=[],edges=[],legends=[];
  for(const [i,s] of specs.entries()){
