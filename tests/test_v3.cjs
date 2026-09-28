@@ -68,7 +68,7 @@ test('API protocol glyphs can be selected as symbols and appear in the traffic l
  assert.deepEqual(F.normalize(JSON.parse(JSON.stringify(p))),p);
 
  const staticSvg=F.render(p,{static:true}),markerStart=staticSvg.indexOf('class="legend-marker"'),markerEnd=staticSvg.indexOf('<text',markerStart),marker=staticSvg.slice(markerStart,markerEnd);
- assert.match(marker,/scale\(2\.25\)/);assert.ok(marker.includes('M0-3.5L3.5 0 0 3.5'));
+ assert.match(marker,/scale\(2\)/);assert.ok(marker.includes('M0-3.5L3.5 0 0 3.5'));
  assert.match(marker,/stroke="#c026d3"/);
  const animatedSvg=F.render(p);
  assert.match(animatedSvg,/data-stream="0-0-0"[^]*?scale\(2\)[^]*?M0-3\.5L3\.5 0/);
@@ -142,7 +142,7 @@ test('API traffic legends use their protocol glyphs at the standard marker scale
  assert.equal((legendSvg.match(/class="legend-label"/g)||[]).length,7);
  for(const [id,label,color,,glyph,symbol] of expected){
   const start=legendSvg.indexOf(`data-legend="${id}"`),end=legendSvg.indexOf('</g>',start),marker=legendSvg.slice(start,end);
-  assert.match(marker,/scale\(2\.25\)/);
+  assert.match(marker,/scale\(2\)/);
   assert.match(marker,/stroke-width="1\.1"/);
   assert.ok(marker.includes(`stroke="${color}"`),`${label} marker uses its protocol color`);
   assert.ok(marker.includes(glyph),`${label} draws ${symbol}`);
@@ -191,4 +191,23 @@ test('SVG catalog separates custom from flowchart and compiled templates are saf
 test('comet has a tapered tail while trail uses spaced markers',()=>{
  const p=simple();p.legends[0].effect='comet';const comet=F.render(p);assert.match(comet,/comet-tail/);
  p.legends[0].effect='trail';const trail=F.render(p);assert.ok(!trail.includes('comet-tail'));assert.ok((trail.match(/animateMotion /g)||[]).length>(comet.match(/animateMotion /g)||[]).length);
+});
+
+test('legend glyphs share the same 16-unit visual size and aligned spacing',()=>{
+ const p=simple();
+ p.legends[0].shape='rest';
+ const svg=F.render(p);
+ assert.match(svg,/class="legend-marker"[^>]*translate\(40 /);
+ assert.match(svg,/transform="scale\(2\)"/);
+ assert.match(svg,/class="legend-label"/);
+});
+
+test('connector arrowheads use the normalized 10-unit base size and scale with line width',()=>{
+ const p=simple();
+ p.edges[0].lineWidth=1;
+ let svg=F.render(p);
+ assert.match(svg,/markerWidth="10" markerHeight="10"/);
+ p.edges[0].lineWidth=5;
+ svg=F.render(p);
+ assert.match(svg,/markerWidth="13" markerHeight="13"/);
 });

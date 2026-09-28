@@ -12,7 +12,7 @@ const LEGENDS=[{id:'request',label:'Solicitação',color:'#70a0ff',shape:'square
 const EFFECTS={packet:'Marcador',pulse:'Pulso',glow:'Brilho',trail:'Rastro',comet:'Cometa',dashed:'Fluxo tracejado',rest:'REST · solicitação/resposta',graphql:'GraphQL · seleção de dados',grpc:'gRPC · quadro tipado',websocket:'WebSocket · duas vias',webhook:'Webhook · notificação',sse:'SSE · fluxo contínuo',mqtt:'MQTT · publish/subscribe'};
 const SYMBOLS={square:'Quadrado',circle:'Círculo',diamond:'Losango',triangle:'Triângulo',arrow:'Seta',star:'Estrela',rest:'REST · API',graphql:'GraphQL · API',grpc:'gRPC · API',websocket:'WebSockets · API',webhook:'Webhooks · API',sse:'SSE · API',mqtt:'MQTT · API'};
 // One rem uses the browser default (16px); traffic defaults use the same SVG-unit size.
-const TRAFFIC_VISUAL={baseSize:8,defaultSize:16,protocolStrokeWidth:1.1,peakOpacity:.86,fadeIn:.06,fadeOut:.94};
+const TRAFFIC_VISUAL={baseSize:8,defaultSize:16,legendSize:16,legendGap:10,connectorArrowSize:10,connectorArrowStroke:1.15,protocolStrokeWidth:1.1,peakOpacity:.86,fadeIn:.06,fadeOut:.94};
 const PROTOCOL_FLOW_STYLES={
  rest:{symbol:'→',legend:'<path d="M-3 0H3M1-2L3 0 1 2"/>',packet:'<circle cx="-3" r=".75" fill="currentColor" stroke="none"/><path d="M-1.5 0H3M1-2L3 0 1 2"/>',particle:'circle',direction:'request-response',paired:true,reverseDelay:.55,speed:1,mirrorOnReturn:true},
  graphql:{symbol:'◇',legend:'<path d="M0-3.5L3.5 0 0 3.5-3.5 0Z"/>',packet:'<path d="M0-3.5L3.5 0 0 3.5-3.5 0Z"/>',particle:'diamond',direction:'request-response',paired:true,reverseDelay:.65,speed:1},
@@ -179,7 +179,7 @@ function reactiveStates(p,time,streamList=null){
  for(const [id,e]of Object.entries(events)){const n=lookup.get(id),r=n.reactive;if(r.hold>0&&time-e.at>=r.hold)continue;result[id]={label:r.text?(e.event==='enter'?r.enterText:r.exitText):n.label,color:r.color?(e.event==='enter'?r.enterColor:r.exitColor):n.color,event:e.event,legend:e.legend};}
  return result;
 }
-function legendLayout(p){let x=32,y=0,rows=1;const items=[];for(const l of p.legends){const w=l.label.length*7+45;if(x+w>p.width-32&&x>32){x=32;y+=32;rows++;}items.push({l,x,y});x+=w;}return {items,rows:p.legends.length?rows:0};}
+function legendLayout(p){let x=32,y=0,rows=1;const items=[];for(const l of p.legends){const w=l.label.length*7+TRAFFIC_VISUAL.legendSize+TRAFFIC_VISUAL.legendGap+18;if(x+w>p.width-32&&x>32){x=32;y+=32;rows++;}items.push({l,x,y});x+=w;}return {items,rows:p.legends.length?rows:0};}
 function headerHeight(p){return 130+(p.description?Math.max(0,lines(p.description,Math.floor((p.width-64)/7)).length-1)*18:0)+(p.showLegend?legendLayout(p).rows*32:0);}
 const svgStyle=`:root{font-size:1rem}text{font-family:Arial,sans-serif;fill:#000}.kicker{font-family:monospace;font-size:10px;font-weight:600}.figure-title{font-size:21px;font-weight:700}.description{font-size:13px}.legend-label{font-size:13px}.edge-label{paint-order:stroke;stroke:white;stroke-width:4px;stroke-linejoin:round}.rail{fill:none;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round}.node-shape{stroke-linejoin:round}.selection{fill:none;stroke:#1675df;stroke-width:1.5;stroke-dasharray:4 3;pointer-events:none}.hit{stroke:transparent;stroke-width:16;fill:none;cursor:pointer}.node{cursor:move}.node text,.icon,.packet{pointer-events:none}.resize{fill:white;stroke:#1675df;cursor:nwse-resize}.port{fill:white;stroke:#2563eb;stroke-width:1.5;opacity:0;cursor:crosshair}.node:hover>.port,.node.selected>.port,.connecting .port{opacity:1}.diagram-controls{cursor:pointer}@media(prefers-reduced-motion:reduce){.packet{display:none}}`;
 function protocolGlyph(legend,effect=legend.effect,part='packet',reverse=false){
@@ -195,7 +195,7 @@ function symbolGlyph(legend,size=legend.size){
 function trafficGlyph(legend,reverse=false){
  return PROTOCOL_FLOW_STYLES[legend.effect]?protocolGlyph(legend,legend.effect,'packet',reverse):symbolGlyph(legend);
 }
-function legendGlyph(legend){return symbolGlyph(legend,PROTOCOL_FLOW_STYLES[legend.shape]?18:14);}
+function legendGlyph(legend){return symbolGlyph(legend,TRAFFIC_VISUAL.legendSize);}
 function motionPacket(stream,prefix){
  const {legend:l,duration,delay,index,key}=stream,pid=`${prefix}-edge-${index}`;
  const behavior=PROTOCOL_FLOW_STYLES[l.effect]??{paired:false,reverseDelay:0},cycle=duration*(behavior.cycle??1),visible=duration/cycle;
@@ -219,7 +219,7 @@ function render(p,options={}){
  let defs=`<defs><pattern id="${prefix}-grid" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".45" fill="#e2e2e2"/></pattern>`;
  let body=`<rect width="${p.width}" height="${height}" fill="white"/><text x="32" y="44" class="kicker">${esc(p.kicker.toUpperCase())}</text><text x="32" y="86" class="figure-title">${esc(p.title)}</text>`;
  body+=lines(p.description,Math.max(8,Math.floor((p.width-64)/7))).map((s,i)=>`<text x="32" y="${115+i*18}" class="description">${esc(s)}</text>`).join('');
- if(p.showLegend){const layout=legendLayout(p);for(const {l,x,y}of layout.items){const ly=head-layout.rows*32+15+y;body+=`<g class="legend-marker" data-legend="${esc(l.id)}" transform="translate(${x+7} ${ly})">${legendGlyph(l)}</g><text x="${x+22}" y="${ly+4}" class="legend-label">${esc(l.label)}</text>`;}}
+ if(p.showLegend){const layout=legendLayout(p);for(const {l,x,y}of layout.items){const ly=head-layout.rows*32+15+y,iconX=x+TRAFFIC_VISUAL.legendSize/2,textX=x+TRAFFIC_VISUAL.legendSize+TRAFFIC_VISUAL.legendGap;body+=`<g class="legend-marker" data-legend="${esc(l.id)}" transform="translate(${iconX} ${ly})">${legendGlyph(l)}</g><text x="${textX}" y="${ly+4}" class="legend-label">${esc(l.label)}</text>`;}}
  if(options.controls)body+=`<g class="diagram-controls" data-play="true"><rect x="${p.width-113}" y="63" width="81" height="34" rx="9" fill="white" stroke="black"/><text x="${p.width-72}" y="84" text-anchor="middle" font-size="11">${options.paused?'▶ Reproduzir':'Ⅱ Pausar'}</text></g>`;
  body+=`<g transform="translate(0 ${head})" id="${prefix}-board"><rect width="${p.width}" height="${p.height}" fill="${p.grid?'url(#'+prefix+'-grid)':'white'}"/>`;
  const groups=p.nodes.filter(n=>['group','swimlane'].includes(n.type));
@@ -228,7 +228,8 @@ function render(p,options={}){
  for(const [i,e]of p.edges.entries()){
   const a=lookup.get(e.source),b=lookup.get(e.target);if(!a||!b)continue;
   const path=route(a,b,e),pid=`${prefix}-edge-${i}`,stroke=color(e.strokeColor,'#000000'),kind=e.connector??'out';
-  defs+=`<marker id="${pid}-arrow" viewBox="0 0 8 8" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1 1L7 4L1 7" fill="none" stroke="${stroke}" stroke-width="1.1"/></marker>`;
+  const arrowSize=TRAFFIC_VISUAL.connectorArrowSize+Math.max(0,(e.lineWidth??1)-1)*.75,arrowMid=arrowSize/2,arrowTip=arrowSize-1;
+  defs+=`<marker id="${pid}-arrow" viewBox="0 0 ${arrowSize} ${arrowSize}" markerWidth="${arrowSize}" markerHeight="${arrowSize}" refX="${arrowTip}" refY="${arrowMid}" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1 1L${arrowTip} ${arrowMid}L1 ${arrowSize-1}" fill="none" stroke="${stroke}" stroke-width="${TRAFFIC_VISUAL.connectorArrowStroke}"/></marker>`;
   const markers=(['out','curve','both'].includes(kind)?` marker-end="url(#${pid}-arrow)"`:'')+(['in','both'].includes(kind)?` marker-start="url(#${pid}-arrow)"`:'');
   const persistent=e.traffic.some(id=>PROTOCOL_FLOW_STYLES[p.legends.find(legend=>legend.id===id)?.effect]?.rail==='dashed');
   const dash=kind==='dashed'?' stroke-dasharray="8 5"':kind==='dotted'?' stroke-dasharray="1 5"':persistent?' stroke-dasharray="6 4"':'';
