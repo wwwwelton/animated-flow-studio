@@ -25,8 +25,8 @@ test('tokens use path arc length, respect endpoint padding and reverse on the sa
  assert.equal(reverse.attributes.get('transform'),'translate(48 23.04)');
  forward.step(0);
  reverse.step(0);
- assert.equal(forward.attributes.get('transform'),'translate(4 0.16)');
- assert.equal(reverse.attributes.get('transform'),'translate(92 84.64)');
+ assert.equal(forward.attributes.get('transform'),'translate(11 1.21)');
+ assert.equal(reverse.attributes.get('transform'),'translate(85 72.25)');
  forward.step(2.5);
  assert.equal(forward.attributes.get('opacity'),'0');
  forward.stop();reverse.stop();
@@ -36,9 +36,9 @@ test('larger tokens receive more clearance from cards and arrowheads',()=>{
  const pathElement={getTotalLength:()=>100,getPointAtLength(distance){return {x:distance,y:0};}};
  const flow=runtime(pathElement,{size:32});
  flow.step(0);
- assert.equal(flow.attributes.get('transform'),'translate(13 0)');
+ assert.equal(flow.attributes.get('transform'),'translate(20 0)');
  flow.step(1.999);
- assert.ok(Number(flow.attributes.get('transform').match(/translate\(([^ ]+)/)[1])<=83);
+ assert.ok(Number(flow.attributes.get('transform').match(/translate\(([^ ]+)/)[1])<=76);
  flow.stop();
 });
 
@@ -60,7 +60,7 @@ test('Webhook travels once and replays only when its event is triggered',()=>{
  flow.trigger('another-link');
  assert.equal(flow.attributes.get('opacity'),'0');
  flow.trigger('webhook-link');
- assert.equal(flow.attributes.get('transform'),'translate(4 0)');
+ assert.equal(flow.attributes.get('transform'),'translate(11 0)');
  assert.equal(flow.attributes.get('opacity'),'.86');
  flow.stop();
 });

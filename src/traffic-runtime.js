@@ -3,9 +3,9 @@
  'use strict';
  const START_PADDING=4,END_PADDING=8;
  function placeToken(token,path,length,progress,reverse,rotate,size){
-  const extra=Math.max(0,(size-14)/2);
-  const start=Math.min((path.hasAttribute?.('marker-start')?END_PADDING:START_PADDING)+extra,length/2);
-  const end=Math.max(start,length-Math.min(END_PADDING+extra,length/2));
+  const radius=size/2;
+  const start=Math.min((path.hasAttribute?.('marker-start')?END_PADDING:START_PADDING)+radius,length/2);
+  const end=Math.max(start,length-Math.min(END_PADDING+radius,length/2));
   const distance=reverse?end-(end-start)*progress:start+(end-start)*progress;
   const point=path.getPointAtLength(distance);
   let angle=0;

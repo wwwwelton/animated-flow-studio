@@ -15,13 +15,13 @@ const SYMBOLS={square:'Quadrado',circle:'Círculo',diamond:'Losango',triangle:'T
 const FLOW_TOKEN_SIZE=14,FLOW_TOKEN_VIEWBOX=16;
 const TRAFFIC_VISUAL={baseSize:8,defaultSize:16,protocolFlowSize:FLOW_TOKEN_SIZE,legendSize:16,legendGap:10,connectorArrowSize:10,connectorArrowStroke:1.15,protocolStrokeWidth:1.5,peakOpacity:.86,fadeIn:.06,fadeOut:.94};
 const PROTOCOL_FLOW_STYLES={
- rest:{shape:'circle',geometry:'<circle cx="8" cy="8" r="4" fill="currentColor" stroke="none"/>',direction:'request-response',paired:true,cycle:2.2,speed:1,rotateWithPath:false},
- graphql:{shape:'diamond',geometry:'<path d="M8 4L12 8 8 12 4 8Z" fill="currentColor" stroke="none"/>',direction:'request-response',paired:true,cycle:2.2,speed:1,rotateWithPath:false},
- grpc:{shape:'frame',geometry:'<rect x="3.5" y="5" width="9" height="6" rx="1" fill="currentColor" stroke="none"/>',direction:'request-response',paired:true,cycle:2.2,speed:1.25,rotateWithPath:false},
- websocket:{shape:'ring',geometry:'<circle cx="8" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/>',direction:'bidirectional',paired:true,speed:1,rotateWithPath:false,rail:'dashed'},
- webhook:{shape:'outline-diamond',geometry:'<path d="M8 4L12 8 8 12 4 8Z" fill="none" stroke="currentColor" stroke-width="1.5"/>',direction:'one-way-event',paired:false,cycle:2.2,speed:1,rotateWithPath:false},
- sse:{shape:'triangle',geometry:'<path d="M5 4L12 8 5 12Z" fill="currentColor" stroke="none"/>',direction:'server-client-stream',paired:false,speed:.9,rotateWithPath:true},
- mqtt:{shape:'dot-ring',geometry:'<circle cx="8" cy="8" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="1.5" fill="currentColor" stroke="none"/>',direction:'pub-sub',paired:false,relay:'broker',speed:1,rotateWithPath:false}
+ rest:{shape:'circle',geometry:'<circle cx="8" cy="8" r="8" fill="currentColor" stroke="none"/>',direction:'request-response',paired:true,cycle:2.2,speed:1,rotateWithPath:false},
+ graphql:{shape:'diamond',geometry:'<path d="M8 0L16 8 8 16 0 8Z" fill="currentColor" stroke="none"/>',direction:'request-response',paired:true,cycle:2.2,speed:1,rotateWithPath:false},
+ grpc:{shape:'frame',geometry:'<rect x="0" y="2" width="16" height="12" rx="1.5" fill="currentColor" stroke="none"/>',direction:'request-response',paired:true,cycle:2.2,speed:1.25,rotateWithPath:false},
+ websocket:{shape:'ring',geometry:'<circle cx="8" cy="8" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5"/>',direction:'bidirectional',paired:true,speed:1,rotateWithPath:false,rail:'dashed'},
+ webhook:{shape:'outline-diamond',geometry:'<path d="M8 .75L15.25 8 8 15.25 .75 8Z" fill="none" stroke="currentColor" stroke-width="1.5"/>',direction:'one-way-event',paired:false,cycle:2.2,speed:1,rotateWithPath:false},
+ sse:{shape:'triangle',geometry:'<path d="M0 0L16 8 0 16Z" fill="currentColor" stroke="none"/>',direction:'server-client-stream',paired:false,speed:.9,rotateWithPath:true},
+ mqtt:{shape:'dot-ring',geometry:'<circle cx="8" cy="8" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2.5" fill="currentColor" stroke="none"/>',direction:'pub-sub',paired:false,relay:'broker',speed:1,rotateWithPath:false}
 };
 const CONNECTORS={out:'Seta saída',in:'Seta entrada',curve:'Seta em curva',both:'Seta bidirecional',line:'Linha',dashed:'Linha tracejada',dotted:'Linha pontilhada',double:'Linha dupla'};
 const FONTS=['Arial','Georgia','Verdana','Courier New','Inter','Roboto','Open Sans','Lato','Montserrat','Poppins','Nunito','Ubuntu','Merriweather','Playfair Display','Roboto Mono','JetBrains Mono','Fira Code','Source Code Pro'];

@@ -48,16 +48,32 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  assert.deepEqual(apiSymbols,['rest','graphql','grpc','websocket','webhook','sse','mqtt']);
  await symbol.selectOption('graphql');const apiLegendId=await page.evaluate(()=>project.legends.at(-1).id);
  assert.equal(await apiLegend.getByLabel('Tamanho do marcador (px)',{exact:true}).isEnabled(),true);
- assert.ok((await page.locator(`#board svg .legend-marker[data-legend="${apiLegendId}"]`).innerHTML()).includes('M8 4L12 8 8 12 4 8Z'));
+ assert.ok((await page.locator(`#board svg .legend-marker[data-legend="${apiLegendId}"]`).innerHTML()).includes('M8 0L16 8 8 16 0 8Z'));
  assert.equal(await page.evaluate(()=>F.normalize(JSON.parse(JSON.stringify(project))).legends.at(-1).shape),'graphql');
  console.log('PASS API protocol glyph symbols render in the top legend and survive roundtrip');
+
+ const measured=await page.evaluate(()=>{
+  const result={};
+  for(const size of [10,25]){
+   const sample=F.protocolTemplate();for(const item of sample.legends)item.size=size;
+   sample.legends.push({...sample.legends[0],id:'reference-size',label:'Resposta',shape:'circle',effect:'packet'});
+   const holder=document.createElement('div');holder.style.cssText='position:absolute;left:-5000px;top:0';holder.innerHTML=F.render(sample,{static:true});document.body.append(holder);
+   const reference=holder.querySelector('[data-legend="reference-size"] circle').getBoundingClientRect().width;
+   result[size]=Object.fromEntries(sample.legends.slice(0,7).map(item=>{
+    const shape=holder.querySelector(`[data-legend="${item.id}"] .flow-token`).firstElementChild,box=shape.getBoundingClientRect();
+    return [item.id,Math.max(box.width,box.height)/reference];
+   }));holder.remove();
+  }
+  return result;
+ });
+ for(const sizes of Object.values(measured))for(const ratio of Object.values(sizes))assert.ok(ratio>=.85&&ratio<=1.1,`proportional marker size: ${ratio}`);
 
  const savedProject=await page.evaluate(()=>F.clone(project));
  await page.evaluate(()=>{setProject(F.protocolTemplate());paused=true;draw();const svg=board.querySelector('svg');svg.pauseAnimations();svg.setCurrentTime(1);});
  await page.waitForFunction(()=>document.querySelector('[data-stream="0-0-0"]')?.getAttribute('transform'));
  const tokenState=await page.evaluate(()=>{
   const svg=board.querySelector('svg'),token=svg.querySelector('[data-stream="0-0-0"]'),path=svg.querySelector('#af-edge-0');
-  const point=path.getPointAtLength(4+(path.getTotalLength()-12)*(1/5));
+  const point=path.getPointAtLength(11+(path.getTotalLength()-26)*(1/5));
   return {transform:token.getAttribute('transform'),point:{x:point.x,y:point.y},size:[...svg.querySelectorAll('.protocol-packet .flow-token')].every(el=>el.getAttribute('width')==='14'&&el.getAttribute('height')==='14'&&el.getAttribute('viewBox')==='0 0 16 16'),hit:getComputedStyle(token).pointerEvents};
  });
  const tokenX=Number(tokenState.transform.match(/translate\(([^ ]+)/)[1]);
