@@ -21,6 +21,10 @@ na legenda, exibido em rem, determina também o tamanho de cada partícula do pr
 cards ou editar conectores, o editor recria
 o SVG e o runtime passa a ler o novo path. O relógio do SVG controla pausa e
 retomada; com movimento reduzido, fica um indicador parado no meio do path.
+Os tokens móveis dos sete protocolos usam a mesma curva de opacidade de
+Solicitação e Resposta: entram de 0 a 0,86 nos primeiros 6% do percurso,
+mantêm 0,86 até 94% e desaparecem até o fim. Os símbolos da legenda ficam
+com opacidade 1.
 
 O Webhook repete o percurso de origem para destino, com uma pausa curta entre
 entregas. Para reiniciar o ciclo em um conector, use `FlowTraffic.trigger(svg, edgeId)`;

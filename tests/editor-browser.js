@@ -87,17 +87,24 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  assert.ok(apiTiming.restOut.start>=apiTiming.restIn.start+apiTiming.restIn.duration);
  assert.ok(apiTiming.restResponseOut.start>=apiTiming.restOut.start+apiTiming.restOut.duration);
  assert.ok(apiTiming.restResponseIn.start>=apiTiming.restResponseOut.start+apiTiming.restResponseOut.duration);
+ for(const key of ['0-0-0','2-0-0','4-0-0','6-0-0','8-0-0','10-0-0','12-0-0']){
+  const timing=await page.evaluate(key=>{const token=document.querySelector(`[data-stream="${key}"]`);return {start:Number(token.dataset.start),duration:Number(token.dataset.duration)};},key);
+  for(const [progress,expected] of [[.03,.43],[.5,.86],[.97,.43]]){
+   await page.evaluate(time=>board.querySelector('svg').setCurrentTime(time),timing.start+timing.duration*progress);
+   await page.waitForFunction(({key,expected})=>Math.abs(Number(document.querySelector(`[data-stream="${key}"]`)?.getAttribute('opacity'))-expected)<.01,{key,expected});
+  }
+ }
  await page.evaluate(time=>board.querySelector('svg').setCurrentTime(time),apiTiming.webhookOut.start-.1);
  await page.waitForFunction(()=>document.querySelector('[data-stream="9-0-0"]')?.getAttribute('opacity')==='0');
- await page.evaluate(time=>board.querySelector('svg').setCurrentTime(time),apiTiming.webhookOut.start+.1);
+ await page.evaluate(time=>board.querySelector('svg').setCurrentTime(time),apiTiming.webhookOut.start+.5);
  await page.waitForFunction(()=>document.querySelector('[data-stream="9-0-0"]')?.getAttribute('opacity')==='0.86');
- await page.evaluate(time=>board.querySelector('svg').setCurrentTime(time),apiTiming.webhookIn.start+apiTiming.webhookIn.cycle+.1);
+ await page.evaluate(time=>board.querySelector('svg').setCurrentTime(time),apiTiming.webhookIn.start+apiTiming.webhookIn.cycle+.5);
  await page.waitForFunction(()=>document.querySelector('[data-stream="8-0-0"]')?.getAttribute('opacity')==='0.86');
  await page.evaluate(()=>{const svg=board.querySelector('svg');svg.setCurrentTime(30);FlowTraffic.trigger(svg);});
- await page.waitForFunction(()=>document.querySelector('[data-stream="8-0-0"]')?.getAttribute('opacity')==='0.86'&&document.querySelector('[data-stream="9-0-0"]')?.getAttribute('opacity')==='0');
- await page.evaluate(time=>board.querySelector('svg').setCurrentTime(time),30+apiTiming.webhookIn.duration+.45);
+ await page.waitForFunction(()=>document.querySelector('[data-stream="8-0-0"]')?.getAttribute('opacity')==='0'&&document.querySelector('[data-stream="9-0-0"]')?.getAttribute('opacity')==='0');
+ await page.evaluate(time=>board.querySelector('svg').setCurrentTime(time),30+apiTiming.webhookIn.duration+.85);
  await page.waitForFunction(()=>document.querySelector('[data-stream="9-0-0"]')?.getAttribute('opacity')==='0.86');
- await page.evaluate(time=>board.querySelector('svg').setCurrentTime(time),apiTiming.websocketReverse.start+.1);
+ await page.evaluate(time=>board.querySelector('svg').setCurrentTime(time),apiTiming.websocketReverse.start+.5);
  await page.waitForFunction(()=>document.querySelector('[data-stream="6-0-0"]')?.getAttribute('opacity')==='0.86'&&document.querySelector('[data-stream="6-0-0-return"]')?.getAttribute('opacity')==='0.86');
  await page.evaluate(()=>{project.nodes.find(n=>n.id==='rest-protocol').y+=40;draw();board.querySelector('svg').setCurrentTime(1);});
  await page.waitForFunction(previous=>document.querySelector('[data-stream="0-0-0"]')?.getAttribute('transform')!==previous,tokenState.transform);

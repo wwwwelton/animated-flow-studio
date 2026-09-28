@@ -42,6 +42,18 @@ test('larger tokens receive more clearance from cards and arrowheads',()=>{
  flow.stop();
 });
 
+test('API tokens share the request fade from zero to 0.86 and back to zero',()=>{
+ const pathElement={getTotalLength:()=>100,getPointAtLength(distance){return {x:distance,y:0};}};
+ const flow=runtime(pathElement);
+ flow.step(0);assert.equal(flow.attributes.get('opacity'),'0');
+ flow.step(.06);assert.ok(Math.abs(Number(flow.attributes.get('opacity'))-.43)<1e-8);
+ flow.step(.12);assert.equal(flow.attributes.get('opacity'),'0.86');
+ flow.step(1);assert.equal(flow.attributes.get('opacity'),'0.86');
+ flow.step(1.94);assert.ok(Math.abs(Number(flow.attributes.get('opacity'))-.43)<1e-8);
+ flow.step(2);assert.equal(flow.attributes.get('opacity'),'0');
+ flow.stop();
+});
+
 test('SSE follows the tangent and reduced motion keeps a still protocol marker',()=>{
  const pathElement={getTotalLength:()=>100,getPointAtLength(distance){return {x:distance,y:distance};}};
  const flow=runtime(pathElement,{rotate:true,reduced:true});
@@ -59,14 +71,17 @@ test('Webhook repeats on the same rail and its event restarts the loop',()=>{
  assert.equal(flow.attributes.get('opacity'),'0');
  flow.step(4);
  assert.equal(flow.attributes.get('transform'),'translate(12 0)');
- assert.equal(flow.attributes.get('opacity'),'.86');
+ assert.equal(flow.attributes.get('opacity'),'0');
  flow.step(4.5);
  assert.equal(flow.attributes.get('transform'),'translate(30 0)');
+ assert.equal(flow.attributes.get('opacity'),'0.86');
  flow.trigger('another-link');
  assert.equal(flow.attributes.get('transform'),'translate(30 0)');
  flow.trigger('webhook-link');
  assert.equal(flow.attributes.get('transform'),'translate(12 0)');
- assert.equal(flow.attributes.get('opacity'),'.86');
+ assert.equal(flow.attributes.get('opacity'),'0');
+ flow.step(5.5);
+ assert.equal(flow.attributes.get('opacity'),'0.86');
  flow.stop();
 });
 

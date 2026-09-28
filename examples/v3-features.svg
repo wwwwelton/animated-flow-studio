@@ -19,7 +19,7 @@ const PROTOCOL_FLOW_STYLES={
  graphql:{shape:'diamond',geometry:'<path d="M8 0L16 8 8 16 0 8Z" fill="currentColor" stroke="none"/>',direction:'request-response',paired:true,cycle:2.2,speed:1,rotateWithPath:false},
  grpc:{shape:'frame',geometry:'<rect x="0" y="2" width="16" height="12" rx="1.5" fill="currentColor" stroke="none"/>',direction:'request-response',paired:true,cycle:2.2,speed:1.25,rotateWithPath:false},
  websocket:{shape:'ring',geometry:'<circle cx="8" cy="8" r="8" fill="currentColor"/><circle cx="8" cy="8" r="2.25" fill="white"/>',direction:'bidirectional',paired:true,speed:1,rotateWithPath:false,rail:'dashed'},
- webhook:{shape:'outline-diamond',geometry:'<path d="M8 0L16 8 8 16 0 8Z" fill="currentColor"/><circle cx="8" cy="8" r="2" fill="white"/>',direction:'one-way-event',paired:false,cycle:2.2,speed:1,rotateWithPath:false},
+ webhook:{shape:'outline-diamond',geometry:'<path d="M8 0L16 8 8 16 0 8Z" fill="currentColor"/><circle cx="8" cy="8" r="2" fill="white"/>',direction:'one-way-event',paired:false,cycle:1.25,speed:1,rotateWithPath:false},
  sse:{shape:'triangle',geometry:'<path d="M0 0L16 8 0 16Z" fill="currentColor" stroke="none"/>',direction:'server-client-stream',paired:false,speed:.9,rotateWithPath:true},
  mqtt:{shape:'dot-ring',geometry:'<circle cx="8" cy="8" r="8" fill="currentColor"/><circle cx="8" cy="8" r="4" fill="white"/><circle cx="8" cy="8" r="2.5" fill="currentColor"/>',direction:'pub-sub',paired:false,relay:'broker',speed:1,rotateWithPath:false}
 };
@@ -173,8 +173,51 @@ function streams(p){
   const arrival=flow?.relay==='broker'?arrivals.get(`${id}\0${e.source}`):undefined;
   const delay=arrival===undefined?baseDelay:Math.max(baseDelay,arrival+.35);
   const count=l.count??1;
-  for(let k=0;k<count;k++)result.push({edge:e,index:i,legend:l,duration,delay:delay+k*duration/count,key:`${i}-${j}-${k}`,source:l.direction==='reverse'?e.target:e.source,target:l.direction==='reverse'?e.source:e.target});
- }));return result;
+  for(let k=0;k<count;k++)result.push({edge:e,index:i,legend:l,duration,delay:delay+k*duration/count,particleIndex:k,key:`${i}-${j}-${k}`,source:l.direction==='reverse'?e.target:e.source,target:l.direction==='reverse'?e.source:e.target});
+ }));
+ scheduleProtocolRelays(p,result);
+ return result;
+}
+function scheduleProtocolRelays(p,result){
+ const relayGap=.35,groups=new Map(),nodes=new Map(p.nodes.map(node=>[node.id,node]));
+ for(const stream of result){
+  if(!PROTOCOL_FLOW_STYLES[stream.legend.effect])continue;
+  let group=groups.get(stream.legend.id);
+  if(!group){group={incoming:new Map(),outgoing:new Map()};groups.set(stream.legend.id,group);}
+  if(!group.incoming.has(stream.target))group.incoming.set(stream.target,[]);
+  if(!group.outgoing.has(stream.source))group.outgoing.set(stream.source,[]);
+  group.incoming.get(stream.target).push(stream);
+  group.outgoing.get(stream.source).push(stream);
+ }
+ for(const legend of p.legends){
+  const flow=PROTOCOL_FLOW_STYLES[legend.effect],group=groups.get(legend.id);
+  if(!flow||!group||legend.direction==='reverse')continue;
+  for(const [nodeId,incoming] of group.incoming){
+   const node=nodes.get(nodeId),outgoing=group.outgoing.get(nodeId);
+   if(!node||!outgoing)continue;
+   if(node.type!==`api-${legend.effect}`&&flow.relay!=='broker')continue;
+   const first=incoming[0],outDuration=Math.max(...outgoing.map(s=>s.duration));
+   const transit=first.duration+relayGap+outDuration;
+   const response=flow.direction==='request-response',bidirectional=flow.direction==='bidirectional';
+   const streaming=flow.direction==='server-client-stream';
+   const returnTransit=response?outDuration+relayGap+first.duration+relayGap:0;
+   const pause=streaming||bidirectional?0:flow.direction==='one-way-event'?1.25:1;
+   const baseCycle=bidirectional?Math.min(first.duration,outDuration):transit+returnTransit+pause;
+   const spacing=response?first.duration/(legend.count+1):baseCycle/legend.count;
+   const cycle=baseCycle+(response?(legend.count-1)*spacing:0);
+   for(const stream of incoming){
+    stream.delay=first.delay+stream.particleIndex*spacing;stream.cycle=cycle;
+    if(response)stream.returnDelay=stream.delay+transit+relayGap+outDuration+relayGap;
+    if(bidirectional)stream.returnDelay=stream.delay+outDuration+relayGap;
+   }
+   for(const stream of outgoing){
+    stream.delay=first.delay+stream.particleIndex*spacing+first.duration+relayGap;
+    stream.cycle=cycle;
+    if(response)stream.returnDelay=stream.delay+stream.duration+relayGap;
+    if(bidirectional)stream.returnDelay=first.delay+stream.particleIndex*spacing;
+   }
+  }
+ }
 }
 function reactiveStates(p,time,streamList=null){
  const result=Object.create(null),events=Object.create(null);
@@ -215,11 +258,11 @@ function trafficGlyph(legend,reverse=false){
 function legendGlyph(legend){return symbolGlyph(legend,legend.size);}
 function motionPacket(stream,prefix){
  const {legend:l,duration,delay,index,key}=stream,pid=`${prefix}-edge-${index}`;
- const behavior=PROTOCOL_FLOW_STYLES[l.effect]??{paired:false,reverseDelay:0},cycle=duration*(behavior.cycle??1),visible=duration/cycle;
+ const behavior=PROTOCOL_FLOW_STYLES[l.effect]??{paired:false,reverseDelay:0},cycle=stream.cycle??duration*(behavior.cycle??1),visible=duration/cycle;
  if(PROTOCOL_FLOW_STYLES[l.effect]){
   const token=(reverse,start,streamKey)=>`<g class="packet protocol-packet" data-stream="${streamKey}" data-path="${pid}" data-edge-id="${esc(stream.edge.id)}" data-size="${l.size}" data-peak-opacity="${TRAFFIC_VISUAL.peakOpacity}" data-start="${start}" data-duration="${duration}" data-cycle="${cycle}" data-event="${behavior.direction==='one-way-event'}" data-reverse="${reverse}" data-rotate="${behavior.rotateWithPath}" opacity="0">${createFlowToken(l.effect,l)}</g>`;
   const reverse=l.direction==='reverse';
-  const returnStart=delay+(behavior.direction==='bidirectional'?0:duration+.2);
+  const returnStart=stream.returnDelay??delay+(behavior.direction==='bidirectional'?0:duration+.2);
   return token(reverse,delay,key)+(behavior.paired?token(!reverse,returnStart,`${key}-return`):'');
  }
  const motion=(lag=0,reverse=l.direction==='reverse')=>`<animateMotion dur="${duration}s" begin="${delay+lag}s" calcMode="linear" repeatCount="indefinite" rotate="${PROTOCOL_FLOW_STYLES[l.shape]&&l.shape!=='sse'?'0':'auto'}" ${reverse?'keyPoints="1;0" keyTimes="0;1"':''}><mpath href="#${pid}"/></animateMotion>`;
@@ -289,14 +332,15 @@ function featureTemplate(){
 }
 function protocolTemplate(){
  // Protocol tokens share one fixed SVG box, including on broker fan-out paths.
+ const colors={rest:'#0d6efd',graphql:'#d63384',grpc:'#6f42c1',websocket:'#fd7e14',webhook:'#dc3545',sse:'#0dcaf0',mqtt:'#198754'};
  const specs=[
-  {id:'rest',type:'api-rest',title:'REST',effect:'rest',color:'#2563eb',shape:'rest',count:1,icon:'api',source:'Web e mobile',sourceNote:'Cliente HTTP.',target:'Recursos HTTP',targetNote:'Users · products · orders.',note:'CRUD com métodos HTTP e recursos.'},
-  {id:'graphql',type:'api-graphql',title:'GraphQL',effect:'graphql',color:'#c026d3',shape:'graphql',count:1,icon:'database',source:'Aplicações clientes',sourceNote:'Pede apenas os campos necessários.',target:'API de dados',targetNote:'Resolvers e fontes de dados.',note:'Consulta campos sob demanda.'},
-  {id:'grpc',type:'api-grpc',title:'gRPC',effect:'grpc',color:'#0f766e',shape:'grpc',count:3,icon:'server',source:'Serviço interno A',sourceNote:'Chama com contrato Protobuf.',target:'Microsserviço B',targetNote:'Atende chamadas RPC tipadas.',note:'RPC tipada de baixa latência.'},
-  {id:'websocket',type:'api-websocket',title:'WebSockets',effect:'websocket',color:'#ea580c',shape:'websocket',count:1,icon:'network',source:'Chat / multiplayer',sourceNote:'Mantém o canal aberto.',target:'Serviço em tempo real',targetNote:'Envia e recebe eventos.',note:'Conexão persistente, duas vias.'},
-  {id:'webhook',type:'api-webhook',title:'Webhooks',effect:'webhook',color:'#dc2626',shape:'webhook',count:1,icon:'network',source:'Provedor de eventos',sourceNote:'Publica um evento.',target:'Agente de IA',targetNote:'Recebe um callback HTTP.',note:'Notificação enviada ao endpoint.'},
-  {id:'sse',type:'api-sse',title:'SSE',effect:'sse',color:'#0284c7',shape:'sse',count:3,icon:'server',source:'Servidor de eventos',sourceNote:'Envia eventos via HTTP.',target:'Feed / agente',targetNote:'Recebe o fluxo contínuo.',note:'Stream unidirecional do servidor.'},
-  {id:'mqtt',type:'api-mqtt',title:'MQTT',effect:'mqtt',color:'#65a30d',shape:'mqtt',count:1,icon:'network',source:'Sensores IoT',sourceNote:'Publica em tópicos.',target:'Assinantes',targetNote:'Consome tópicos inscritos.',note:'Pub/sub leve para redes instáveis.'}
+  {id:'rest',type:'api-rest',title:'REST',effect:'rest',color:colors.rest,shape:'rest',count:1,icon:'api',source:'Web e mobile',sourceNote:'Cliente HTTP.',target:'Recursos HTTP',targetNote:'Users · products · orders.',note:'CRUD com métodos HTTP e recursos.'},
+  {id:'graphql',type:'api-graphql',title:'GraphQL',effect:'graphql',color:colors.graphql,shape:'graphql',count:1,icon:'database',source:'Aplicações clientes',sourceNote:'Pede apenas os campos necessários.',target:'API de dados',targetNote:'Resolvers e fontes de dados.',note:'Consulta campos sob demanda.'},
+  {id:'grpc',type:'api-grpc',title:'gRPC',effect:'grpc',color:colors.grpc,shape:'grpc',count:3,icon:'server',source:'Serviço interno A',sourceNote:'Chama com contrato Protobuf.',target:'Microsserviço B',targetNote:'Atende chamadas RPC tipadas.',note:'RPC tipada de baixa latência.'},
+  {id:'websocket',type:'api-websocket',title:'WebSockets',effect:'websocket',color:colors.websocket,shape:'websocket',count:1,icon:'network',source:'Chat / multiplayer',sourceNote:'Mantém o canal aberto.',target:'Serviço em tempo real',targetNote:'Envia e recebe eventos.',note:'Conexão persistente, duas vias.'},
+  {id:'webhook',type:'api-webhook',title:'Webhooks',effect:'webhook',color:colors.webhook,shape:'webhook',count:1,icon:'network',source:'Provedor de eventos',sourceNote:'Publica um evento.',target:'Agente de IA',targetNote:'Recebe um callback HTTP.',note:'Notificação enviada ao endpoint.'},
+  {id:'sse',type:'api-sse',title:'SSE',effect:'sse',color:colors.sse,shape:'sse',count:3,icon:'server',source:'Servidor de eventos',sourceNote:'Envia eventos via HTTP.',target:'Feed / agente',targetNote:'Recebe o fluxo contínuo.',note:'Stream unidirecional do servidor.'},
+  {id:'mqtt',type:'api-mqtt',title:'MQTT',effect:'mqtt',color:colors.mqtt,shape:'mqtt',count:1,icon:'network',source:'Sensores IoT',sourceNote:'Publica em tópicos.',target:'Assinantes',targetNote:'Consome tópicos inscritos.',note:'Pub/sub leve para redes instáveis.'}
  ];
  const nodes=[],edges=[],legends=[];
  for(const [i,s] of specs.entries()){
@@ -398,11 +442,12 @@ return {COMPONENTS,SYSTEM_DESIGN,TYPES,LEGENDS,EFFECTS,SYMBOLS,CONNECTORS,FONTS,
   token.setAttribute('transform',`translate(${point.x} ${point.y})${rotate?` rotate(${angle})`:''}`);
  }
  function mount(svg,project,core){
+  const visual=core.TRAFFIC_VISUAL??{peakOpacity:.86,fadeIn:.06,fadeOut:.94};
   const reactiveNodes=project.nodes.filter(n=>n.type==='reactive');
   const streamList=reactiveNodes.length?core.streams(project):[];
   const tokens=Array.from(svg.querySelectorAll('.protocol-packet')).map(token=>{
    const path=svg.querySelector(`[id="${token.dataset.path}"]`);
-   return path?{token,path,length:path.getTotalLength(),size:Number(token.dataset.size)||16,peakOpacity:token.dataset.peakOpacity||'.86',start:Number(token.dataset.start),duration:Number(token.dataset.duration),cycle:Number(token.dataset.cycle),event:token.dataset.event==='true',edgeId:token.dataset.edgeId,reverse:token.dataset.reverse==='true',rotate:token.dataset.rotate==='true'}:null;
+   return path?{token,path,length:path.getTotalLength(),size:Number(token.dataset.size)||16,peakOpacity:Number(token.dataset.peakOpacity??visual.peakOpacity),start:Number(token.dataset.start),initialStart:Number(token.dataset.start),duration:Number(token.dataset.duration),cycle:Number(token.dataset.cycle),event:token.dataset.event==='true',edgeId:token.dataset.edgeId,reverse:token.dataset.reverse==='true',rotate:token.dataset.rotate==='true'}:null;
   }).filter(Boolean);
   if(!reactiveNodes.length&&!tokens.length)return ()=>{};
   let frame=0,stopped=false,previous=Object.create(null),lastTokenTime=-1;
@@ -412,11 +457,14 @@ return {COMPONENTS,SYSTEM_DESIGN,TYPES,LEGENDS,EFFECTS,SYMBOLS,CONNECTORS,FONTS,
    if(time===lastTokenTime&&!reduced.matches)return;
    lastTokenTime=time;
    for(const item of tokens){
-    if(reduced.matches){placeToken(item.token,item.path,item.length,.5,item.reverse,item.rotate,item.size);item.token.setAttribute('opacity','.5');item.visible=undefined;continue;}
-    const elapsed=item.event?time-item.start:((time-item.start)%item.cycle+item.cycle)%item.cycle;
+    if(reduced.matches){placeToken(item.token,item.path,item.length,.5,item.reverse,item.rotate,item.size);if(item.opacity!=='.5'){item.token.setAttribute('opacity','.5');item.opacity='.5';}continue;}
+    const elapsed=((time-item.start)%item.cycle+item.cycle)%item.cycle;
     const visible=time>=item.start&&elapsed<item.duration;
-    if(item.visible!==visible){item.token.setAttribute('opacity',visible?item.peakOpacity:'0');item.visible=visible;}
-    if(visible)placeToken(item.token,item.path,item.length,elapsed/item.duration,item.reverse,item.rotate,item.size);
+    const progress=elapsed/item.duration;
+    const fade=visible?Math.max(0,Math.min(1,progress/visual.fadeIn,(1-progress)/(1-visual.fadeOut))):0;
+    const opacity=String(item.peakOpacity*fade);
+    if(item.opacity!==opacity){item.token.setAttribute('opacity',opacity);item.opacity=opacity;}
+    if(visible)placeToken(item.token,item.path,item.length,progress,item.reverse,item.rotate,item.size);
    }
   }
   function update(){
@@ -436,12 +484,18 @@ return {COMPONENTS,SYSTEM_DESIGN,TYPES,LEGENDS,EFFECTS,SYMBOLS,CONNECTORS,FONTS,
    if(!reduced.matches)frame=requestAnimationFrame(update);
   }
   function resume(){if(stopped)return;lastTokenTime=-1;cancelAnimationFrame(frame);update();}
-  function trigger(event){for(const item of tokens)if(item.event&&(!event.detail?.edgeId||event.detail.edgeId===item.edgeId))item.start=svg.getCurrentTime();resume();}
+  function trigger(event){
+   const selected=tokens.filter(item=>item.event&&(!event.detail?.edgeId||event.detail.edgeId===item.edgeId));
+   if(!selected.length)return;
+   const origin=Math.min(...selected.map(item=>item.initialStart)),now=svg.getCurrentTime();
+   for(const item of selected)item.start=now+item.initialStart-origin;
+   resume();
+  }
   document.addEventListener('visibilitychange',resume);reduced.addEventListener('change',resume);
   svg.addEventListener('flow-traffic-event',trigger);
   update();return ()=>{stopped=true;cancelAnimationFrame(frame);document.removeEventListener('visibilitychange',resume);reduced.removeEventListener('change',resume);svg.removeEventListener('flow-traffic-event',trigger);};
  }
- /** Replay a one-way Webhook event on one edge, or on every Webhook edge. */
+ /** Restart the Webhook loop on one edge, or on every Webhook edge. */
  function trigger(svg,edgeId){svg.dispatchEvent(new CustomEvent('flow-traffic-event',{detail:{edgeId}}));}
  root.FlowTraffic={mount,trigger};
 })(typeof globalThis!=='undefined'?globalThis:this);
