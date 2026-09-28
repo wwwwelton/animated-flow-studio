@@ -73,6 +73,33 @@ test('protocol shapes use one centered SVG box in legends and moving tokens',()=
  assert.doesNotMatch(svg,/[→⇉↪⇒↔]/);
  assert.match(svg,/\.flow-token\{overflow:visible\}/);
 });
+test('all protocol legend and moving symbols honor the configured size',()=>{
+ const p=F.protocolTemplate(),protocols=['rest','graphql','grpc','websocket','webhook','sse','mqtt'];
+ for(const size of [8,20,32]){
+  for(const legend of p.legends)legend.size=size;
+  const clean=F.normalize(JSON.parse(JSON.stringify(p))),svg=F.render(clean),origin=-size/2;
+  assert.ok(clean.legends.every(legend=>legend.size===size));
+  for(const protocol of protocols){
+   const marker=svg.match(new RegExp(`data-legend="${protocol}"[^]*?<svg class="flow-token"[^>]*>`))?.[0];
+   const packet=svg.match(new RegExp(`data-edge-id="${protocol}-request"[^>]*><svg class="flow-token"[^>]*>`))?.[0];
+   for(const tag of [marker,packet]){
+    assert.ok(tag,`${protocol} renders at ${size}px`);
+    assert.ok(tag.includes(`x="${origin}" y="${origin}" width="${size}" height="${size}" viewBox="0 0 16 16"`));
+   }
+  }
+ }
+ assert.ok(F.headerHeight(p)>F.headerHeight(F.protocolTemplate()));
+});
+test('generic traffic effects honor the same editable marker size',()=>{
+ const p=simple();p.legends[0].shape='circle';p.legends[0].size=20;
+ for(const effect of Object.keys(F.EFFECTS)){
+  p.legends[0].effect=effect;const svg=F.render(p);
+  assert.match(svg,/data-legend="request"[^]*?<circle cx="0" cy="0" r="10"/);
+  if(['rest','graphql','grpc','websocket','webhook','sse','mqtt'].includes(effect))assert.match(svg,/data-stream="0-0-0"[^]*?width="20" height="20" viewBox="0 0 16 16"/);
+  if(effect==='dashed')assert.match(svg,/<rect x="-10" y="-2.5" width="20" height="5"/);
+  if(effect==='glow')assert.match(svg,/<circle r="10" fill="#[0-9a-f]{6}" opacity=".2"/);
+ }
+});
 test('protocol traffic uses the rail path with correct direction and cadence',()=>{
  const p=F.protocolTemplate(),svg=F.render(p),streams=F.streams(p);
  const packets=[...svg.matchAll(/<g class="packet protocol-packet"([^>]*)>/g)].map(match=>match[1]);
@@ -161,12 +188,12 @@ test('comet has a tapered tail while trail uses spaced markers',()=>{
  p.legends[0].effect='trail';const trail=F.render(p);assert.ok(!trail.includes('comet-tail'));assert.ok((trail.match(/animateMotion /g)||[]).length>(comet.match(/animateMotion /g)||[]).length);
 });
 
-test('protocol legend glyphs use the fixed 14-unit token and aligned spacing',()=>{
+test('protocol legend glyphs use their configured size and aligned spacing',()=>{
  const p=simple();
  p.legends[0].shape='rest';
  const svg=F.render(p);
  assert.match(svg,/class="legend-marker"[^>]*translate\(40 /);
- assert.match(svg,/data-legend="request"[^]*?width="14" height="14" viewBox="0 0 16 16"/);
+ assert.match(svg,/data-legend="request"[^]*?width="16" height="16" viewBox="0 0 16 16"/);
  assert.match(svg,/class="legend-label"/);
 });
 

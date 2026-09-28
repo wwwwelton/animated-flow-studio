@@ -47,6 +47,7 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  const apiSymbols=await symbol.locator('option').evaluateAll(options=>options.slice(-7).map(option=>option.value));
  assert.deepEqual(apiSymbols,['rest','graphql','grpc','websocket','webhook','sse','mqtt']);
  await symbol.selectOption('graphql');const apiLegendId=await page.evaluate(()=>project.legends.at(-1).id);
+ assert.equal(await apiLegend.getByLabel('Tamanho do marcador (px)',{exact:true}).isEnabled(),true);
  assert.ok((await page.locator(`#board svg .legend-marker[data-legend="${apiLegendId}"]`).innerHTML()).includes('M8 4L12 8 8 12 4 8Z'));
  assert.equal(await page.evaluate(()=>F.normalize(JSON.parse(JSON.stringify(project))).legends.at(-1).shape),'graphql');
  console.log('PASS API protocol glyph symbols render in the top legend and survive roundtrip');
@@ -78,11 +79,29 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  await page.waitForFunction(()=>document.querySelector('[data-stream="0-0-0"]')?.getAttribute('opacity')==='.5');
  assert.equal(await page.locator('[data-stream="0-0-0"]').getAttribute('opacity'),'.5');
  await page.emulateMedia({reducedMotion:'no-preference'});
+ for(const [index,id]of ['rest','graphql','grpc','websocket','webhook','sse','mqtt'].entries()){
+  const row=page.locator('#legendEditor details').nth(index);await row.locator('summary').click();
+  const size=8+index*4,input=row.getByLabel('Tamanho do marcador (px)',{exact:true});
+  assert.equal(await input.isEnabled(),true);await input.fill(String(size));await input.dispatchEvent('change');
+  assert.equal(await page.evaluate(id=>project.legends.find(legend=>legend.id===id).size,id),size);
+  assert.equal(await page.locator(`#board [data-legend="${id}"] .flow-token`).getAttribute('width'),String(size));
+  assert.equal(await page.locator(`#board [data-edge-id="${id}-request"] .flow-token`).first().getAttribute('width'),String(size));
+ }
  const protocolDownload=page.waitForEvent('download');await page.click('#svgExport');
  const protocolFile=path.join(out,'protocol-tokens.svg');await (await protocolDownload).saveAs(protocolFile);
  const protocolPage=await browser.newPage();await protocolPage.goto(require('node:url').pathToFileURL(protocolFile).href);
  await protocolPage.waitForFunction(()=>document.querySelector('[data-stream="0-0-0"]')?.getAttribute('transform'));
- assert.equal(await protocolPage.locator('parsererror').count(),0);await protocolPage.close();
+ assert.equal(await protocolPage.locator('parsererror').count(),0);
+ assert.equal(await protocolPage.locator('[data-edge-id="mqtt-request"] .flow-token').first().getAttribute('width'),'32');
+ await protocolPage.close();
+ const jsonDownload=page.waitForEvent('download');await page.click('#jsonExport');
+ const protocolJson=path.join(out,'protocol-tokens.json');await (await jsonDownload).saveAs(protocolJson);
+ assert.deepEqual(JSON.parse(fs.readFileSync(protocolJson,'utf8')).legends.map(legend=>legend.size),[8,12,16,20,24,28,32]);
+ const htmlDownload=page.waitForEvent('download');await page.click('#htmlExport');
+ const protocolHtml=path.join(out,'protocol-tokens.html');await (await htmlDownload).saveAs(protocolHtml);
+ const htmlPage=await browser.newPage();await htmlPage.goto(require('node:url').pathToFileURL(protocolHtml).href);
+ assert.equal(await htmlPage.locator('[data-edge-id="mqtt-request"] .flow-token').first().getAttribute('width'),'32');
+ await htmlPage.close();
  await page.evaluate(saved=>setProject(saved),savedProject);
  console.log('PASS protocol tokens follow moved and edited paths, both directions, SSE rotation and reduced motion');
 

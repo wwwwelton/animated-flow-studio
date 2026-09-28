@@ -10,7 +10,7 @@
 <main class="canvas-pane" id="viewport" aria-label="Canvas do diagrama"><div class="board-wrap" id="board"></div><div class="canvas-toolbar"><button id="centerCanvas" title="Centralizar na tela">Centralizar</button><select id="zoom" aria-label="Zoom"><option value="fit">Ajustar à tela</option><option value=".5">50%</option><option value=".75">75%</option><option value="1">100%</option><option value="1.5">150%</option><option value="2">200%</option></select><span id="zoomReadout">100%</span></div><div class="canvas-hint">Ctrl + roda: zoom · Arrastar fundo: mover · Espaço + arrastar: mover</div></main>
 <aside class="right"><section><h2>Diagrama</h2><label for="diagramTitle">Título</label><input id="diagramTitle"><label for="kicker">Identificação da figura</label><input id="kicker"><label for="description">Descrição</label><textarea id="description"></textarea><h3>Área de desenho</h3><div class="row"><div><label for="canvasWidth">Largura (px)</label><input id="canvasWidth" type="number" min="300" max="5000"></div><div><label for="canvasHeight">Altura (px)</label><input id="canvasHeight" type="number" min="300" max="5000"></div></div><label class="check-option"><input id="autoGrow" type="checkbox"> Crescer automaticamente</label><label for="growthMargin">Margem de expansão (px)</label><input id="growthMargin" type="number" min="0" max="500"><button id="fitContent">Ajustar ao conteúdo</button><label class="check-option"><input id="grid" type="checkbox"> Fundo pontilhado</label></section>
 <section><h2>Legendas de tráfego</h2><label class="check-option"><input id="showLegend" type="checkbox"> Mostrar legendas</label><label for="trafficSpeed">Velocidade global <strong id="speedReadout">1×</strong></label><input id="trafficSpeed" type="range" min=".1" max="8" step=".1"><div class="row"><button id="toggleTraffic">Pausar</button><button id="restartTraffic">Reiniciar</button></div><div id="legendEditor"></div><button id="addLegend">+ Nova legenda</button><p class="hint">O campo Símbolo inclui pictogramas de REST, GraphQL, gRPC, WebSockets, Webhooks, SSE e MQTT; o desenho escolhido aparece no topo da legenda.</p></section>
-<section id="inspector"></section><section><h2>Exportar</h2><div class="stack"><button id="componentExport" disabled>Componente selecionado (SVG)</button><button id="svgExport">SVG animado</button><button id="staticSvgExport">SVG estático</button><button id="pngExport">PNG</button><button id="mdExport">Markdown + SVG</button><button id="pdfExport">Imprimir / salvar PDF</button><button id="htmlExport">HTML de apresentação</button></div><div id="downloadLinks" class="downloads"></div><p class="hint">HTML preserva todas as reações. PNG exporta a 300 dpi (até 16 MP); o tamanho padrão do tráfego usa 1rem do navegador (normalmente 16 px). Fontes baixadas são incorporadas quando disponíveis.</p></section></aside></div><datalist id="fontFamilies"></datalist>
+<section id="inspector"></section><section><h2>Exportar</h2><div class="stack"><button id="componentExport" disabled>Componente selecionado (SVG)</button><button id="svgExport">SVG animado</button><button id="staticSvgExport">SVG estático</button><button id="pngExport">PNG</button><button id="mdExport">Markdown + SVG</button><button id="pdfExport">Imprimir / salvar PDF</button><button id="htmlExport">HTML de apresentação</button></div><div id="downloadLinks" class="downloads"></div><p class="hint">HTML preserva todas as reações. PNG exporta a 300 dpi (até 16 MP). O tráfego genérico usa 16 px por padrão e os protocolos, 14 px; ambos são ajustáveis na legenda. Fontes baixadas são incorporadas quando disponíveis.</p></section></aside></div><datalist id="fontFamilies"></datalist>
 <script id="flowCoreSource">(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.FlowCore=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
 'use strict';
 /* COMPONENTS_START */
@@ -202,26 +202,35 @@ function reactiveStates(p,time,streamList=null){
  for(const [id,e]of Object.entries(events)){const n=lookup.get(id),r=n.reactive;if(r.hold>0&&time-e.at>=r.hold)continue;result[id]={label:r.text?(e.event==='enter'?r.enterText:r.exitText):n.label,color:r.color?(e.event==='enter'?r.enterColor:r.exitColor):n.color,event:e.event,legend:e.legend};}
  return result;
 }
-function legendLayout(p){let x=32,y=0,rows=1;const items=[];for(const l of p.legends){const w=l.label.length*7+TRAFFIC_VISUAL.legendSize+TRAFFIC_VISUAL.legendGap+18;if(x+w>p.width-32&&x>32){x=32;y+=32;rows++;}items.push({l,x,y});x+=w;}return {items,rows:p.legends.length?rows:0};}
-function headerHeight(p){return 130+(p.description?Math.max(0,lines(p.description,Math.floor((p.width-64)/7)).length-1)*18:0)+(p.showLegend?legendLayout(p).rows*32:0);}
+function legendLayout(p){
+ let x=32,rowTop=0,rowHeight=32,rows=0,rowItems=[];const items=[];
+ function finishRow(){if(!rowItems.length)return;for(const item of rowItems)item.y=rowTop+rowHeight/2-1;items.push(...rowItems);rowTop+=rowHeight;rows++;rowItems=[];rowHeight=32;}
+ for(const l of p.legends){
+  const size=l.size??TRAFFIC_VISUAL.legendSize,w=l.label.length*7+size+TRAFFIC_VISUAL.legendGap+18;
+  if(x+w>p.width-32&&rowItems.length){finishRow();x=32;}
+  rowHeight=Math.max(rowHeight,size+16);rowItems.push({l,x,y:0,size});x+=w;
+ }
+ finishRow();return {items,rows,height:rowTop};
+}
+function headerHeight(p){return 130+(p.description?Math.max(0,lines(p.description,Math.floor((p.width-64)/7)).length-1)*18:0)+(p.showLegend?legendLayout(p).height:0);}
 const svgStyle=`:root{font-size:1rem}text{font-family:Arial,sans-serif;fill:#000}.kicker{font-family:monospace;font-size:10px;font-weight:600}.figure-title{font-size:21px;font-weight:700}.description{font-size:13px}.legend-label{font-size:13px}.edge-label{paint-order:stroke;stroke:white;stroke-width:4px;stroke-linejoin:round}.rail{fill:none;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round}.node-shape{stroke-linejoin:round}.selection{fill:none;stroke:#1675df;stroke-width:1.5;stroke-dasharray:4 3;pointer-events:none}.hit{stroke:transparent;stroke-width:16;fill:none;cursor:pointer}.node{cursor:move}.node text,.icon,.packet,.flow-token{pointer-events:none}.flow-token{overflow:visible}.resize{fill:white;stroke:#1675df;cursor:nwse-resize}.port{fill:white;stroke:#2563eb;stroke-width:1.5;opacity:0;cursor:crosshair}.node:hover>.port,.node.selected>.port,.connecting .port{opacity:1}.diagram-controls{cursor:pointer}@media(prefers-reduced-motion:reduce){.packet{display:none}.protocol-packet{display:inline;opacity:.5!important}}`;
-function createFlowToken(protocol,legend){
- const flow=PROTOCOL_FLOW_STYLES[protocol],stroke=color(legend.color);
- return `<svg class="flow-token" x="-7" y="-7" width="${FLOW_TOKEN_SIZE}" height="${FLOW_TOKEN_SIZE}" viewBox="0 0 ${FLOW_TOKEN_VIEWBOX} ${FLOW_TOKEN_VIEWBOX}" aria-hidden="true" style="color:${stroke}">${flow.geometry}</svg>`;
+function createFlowToken(protocol,legend,size=legend.size??FLOW_TOKEN_SIZE){
+ const flow=PROTOCOL_FLOW_STYLES[protocol],stroke=color(legend.color),origin=-size/2;
+ return `<svg class="flow-token" x="${origin}" y="${origin}" width="${size}" height="${size}" viewBox="0 0 ${FLOW_TOKEN_VIEWBOX} ${FLOW_TOKEN_VIEWBOX}" aria-hidden="true" style="color:${stroke}">${flow.geometry}</svg>`;
 }
 function symbolGlyph(legend,size=legend.size){
- if(PROTOCOL_FLOW_STYLES[legend.shape])return createFlowToken(legend.shape,legend);
+ if(PROTOCOL_FLOW_STYLES[legend.shape])return createFlowToken(legend.shape,legend,size);
  return symbol(legend.shape,0,0,size,legend.color);
 }
 function trafficGlyph(legend,reverse=false){
  return PROTOCOL_FLOW_STYLES[legend.effect]?createFlowToken(legend.effect,legend):symbolGlyph(legend);
 }
-function legendGlyph(legend){return symbolGlyph(legend,TRAFFIC_VISUAL.legendSize);}
+function legendGlyph(legend){return symbolGlyph(legend,legend.size);}
 function motionPacket(stream,prefix){
  const {legend:l,duration,delay,index,key}=stream,pid=`${prefix}-edge-${index}`;
  const behavior=PROTOCOL_FLOW_STYLES[l.effect]??{paired:false,reverseDelay:0},cycle=duration*(behavior.cycle??1),visible=duration/cycle;
  if(PROTOCOL_FLOW_STYLES[l.effect]){
-  const token=(reverse,start,streamKey)=>`<g class="packet protocol-packet" data-stream="${streamKey}" data-path="${pid}" data-edge-id="${esc(stream.edge.id)}" data-start="${start}" data-duration="${duration}" data-cycle="${cycle}" data-event="${behavior.direction==='one-way-event'}" data-reverse="${reverse}" data-rotate="${behavior.rotateWithPath}" opacity="0">${createFlowToken(l.effect,l)}</g>`;
+  const token=(reverse,start,streamKey)=>`<g class="packet protocol-packet" data-stream="${streamKey}" data-path="${pid}" data-edge-id="${esc(stream.edge.id)}" data-size="${l.size}" data-start="${start}" data-duration="${duration}" data-cycle="${cycle}" data-event="${behavior.direction==='one-way-event'}" data-reverse="${reverse}" data-rotate="${behavior.rotateWithPath}" opacity="0">${createFlowToken(l.effect,l)}</g>`;
   const reverse=l.direction==='reverse';
   const returnStart=delay+(behavior.direction==='bidirectional'?0:duration+.2);
   return token(reverse,delay,key)+(behavior.paired?token(!reverse,returnStart,`${key}-return`):'');
@@ -229,9 +238,9 @@ function motionPacket(stream,prefix){
  const motion=(lag=0,reverse=l.direction==='reverse')=>`<animateMotion dur="${duration}s" begin="${delay+lag}s" calcMode="linear" repeatCount="indefinite" rotate="${PROTOCOL_FLOW_STYLES[l.shape]&&l.shape!=='sse'?'0':'auto'}" ${reverse?'keyPoints="1;0" keyTimes="0;1"':''}><mpath href="#${pid}"/></animateMotion>`;
  const content=reverse=>{
   let body=trafficGlyph(l,reverse);
-  if(l.effect==='glow')body=`<circle r="${l.size}" fill="${l.color}" opacity=".2"/><circle r="${l.size*.7}" fill="${l.color}" opacity=".2"/>`+body;
+  if(l.effect==='glow')body=`<circle r="${l.size/2}" fill="${l.color}" opacity=".2"/><circle r="${l.size*.35}" fill="${l.color}" opacity=".2"/>`+body;
   if(l.effect==='pulse')body=`<g>${body}<animateTransform attributeName="transform" type="scale" values=".96;1;.96" dur="${duration/4}s" begin="${delay}s" repeatCount="indefinite"/></g>`;
-  if(l.effect==='dashed')body=`<rect x="${-l.size}" y="-2" width="${l.size*2}" height="4" rx="2" fill="${l.color}"/>`;
+  if(l.effect==='dashed'){const thickness=l.size/4;body=`<rect x="${-l.size/2}" y="${-thickness/2}" width="${l.size}" height="${thickness}" rx="${thickness/2}" fill="${l.color}"/>`;}
   if(l.effect==='comet'){const tail=(reverse?1:-1)*l.size*3;body=`<path class="comet-tail" d="M 0 ${-l.size*.4} Q ${tail*.45} 0 ${tail} 0 Q ${tail*.45} 0 0 ${l.size*.4} Z" fill="${l.color}" opacity=".45"/>`+body;}
   return body;
  };
@@ -246,7 +255,7 @@ function render(p,options={}){
  let defs=`<defs><pattern id="${prefix}-grid" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".45" fill="#e2e2e2"/></pattern>`;
  let body=`<rect width="${p.width}" height="${height}" fill="white"/><text x="32" y="44" class="kicker">${esc(p.kicker.toUpperCase())}</text><text x="32" y="86" class="figure-title">${esc(p.title)}</text>`;
  body+=lines(p.description,Math.max(8,Math.floor((p.width-64)/7))).map((s,i)=>`<text x="32" y="${115+i*18}" class="description">${esc(s)}</text>`).join('');
- if(p.showLegend){const layout=legendLayout(p);for(const {l,x,y}of layout.items){const ly=head-layout.rows*32+15+y,iconX=x+TRAFFIC_VISUAL.legendSize/2,textX=x+TRAFFIC_VISUAL.legendSize+TRAFFIC_VISUAL.legendGap;body+=`<g class="legend-marker" data-legend="${esc(l.id)}" transform="translate(${iconX} ${ly})">${legendGlyph(l)}</g><text x="${textX}" y="${ly+4}" class="legend-label">${esc(l.label)}</text>`;}}
+ if(p.showLegend){const layout=legendLayout(p);for(const {l,x,y,size}of layout.items){const ly=head-layout.height+y,iconX=x+size/2,textX=x+size+TRAFFIC_VISUAL.legendGap;body+=`<g class="legend-marker" data-legend="${esc(l.id)}" transform="translate(${iconX} ${ly})">${legendGlyph(l)}</g><text x="${textX}" y="${ly+4}" class="legend-label">${esc(l.label)}</text>`;}}
  if(options.controls)body+=`<g class="diagram-controls" data-play="true"><rect x="${p.width-113}" y="63" width="81" height="34" rx="9" fill="white" stroke="black"/><text x="${p.width-72}" y="84" text-anchor="middle" font-size="11">${options.paused?'▶ Reproduzir':'Ⅱ Pausar'}</text></g>`;
  body+=`<g transform="translate(0 ${head})" id="${prefix}-board"><rect width="${p.width}" height="${p.height}" fill="${p.grid?'url(#'+prefix+'-grid)':'white'}"/>`;
  const groups=p.nodes.filter(n=>['group','swimlane'].includes(n.type));
@@ -387,9 +396,10 @@ return {COMPONENTS,SYSTEM_DESIGN,TYPES,LEGENDS,EFFECTS,SYMBOLS,CONNECTORS,FONTS,
 (function(root){
  'use strict';
  const START_PADDING=4,END_PADDING=8;
- function placeToken(token,path,length,progress,reverse,rotate){
-  const start=Math.min(path.hasAttribute?.('marker-start')?END_PADDING:START_PADDING,length/2);
-  const end=Math.max(start,length-Math.min(END_PADDING,length/2));
+ function placeToken(token,path,length,progress,reverse,rotate,size){
+  const extra=Math.max(0,(size-14)/2);
+  const start=Math.min((path.hasAttribute?.('marker-start')?END_PADDING:START_PADDING)+extra,length/2);
+  const end=Math.max(start,length-Math.min(END_PADDING+extra,length/2));
   const distance=reverse?end-(end-start)*progress:start+(end-start)*progress;
   const point=path.getPointAtLength(distance);
   let angle=0;
@@ -404,7 +414,7 @@ return {COMPONENTS,SYSTEM_DESIGN,TYPES,LEGENDS,EFFECTS,SYMBOLS,CONNECTORS,FONTS,
   const streamList=reactiveNodes.length?core.streams(project):[];
   const tokens=Array.from(svg.querySelectorAll('.protocol-packet')).map(token=>{
    const path=svg.querySelector(`[id="${token.dataset.path}"]`);
-   return path?{token,path,length:path.getTotalLength(),start:Number(token.dataset.start),duration:Number(token.dataset.duration),cycle:Number(token.dataset.cycle),event:token.dataset.event==='true',edgeId:token.dataset.edgeId,reverse:token.dataset.reverse==='true',rotate:token.dataset.rotate==='true'}:null;
+   return path?{token,path,length:path.getTotalLength(),size:Number(token.dataset.size)||14,start:Number(token.dataset.start),duration:Number(token.dataset.duration),cycle:Number(token.dataset.cycle),event:token.dataset.event==='true',edgeId:token.dataset.edgeId,reverse:token.dataset.reverse==='true',rotate:token.dataset.rotate==='true'}:null;
   }).filter(Boolean);
   if(!reactiveNodes.length&&!tokens.length)return ()=>{};
   let frame=0,stopped=false,previous=Object.create(null),lastTokenTime=-1;
@@ -414,11 +424,11 @@ return {COMPONENTS,SYSTEM_DESIGN,TYPES,LEGENDS,EFFECTS,SYMBOLS,CONNECTORS,FONTS,
    if(time===lastTokenTime&&!reduced.matches)return;
    lastTokenTime=time;
    for(const item of tokens){
-    if(reduced.matches){placeToken(item.token,item.path,item.length,.5,item.reverse,item.rotate);item.token.setAttribute('opacity','.5');item.visible=undefined;continue;}
+    if(reduced.matches){placeToken(item.token,item.path,item.length,.5,item.reverse,item.rotate,item.size);item.token.setAttribute('opacity','.5');item.visible=undefined;continue;}
     const elapsed=item.event?time-item.start:((time-item.start)%item.cycle+item.cycle)%item.cycle;
     const visible=time>=item.start&&elapsed<item.duration;
     if(item.visible!==visible){item.token.setAttribute('opacity',visible?'.86':'0');item.visible=visible;}
-    if(visible)placeToken(item.token,item.path,item.length,elapsed/item.duration,item.reverse,item.rotate);
+    if(visible)placeToken(item.token,item.path,item.length,elapsed/item.duration,item.reverse,item.rotate,item.size);
    }
   }
   function update(){
@@ -644,15 +654,11 @@ function legendEditor(){
  const box=$('legendEditor');box.replaceChildren();
  for(const l of project.legends){const row=document.createElement('details');row.className='legend-row';const title=document.createElement('summary');title.textContent=l.label;row.append(title);
   field(row,'Nome da legenda',l.label,v=>{l.label=v;title.textContent=v;});colorField(row,'Cor do tráfego',l,'color','#70a0ff');
-  const shapeInput=field(row,'Símbolo',l.shape,v=>l.shape=v,{options:Object.entries(F.SYMBOLS)});
-  const effectInput=field(row,'Efeito visual',l.effect,v=>l.effect=v,{options:Object.entries(F.EFFECTS)});
+  field(row,'Símbolo',l.shape,v=>l.shape=v,{options:Object.entries(F.SYMBOLS)});
+  field(row,'Efeito visual',l.effect,v=>l.effect=v,{options:Object.entries(F.EFFECTS)});
   field(row,'Sentido',l.direction,v=>l.direction=v,{options:[['forward','Origem → destino'],['reverse','Destino → origem']]});
   field(row,'Velocidade desta legenda (×)',l.speed,v=>l.speed=v,{type:'number',min:.1,max:8,step:.1});
-  const sizeInput=field(row,'Tamanho do marcador (px)',l.size,v=>l.size=v,{type:'number',min:3,max:32});
-  const sizeHint=document.createElement('p');sizeHint.className='hint';sizeHint.textContent='Tokens de protocolo usam tamanho fixo de 14 × 14 px.';row.append(sizeHint);
-  const protocols=new Set(Object.keys(F.SYMBOLS).slice(-7));
-  function refreshTokenSize(){const fixed=protocols.has(l.effect)||protocols.has(l.shape);sizeInput.disabled=fixed;sizeInput.value=fixed?14:l.size;sizeHint.hidden=!fixed;}
-  shapeInput.addEventListener('change',refreshTokenSize);effectInput.addEventListener('change',refreshTokenSize);refreshTokenSize();
+  field(row,'Tamanho do marcador (px)',l.size,v=>l.size=v,{type:'number',min:3,max:32});
   field(row,'Marcadores simultâneos',l.count,v=>l.count=Math.round(v),{type:'number',min:1,max:8});
   const del=document.createElement('button');del.textContent='Remover legenda';del.className='danger';del.onclick=()=>{checkpoint();project.legends=project.legends.filter(v=>v.id!==l.id);for(const e of project.edges)e.traffic=e.traffic.filter(id=>id!==l.id);for(const n of project.nodes)if(n.reactive)n.reactive.legends=n.reactive.legends.filter(id=>id!==l.id);save({legend:true,panel:true});};row.append(del);box.append(row);
  }

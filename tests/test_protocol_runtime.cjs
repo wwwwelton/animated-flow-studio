@@ -5,9 +5,9 @@ const vm=require('node:vm');
 const path=require('node:path');
 const source=fs.readFileSync(path.join(__dirname,'../src/traffic-runtime.js'),'utf8');
 
-function runtime(pathElement,{reverse=false,rotate=false,reduced=false,event=false}={}){
+function runtime(pathElement,{reverse=false,rotate=false,reduced=false,event=false,size=14}={}){
  const attributes=new Map(),listeners=new Map();
- const token={dataset:{path:'rail',edgeId:'webhook-link',start:'0',duration:'2',cycle:'4',event:String(event),reverse:String(reverse),rotate:String(rotate)},setAttribute(name,value){attributes.set(name,value);}};
+ const token={dataset:{path:'rail',edgeId:'webhook-link',size:String(size),start:'0',duration:'2',cycle:'4',event:String(event),reverse:String(reverse),rotate:String(rotate)},setAttribute(name,value){attributes.set(name,value);}};
  const media={matches:reduced,addEventListener(){},removeEventListener(){}};
  const document={visibilityState:'visible',addEventListener(name,callback){listeners.set(name,callback);},removeEventListener(name){listeners.delete(name);}};
  let time=1,nextFrame;
@@ -30,6 +30,16 @@ test('tokens use path arc length, respect endpoint padding and reverse on the sa
  forward.step(2.5);
  assert.equal(forward.attributes.get('opacity'),'0');
  forward.stop();reverse.stop();
+});
+
+test('larger tokens receive more clearance from cards and arrowheads',()=>{
+ const pathElement={getTotalLength:()=>100,getPointAtLength(distance){return {x:distance,y:0};}};
+ const flow=runtime(pathElement,{size:32});
+ flow.step(0);
+ assert.equal(flow.attributes.get('transform'),'translate(13 0)');
+ flow.step(1.999);
+ assert.ok(Number(flow.attributes.get('transform').match(/translate\(([^ ]+)/)[1])<=83);
+ flow.stop();
 });
 
 test('SSE follows the tangent and reduced motion keeps a still protocol marker',()=>{

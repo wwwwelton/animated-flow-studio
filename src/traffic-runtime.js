@@ -2,9 +2,10 @@
 (function(root){
  'use strict';
  const START_PADDING=4,END_PADDING=8;
- function placeToken(token,path,length,progress,reverse,rotate){
-  const start=Math.min(path.hasAttribute?.('marker-start')?END_PADDING:START_PADDING,length/2);
-  const end=Math.max(start,length-Math.min(END_PADDING,length/2));
+ function placeToken(token,path,length,progress,reverse,rotate,size){
+  const extra=Math.max(0,(size-14)/2);
+  const start=Math.min((path.hasAttribute?.('marker-start')?END_PADDING:START_PADDING)+extra,length/2);
+  const end=Math.max(start,length-Math.min(END_PADDING+extra,length/2));
   const distance=reverse?end-(end-start)*progress:start+(end-start)*progress;
   const point=path.getPointAtLength(distance);
   let angle=0;
@@ -19,7 +20,7 @@
   const streamList=reactiveNodes.length?core.streams(project):[];
   const tokens=Array.from(svg.querySelectorAll('.protocol-packet')).map(token=>{
    const path=svg.querySelector(`[id="${token.dataset.path}"]`);
-   return path?{token,path,length:path.getTotalLength(),start:Number(token.dataset.start),duration:Number(token.dataset.duration),cycle:Number(token.dataset.cycle),event:token.dataset.event==='true',edgeId:token.dataset.edgeId,reverse:token.dataset.reverse==='true',rotate:token.dataset.rotate==='true'}:null;
+   return path?{token,path,length:path.getTotalLength(),size:Number(token.dataset.size)||14,start:Number(token.dataset.start),duration:Number(token.dataset.duration),cycle:Number(token.dataset.cycle),event:token.dataset.event==='true',edgeId:token.dataset.edgeId,reverse:token.dataset.reverse==='true',rotate:token.dataset.rotate==='true'}:null;
   }).filter(Boolean);
   if(!reactiveNodes.length&&!tokens.length)return ()=>{};
   let frame=0,stopped=false,previous=Object.create(null),lastTokenTime=-1;
@@ -29,11 +30,11 @@
    if(time===lastTokenTime&&!reduced.matches)return;
    lastTokenTime=time;
    for(const item of tokens){
-    if(reduced.matches){placeToken(item.token,item.path,item.length,.5,item.reverse,item.rotate);item.token.setAttribute('opacity','.5');item.visible=undefined;continue;}
+    if(reduced.matches){placeToken(item.token,item.path,item.length,.5,item.reverse,item.rotate,item.size);item.token.setAttribute('opacity','.5');item.visible=undefined;continue;}
     const elapsed=item.event?time-item.start:((time-item.start)%item.cycle+item.cycle)%item.cycle;
     const visible=time>=item.start&&elapsed<item.duration;
     if(item.visible!==visible){item.token.setAttribute('opacity',visible?'.86':'0');item.visible=visible;}
-    if(visible)placeToken(item.token,item.path,item.length,elapsed/item.duration,item.reverse,item.rotate);
+    if(visible)placeToken(item.token,item.path,item.length,elapsed/item.duration,item.reverse,item.rotate,item.size);
    }
   }
   function update(){

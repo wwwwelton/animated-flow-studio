@@ -181,26 +181,35 @@ function reactiveStates(p,time,streamList=null){
  for(const [id,e]of Object.entries(events)){const n=lookup.get(id),r=n.reactive;if(r.hold>0&&time-e.at>=r.hold)continue;result[id]={label:r.text?(e.event==='enter'?r.enterText:r.exitText):n.label,color:r.color?(e.event==='enter'?r.enterColor:r.exitColor):n.color,event:e.event,legend:e.legend};}
  return result;
 }
-function legendLayout(p){let x=32,y=0,rows=1;const items=[];for(const l of p.legends){const w=l.label.length*7+TRAFFIC_VISUAL.legendSize+TRAFFIC_VISUAL.legendGap+18;if(x+w>p.width-32&&x>32){x=32;y+=32;rows++;}items.push({l,x,y});x+=w;}return {items,rows:p.legends.length?rows:0};}
-function headerHeight(p){return 130+(p.description?Math.max(0,lines(p.description,Math.floor((p.width-64)/7)).length-1)*18:0)+(p.showLegend?legendLayout(p).rows*32:0);}
+function legendLayout(p){
+ let x=32,rowTop=0,rowHeight=32,rows=0,rowItems=[];const items=[];
+ function finishRow(){if(!rowItems.length)return;for(const item of rowItems)item.y=rowTop+rowHeight/2-1;items.push(...rowItems);rowTop+=rowHeight;rows++;rowItems=[];rowHeight=32;}
+ for(const l of p.legends){
+  const size=l.size??TRAFFIC_VISUAL.legendSize,w=l.label.length*7+size+TRAFFIC_VISUAL.legendGap+18;
+  if(x+w>p.width-32&&rowItems.length){finishRow();x=32;}
+  rowHeight=Math.max(rowHeight,size+16);rowItems.push({l,x,y:0,size});x+=w;
+ }
+ finishRow();return {items,rows,height:rowTop};
+}
+function headerHeight(p){return 130+(p.description?Math.max(0,lines(p.description,Math.floor((p.width-64)/7)).length-1)*18:0)+(p.showLegend?legendLayout(p).height:0);}
 const svgStyle=`:root{font-size:1rem}text{font-family:Arial,sans-serif;fill:#000}.kicker{font-family:monospace;font-size:10px;font-weight:600}.figure-title{font-size:21px;font-weight:700}.description{font-size:13px}.legend-label{font-size:13px}.edge-label{paint-order:stroke;stroke:white;stroke-width:4px;stroke-linejoin:round}.rail{fill:none;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round}.node-shape{stroke-linejoin:round}.selection{fill:none;stroke:#1675df;stroke-width:1.5;stroke-dasharray:4 3;pointer-events:none}.hit{stroke:transparent;stroke-width:16;fill:none;cursor:pointer}.node{cursor:move}.node text,.icon,.packet,.flow-token{pointer-events:none}.flow-token{overflow:visible}.resize{fill:white;stroke:#1675df;cursor:nwse-resize}.port{fill:white;stroke:#2563eb;stroke-width:1.5;opacity:0;cursor:crosshair}.node:hover>.port,.node.selected>.port,.connecting .port{opacity:1}.diagram-controls{cursor:pointer}@media(prefers-reduced-motion:reduce){.packet{display:none}.protocol-packet{display:inline;opacity:.5!important}}`;
-function createFlowToken(protocol,legend){
- const flow=PROTOCOL_FLOW_STYLES[protocol],stroke=color(legend.color);
- return `<svg class="flow-token" x="-7" y="-7" width="${FLOW_TOKEN_SIZE}" height="${FLOW_TOKEN_SIZE}" viewBox="0 0 ${FLOW_TOKEN_VIEWBOX} ${FLOW_TOKEN_VIEWBOX}" aria-hidden="true" style="color:${stroke}">${flow.geometry}</svg>`;
+function createFlowToken(protocol,legend,size=legend.size??FLOW_TOKEN_SIZE){
+ const flow=PROTOCOL_FLOW_STYLES[protocol],stroke=color(legend.color),origin=-size/2;
+ return `<svg class="flow-token" x="${origin}" y="${origin}" width="${size}" height="${size}" viewBox="0 0 ${FLOW_TOKEN_VIEWBOX} ${FLOW_TOKEN_VIEWBOX}" aria-hidden="true" style="color:${stroke}">${flow.geometry}</svg>`;
 }
 function symbolGlyph(legend,size=legend.size){
- if(PROTOCOL_FLOW_STYLES[legend.shape])return createFlowToken(legend.shape,legend);
+ if(PROTOCOL_FLOW_STYLES[legend.shape])return createFlowToken(legend.shape,legend,size);
  return symbol(legend.shape,0,0,size,legend.color);
 }
 function trafficGlyph(legend,reverse=false){
  return PROTOCOL_FLOW_STYLES[legend.effect]?createFlowToken(legend.effect,legend):symbolGlyph(legend);
 }
-function legendGlyph(legend){return symbolGlyph(legend,TRAFFIC_VISUAL.legendSize);}
+function legendGlyph(legend){return symbolGlyph(legend,legend.size);}
 function motionPacket(stream,prefix){
  const {legend:l,duration,delay,index,key}=stream,pid=`${prefix}-edge-${index}`;
  const behavior=PROTOCOL_FLOW_STYLES[l.effect]??{paired:false,reverseDelay:0},cycle=duration*(behavior.cycle??1),visible=duration/cycle;
  if(PROTOCOL_FLOW_STYLES[l.effect]){
-  const token=(reverse,start,streamKey)=>`<g class="packet protocol-packet" data-stream="${streamKey}" data-path="${pid}" data-edge-id="${esc(stream.edge.id)}" data-start="${start}" data-duration="${duration}" data-cycle="${cycle}" data-event="${behavior.direction==='one-way-event'}" data-reverse="${reverse}" data-rotate="${behavior.rotateWithPath}" opacity="0">${createFlowToken(l.effect,l)}</g>`;
+  const token=(reverse,start,streamKey)=>`<g class="packet protocol-packet" data-stream="${streamKey}" data-path="${pid}" data-edge-id="${esc(stream.edge.id)}" data-size="${l.size}" data-start="${start}" data-duration="${duration}" data-cycle="${cycle}" data-event="${behavior.direction==='one-way-event'}" data-reverse="${reverse}" data-rotate="${behavior.rotateWithPath}" opacity="0">${createFlowToken(l.effect,l)}</g>`;
   const reverse=l.direction==='reverse';
   const returnStart=delay+(behavior.direction==='bidirectional'?0:duration+.2);
   return token(reverse,delay,key)+(behavior.paired?token(!reverse,returnStart,`${key}-return`):'');
@@ -208,9 +217,9 @@ function motionPacket(stream,prefix){
  const motion=(lag=0,reverse=l.direction==='reverse')=>`<animateMotion dur="${duration}s" begin="${delay+lag}s" calcMode="linear" repeatCount="indefinite" rotate="${PROTOCOL_FLOW_STYLES[l.shape]&&l.shape!=='sse'?'0':'auto'}" ${reverse?'keyPoints="1;0" keyTimes="0;1"':''}><mpath href="#${pid}"/></animateMotion>`;
  const content=reverse=>{
   let body=trafficGlyph(l,reverse);
-  if(l.effect==='glow')body=`<circle r="${l.size}" fill="${l.color}" opacity=".2"/><circle r="${l.size*.7}" fill="${l.color}" opacity=".2"/>`+body;
+  if(l.effect==='glow')body=`<circle r="${l.size/2}" fill="${l.color}" opacity=".2"/><circle r="${l.size*.35}" fill="${l.color}" opacity=".2"/>`+body;
   if(l.effect==='pulse')body=`<g>${body}<animateTransform attributeName="transform" type="scale" values=".96;1;.96" dur="${duration/4}s" begin="${delay}s" repeatCount="indefinite"/></g>`;
-  if(l.effect==='dashed')body=`<rect x="${-l.size}" y="-2" width="${l.size*2}" height="4" rx="2" fill="${l.color}"/>`;
+  if(l.effect==='dashed'){const thickness=l.size/4;body=`<rect x="${-l.size/2}" y="${-thickness/2}" width="${l.size}" height="${thickness}" rx="${thickness/2}" fill="${l.color}"/>`;}
   if(l.effect==='comet'){const tail=(reverse?1:-1)*l.size*3;body=`<path class="comet-tail" d="M 0 ${-l.size*.4} Q ${tail*.45} 0 ${tail} 0 Q ${tail*.45} 0 0 ${l.size*.4} Z" fill="${l.color}" opacity=".45"/>`+body;}
   return body;
  };
@@ -225,7 +234,7 @@ function render(p,options={}){
  let defs=`<defs><pattern id="${prefix}-grid" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".45" fill="#e2e2e2"/></pattern>`;
  let body=`<rect width="${p.width}" height="${height}" fill="white"/><text x="32" y="44" class="kicker">${esc(p.kicker.toUpperCase())}</text><text x="32" y="86" class="figure-title">${esc(p.title)}</text>`;
  body+=lines(p.description,Math.max(8,Math.floor((p.width-64)/7))).map((s,i)=>`<text x="32" y="${115+i*18}" class="description">${esc(s)}</text>`).join('');
- if(p.showLegend){const layout=legendLayout(p);for(const {l,x,y}of layout.items){const ly=head-layout.rows*32+15+y,iconX=x+TRAFFIC_VISUAL.legendSize/2,textX=x+TRAFFIC_VISUAL.legendSize+TRAFFIC_VISUAL.legendGap;body+=`<g class="legend-marker" data-legend="${esc(l.id)}" transform="translate(${iconX} ${ly})">${legendGlyph(l)}</g><text x="${textX}" y="${ly+4}" class="legend-label">${esc(l.label)}</text>`;}}
+ if(p.showLegend){const layout=legendLayout(p);for(const {l,x,y,size}of layout.items){const ly=head-layout.height+y,iconX=x+size/2,textX=x+size+TRAFFIC_VISUAL.legendGap;body+=`<g class="legend-marker" data-legend="${esc(l.id)}" transform="translate(${iconX} ${ly})">${legendGlyph(l)}</g><text x="${textX}" y="${ly+4}" class="legend-label">${esc(l.label)}</text>`;}}
  if(options.controls)body+=`<g class="diagram-controls" data-play="true"><rect x="${p.width-113}" y="63" width="81" height="34" rx="9" fill="white" stroke="black"/><text x="${p.width-72}" y="84" text-anchor="middle" font-size="11">${options.paused?'▶ Reproduzir':'Ⅱ Pausar'}</text></g>`;
  body+=`<g transform="translate(0 ${head})" id="${prefix}-board"><rect width="${p.width}" height="${p.height}" fill="${p.grid?'url(#'+prefix+'-grid)':'white'}"/>`;
  const groups=p.nodes.filter(n=>['group','swimlane'].includes(n.type));
