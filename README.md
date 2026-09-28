@@ -95,6 +95,8 @@ flow.save_json("meu-fluxo.json")
 
 Detalhes de tabelas, efeitos, conectores, eventos e exportações estão em [docs/GUIA_DO_EDITOR.md](docs/GUIA_DO_EDITOR.md).
 
+A arquitetura é documentada de forma leve com **C4 + fluxos + ADR + contratos + SDD**. Comece por [docs/architecture/README.md](docs/architecture/README.md); decisões ficam em [docs/adr/](docs/adr/) e specs de features em [docs/sdd/](docs/sdd/).
+
 ## 4. Desenvolvimento e testes
 
 Requer Python 3.10+ e Node.js 20+. Execute os comandos na raiz `animated_flow`.
