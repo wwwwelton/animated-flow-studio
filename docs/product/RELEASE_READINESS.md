@@ -1,6 +1,8 @@
 # B09 — preparação da decisão de lançamento
 
-Estado: registro preliminar, sem aprovação de publicação. Versão candidata documental: 3.0.1; a versão efetiva de um pacote futuro deve ser conferida no momento de gerá-lo.
+Estado: **lançamento adiado por decisão da pessoa solicitante em 28/09/2026**. O pacote avaliado foi a versão 3.0.1 gerada do commit `d8da778` em `dist/animated-flow-studio.zip`. Este registro não autoriza publicação.
+
+SHA-256 do pacote avaliado: `aad64cd3aa6c4f5dc8d91eb808522e456dc2569912951a3e3f70f8aa052bbc85`. O ZIP passou na verificação de integridade, contém `.git/` com HEAD `d8da778`, não contém `history.bundle` e seu `editor.html` abriu isoladamente em Chromium com cinco componentes e sem erros de página.
 
 ## Evidência disponível
 
@@ -16,14 +18,16 @@ Estado: registro preliminar, sem aprovação de publicação. Versão candidata 
 - B02: a pessoa solicitante informou que não terá participantes nesta rodada. A observação de usuários permanece sem evidência; a revisão interna não substitui esse resultado.
 - B07: conferir outros leitores externos. A pessoa solicitante informou que não pode validar no Windows agora; a linha de base atual cobre Linux/Chromium e uma renderização estática com `rsvg-convert`.
 - Triar qualquer erro novo com ambiente, reprodução e impacto. Nenhum bloqueador foi confirmado nos cenários automatizados registrados até agora.
-- A pessoa solicitante é responsável pela decisão de lançamento e ainda não decidiu publicar ou adiar. Nenhuma data foi informada.
+- A pessoa solicitante decidiu adiar o lançamento para obter mais evidência. Nenhuma nova data foi informada.
 
 ## Registro da decisão humana
 
-| Campo | A preencher quando houver evidência suficiente |
+| Campo | Decisão de 28/09/2026 |
 |---|---|
-| Versão e pacote avaliados | Commit, artefato e data |
-| Cenários executados | Navegadores, sistemas e formatos |
-| Erros abertos e impacto | Referências à triagem, sem supor ausência de erros |
-| Limitações comunicadas | Armazenamento local, SVG em leitores de imagem, fontes externas e outras encontradas |
-| Decisão | Lançar ou adiar, pessoa responsável e data |
+| Versão e pacote avaliados | 3.0.1, commit `d8da778`, ZIP local indicado acima |
+| Cenários executados | 62 testes Node, 9 Python, Chromium em arquivo local e HTTP, PDF, SVG estático em `rsvg-convert` e editor extraído do ZIP |
+| Erros abertos e impacto | Nenhum bloqueador confirmado nos cenários executados; B02 e Windows sem evidência |
+| Limitações comunicadas | Projeto salvo localmente requer JSON para transferência; SVG em leitores de imagem pode não executar scripts; fontes externas dependem de rede; sem sessões B02 e validação no Windows |
+| Decisão | **Adiar para obter mais evidência**, pela pessoa solicitante, em 28/09/2026 |
+
+Para uma nova decisão, executar as sessões B02 quando houver participantes e repetir a jornada no Windows quando disponível. Atualizar este registro com o commit e o checksum do novo pacote avaliado; o ZIP desta candidata não deve ser tratado como lançamento aprovado.

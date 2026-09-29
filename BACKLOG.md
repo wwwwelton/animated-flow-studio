@@ -48,5 +48,6 @@ Uma versão menor pode seguir para decisão em M3 sem B08 se o fluxo principal e
 - A pessoa solicitante informou que não terá participantes para B02. A revisão interna continua útil para defeitos reproduzíveis, mas os critérios de observação de usuários de B02 permanecem sem atendimento; isso é um risco explícito para a decisão B09.
 - A pessoa solicitante decidirá o lançamento. Não haverá validação no Windows agora; a evidência de navegador desta rodada é de Linux/Chromium.
 - Nenhuma data de lançamento ou compromisso externo foi informada. B08 permanece adiado até existir um caso de uso verificável.
+- Em 28/09/2026, a pessoa solicitante decidiu adiar a candidata `d8da778` para obter mais evidência. O registro da decisão e do pacote avaliado está em `docs/product/RELEASE_READINESS.md`.
 
 Revisar este backlog ao concluir M1 e sempre que surgir um erro de alto impacto ou nova evidência de uso. Pedidos e opções de concorrentes devem permanecer identificados como **hipóteses** até receberem caso de uso, prioridade e critérios verificáveis.
