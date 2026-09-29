@@ -1,6 +1,6 @@
 # B02 — roteiro de observação da jornada principal
 
-Estado: pronto para sessões, sem participantes observados ainda. Público: pessoas que criam fluxos de projetos. Registrar experiência prévia com diagramas, navegador, sistema operacional e se usam arquivo local ou servidor HTTP. Não registrar dados pessoais no repositório.
+Estado: sem sessões nesta candidata; a pessoa solicitante informou que não terá participantes. O roteiro permanece disponível para uma rodada futura. Público: pessoas que criam fluxos de projetos. Registrar experiência prévia com diagramas, navegador, sistema operacional e se usam arquivo local ou servidor HTTP. Não registrar dados pessoais no repositório.
 
 ## Tarefas para cada participante
 
@@ -36,3 +36,5 @@ Esta revisão não contém participantes. Dois pontos verificáveis foram seleci
 | Imprimir sem perder o estado da animação | `beforeprint` substituía o SVG animado e `afterprint` chamava `draw`, que lia o relógio do SVG estático. | Antes, o tempo passou de 3,5 s a 0 s. Após o ajuste, permaneceu em 3,5 s em Chromium. |
 
 Esses resultados justificam as correções pontuais B05/B06, mas não identificam os atritos mais importantes para usuários. As sessões reais continuam necessárias para fechar B02 e priorizar outras mudanças.
+
+Uma revisão de teclado em Chromium confirmou outro atrito interno: com um botão do catálogo em foco, Espaço era interceptado pelo atalho de mover canvas e não inseria o componente (cinco nós antes e depois). O editor agora deixa Espaço acionar o botão focado (cinco → seis nós); um clique no canvas transfere o foco para a área de desenho, onde Espaço continua habilitando o pan. Isso também não representa observação de participantes.

@@ -27,6 +27,8 @@ Ao inserir outro componente pelo catálogo, o editor procura espaço livre perto
 | Cancelar conexão | Esc |
 | Desativar alinhamento durante arraste | Alt |
 
+Com um botão do catálogo em foco, Espaço o ativa. Clique na área de desenho para focar o canvas antes de usar Espaço + arraste para navegar.
+
 Mover o canvas não altera as posições dos componentes. Largura/altura da página variam entre 300 e 5000 px. O crescimento automático preserva os componentes ao cruzar as bordas; desative-o para limitar o desenho à página. Ajustar ao conteúdo remove espaço excedente à direita e abaixo.
 
 ### Tráfego

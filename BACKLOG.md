@@ -43,10 +43,10 @@ Uma versão menor pode seguir para decisão em M3 sem B08 se o fluxo principal e
 - Para a linha de base B03, “suave” significa que inserir componentes repetidamente evita sobreposição quando há espaço, mover/conectar/usar zoom preserva o diagrama e imprimir não reinicia o relógio de tráfego. Interrupções percebidas por usuários ainda precisam ser observadas.
 - B04–B06 podem corrigir defeitos reproduzidos internamente enquanto B02 aguarda participantes. Novas funcionalidades de B08 continuam condicionadas a um caso de uso comprovado.
 
-## Decisões ainda externas ao repositório
+## Decisões e limites desta candidata
 
-- Participantes e registros das sessões B02; a pessoa solicitante informou que os enviará depois.
-- Responsável pela prioridade final e pela decisão de lançamento B09.
-- Data de lançamento ou compromisso externo, caso exista.
+- A pessoa solicitante informou que não terá participantes para B02. A revisão interna continua útil para defeitos reproduzíveis, mas os critérios de observação de usuários de B02 permanecem sem atendimento; isso é um risco explícito para a decisão B09.
+- A pessoa solicitante decidirá o lançamento. Não haverá validação no Windows agora; a evidência de navegador desta rodada é de Linux/Chromium.
+- Nenhuma data de lançamento ou compromisso externo foi informada. B08 permanece adiado até existir um caso de uso verificável.
 
 Revisar este backlog ao concluir M1 e sempre que surgir um erro de alto impacto ou nova evidência de uso. Pedidos e opções de concorrentes devem permanecer identificados como **hipóteses** até receberem caso de uso, prioridade e critérios verificáveis.

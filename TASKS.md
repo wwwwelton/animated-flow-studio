@@ -57,11 +57,11 @@ Origem: [BACKLOG.md](BACKLOG.md). Este registro acompanha execução; itens cond
 | Ordem | ID | Tarefa | Estado e próxima ação |
 |---|---|---|---|
 | 13 | B01 | Comparar criação, animação, edição e compartilhamento em produtos concorrentes. | Comparação documental concluída em `docs/product/COMPETITOR_REVIEW.md`; hipóteses de valor ainda aguardam observação de uso. |
-| 14 | B02 | Observar a jornada principal com pessoas que criam diagramas de projetos. | Roteiro e revisão interna em `docs/product/USER_JOURNEY_STUDY.md`; o usuário enviará participantes depois. Sessões reais pendentes. |
+| 14 | B02 | Observar a jornada principal com pessoas que criam diagramas de projetos. | A pessoa solicitante informou que não terá participantes. Roteiro e revisão interna registrados; critério de observação real não atendido nesta candidata. |
 | 15 | B03 | Triar erros e registrar linha de base de interface, animação, salvamento e exportação. | Linha de base e triagem complementar em `docs/product/QUALITY_BASELINE.md`; encontrada e corrigida uma falha de continuidade após impressão. Falta observação manual. |
 | 16 | B04 | Corrigir falhas bloqueadoras confirmadas pela triagem. | Nenhuma falha bloqueadora confirmada na linha de base automatizada; aguarda defeito reproduzido em B03/B02. |
-| 17 | B05 | Melhorar ações repetidas de edição que apresentarem atrito. | Inserção repetida melhorada: novos nós procuram espaço livre perto da seleção. Cenário em Chromium passou; outras melhorias dependem de B02. |
+| 17 | B05 | Melhorar ações repetidas de edição que apresentarem atrito. | Inserção repetida procura espaço livre; Espaço ativa botões do catálogo por teclado e continua habilitando o pan do canvas. Cenários Chromium passaram; prioridade de outros ajustes segue incerta sem B02. |
 | 18 | B06 | Corrigir interrupções ou saltos de animação observados. | Impressão preserva o relógio da animação (3,5 s → 3,5 s em Chromium). Novos cenários dependem de B02/B03. |
-| 19 | B07 | Conferir recuperação e apresentação por JSON e exportações. | JSON/SVG/PNG/HTML/PDF conferidos em Chromium; SVG estático também renderizou no `rsvg-convert`. A interface explica edição e animação. Outros leitores e Windows ainda pendentes. |
+| 19 | B07 | Conferir recuperação e apresentação por JSON e exportações. | JSON/SVG/PNG/HTML/PDF conferidos em Chromium; SVG estático renderizou no `rsvg-convert`. Editor por HTTP salvou e reabriu o projeto; outros leitores e Windows ainda pendentes. |
 | 20 | B08 | Adicionar componentes ou opções ausentes com utilidade demonstrada. | Adiado nesta candidata: a comparação B01 gerou hipóteses, mas ainda não há caso de uso verificado por B02 ou pedido específico. Reavaliar após evidência. |
-| 21 | B09 | Consolidar a versão candidata e a decisão de lançamento. | Registro preliminar em `docs/product/RELEASE_READINESS.md`; sessões B02, leitores externos e decisão humana ainda pendentes. |
+| 21 | B09 | Consolidar a versão candidata e a decisão de lançamento. | Registro em `docs/product/RELEASE_READINESS.md`; o solicitante decide. Sem B02 e Windows nesta rodada; aprovação ou adiamento ainda pendente. |
