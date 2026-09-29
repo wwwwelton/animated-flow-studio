@@ -1,58 +1,88 @@
 # Animated Flow Studio 3.0.1
 
-Editor de fluxogramas e arquiteturas com tráfego animado em SVG. Possui 19 componentes de fluxograma, 81 símbolos de System Design (incluindo sete protocolos de API), tabelas SQL/NoSQL/Schema e componente Custom que alterna texto/cor conforme o tráfego. Os cartões usam borda preta, ícone à esquerda e texto à direita.
+[English](README.en.md)
 
-Este README descreve **o pacote 3.0.1**. O editor roda no navegador; Python é opcional para servir os arquivos, gerar exemplos ou reconstruir o projeto. Node.js e Playwright são usados somente no desenvolvimento e nos testes.
+Editor de fluxogramas e arquiteturas com tráfego animado em SVG. O pacote descrito neste README inclui 19 componentes de fluxograma, 81 símbolos de System Design, sete protocolos de API, componentes SQL/NoSQL/Schema e um componente Custom com texto e cor reativos ao tráfego.
+
+> Este README descreve o pacote 3.0.1. O editor roda no navegador. Python é opcional para servir os arquivos ou gerar exemplos; Node.js e Playwright são usados no desenvolvimento e nos testes.
 
 ![fluxograma.svg](public/fluxograma.svg)
 
-## 1. Como rodar o editor
+## Começar
 
-Extraia o ZIP em uma pasta nova, entre em `animated_flow` e abra **`editor.html`** no navegador. Não precisa executar `npm install` para usar o editor.
+### Abrir o editor
 
-Se preferir abrir por endereço HTTP, execute dentro da pasta:
+Extraia o pacote em uma pasta e abra `editor.html` no navegador. Não é necessário instalar dependências para usar o editor.
+
+Para servi-lo por HTTP, abra um terminal na raiz do projeto:
 
 ```bash
-cd animated_flow
 uv run python3 -m http.server 8000 --bind 127.0.0.1
 ```
 
-Acesse **http://127.0.0.1:8000/editor.html**. Use Ctrl+C para encerrar o servidor. No Windows sem `python3`, use `uv run python -m http.server 8000 --bind 127.0.0.1`.
+Acesse <http://127.0.0.1:8000/editor.html>. No Windows, se `python3` não estiver disponível, use:
 
-As fontes locais funcionam offline. Google Fonts precisa de rede no primeiro carregamento; em caso de falha, o editor usa uma fonte de reserva e avisa. O projeto é salvo no navegador; exporte JSON para manter uma cópia e transferi-lo entre navegadores. Abrir por `file://` e por HTTP pode usar armazenamentos separados.
+```powershell
+uv run python -m http.server 8000 --bind 127.0.0.1
+```
 
-## 2. Exemplos prontos
+Use `Ctrl+C` para encerrar o servidor. Abrir o editor por `file://` e por HTTP pode usar armazenamentos diferentes. O projeto é salvo no navegador; exporte o JSON para manter uma cópia ou transferi-lo para outro navegador.
 
-Com o servidor acima em execução:
+As fontes locais funcionam offline. O Google Fonts precisa de rede no primeiro carregamento; se a rede falhar, o editor usa uma fonte de reserva e exibe um aviso.
 
-| Exemplo | Como abrir |
-|---|---|
-| Tabelas e componente reativo | http://127.0.0.1:8000/examples/v3-features.html |
-| 7 protocolos de API e efeitos de tráfego | http://127.0.0.1:8000/examples/api-7-protocols.html ou o botão **7 protocolos de API** em Modelos |
-| Fluxo de IA com Python | http://127.0.0.1:8000/demo.html |
-| Diagrama dos protocolos para importar | `examples/api-7-protocols.json` |
-| Prévia do diagrama | `examples/api-7-protocols.png` e `examples/api-7-protocols.svg` |
-| Arquitetura de pedidos | Importe `examples/system-design.json` no editor |
-| Todas as formas de fluxograma | Importe `examples/componentes.json` |
-| Catálogo System Design | Importe `examples/system-design-catalog.json` |
-| Cores personalizadas | Importe `examples/cores.json` |
+## Exemplos
 
-Os HTMLs também podem ser abertos diretamente. JSONs são projetos editáveis; os SVGs e PNGs incluídos em `examples/` são visualizações. Os SVGs animados e estáticos **exportados pelo editor** incluem uma cópia do projeto: abra-os em **Arquivo → Abrir projeto JSON ou SVG editável** para continuar a edição. SVGs comuns, SVGs antigos sem esses dados e SVGs de componente não são projetos importáveis. A cópia editável aumenta o arquivo e inclui os textos e configurações do diagrama. Para animações dos protocolos e reações de texto/cor, prefira o HTML: leitores que exibem SVG como imagem podem bloquear seu JavaScript. A exportação PNG registra 300 dpi e limita a imagem a 16 megapixels; diagramas grandes mostram um aviso se a resolução precisar ser reduzida. Todos os marcadores começam em 1 rem (16 unidades SVG). O tamanho de qualquer legenda pode ser editado entre 0,1875 e 2 rem; legenda e partículas usam o mesmo valor. O JSON e a API Python preservam o campo `size` em unidades SVG para manter projetos existentes compatíveis. Os símbolos de protocolo mantêm a geometria normalizada em um viewBox 16 × 16 e usam a mesma curva de opacidade dos marcadores de solicitação e resposta: 0 → 0,86 → 0,86 → 0 ao longo do percurso. O modelo de API usa as cores Bootstrap: REST azul, GraphQL rosa, gRPC roxo, WebSockets laranja, Webhooks vermelho, SSE ciano e MQTT verde. Webhooks percorre o conector em loop, com uma pausa curta entre eventos.
+Os exemplos HTML podem ser abertos diretamente ou pelo servidor local:
 
-### Gerar um diagrama com Python
+| Exemplo | Arquivo ou ação |
+| --- | --- |
+| Tabelas e componente reativo | [`examples/v3-features.html`](examples/v3-features.html) |
+| Sete protocolos de API e tráfego | [`examples/api-7-protocols.html`](examples/api-7-protocols.html) ou o botão **7 protocolos de API** em Modelos |
+| Fluxo de IA com Python | [`demo.html`](demo.html) |
+| Projeto editável de protocolos | Importe [`examples/api-7-protocols.json`](examples/api-7-protocols.json) |
+| Prévia dos protocolos | [`examples/api-7-protocols.png`](examples/api-7-protocols.png) e [`examples/api-7-protocols.svg`](examples/api-7-protocols.svg) |
+| Arquitetura de pedidos | Importe [`examples/system-design.json`](examples/system-design.json) |
+| Componentes de fluxograma | Importe [`examples/componentes.json`](examples/componentes.json) |
+| Catálogo System Design | Importe [`examples/system-design-catalog.json`](examples/system-design-catalog.json) |
+| Cores personalizadas | Importe [`examples/cores.json`](examples/cores.json) |
 
-Requer `uv` e Python 3.10 ou superior. O projeto não usa bibliotecas Python de runtime:
+Os arquivos JSON são projetos editáveis; PNGs e SVGs incluídos em `examples/` são prévias. SVGs animados e estáticos exportados pelo editor incluem dados do projeto e podem ser reabertos em **Arquivo → Abrir projeto JSON ou SVG editável**. SVGs comuns, SVGs antigos sem esses dados e SVGs de componente não são projetos importáveis.
+
+Para preservar animações e reações de texto/cor dos protocolos, prefira a exportação HTML: alguns leitores que exibem SVG como imagem bloqueiam seu JavaScript. A exportação PNG registra 300 dpi e limita a imagem a 16 megapixels; diagramas grandes podem exigir redução da resolução. O editor usa 1 rem (16 unidades SVG) como tamanho inicial dos marcadores. Legendas podem ser ajustadas entre 0,1875 e 2 rem, e partículas acompanham o tamanho da legenda. O JSON e a API Python preservam o campo `size` em unidades SVG para compatibilidade com projetos existentes.
+
+Os símbolos de protocolo usam geometria normalizada em um `viewBox` de 16 × 16 e a mesma curva de opacidade dos marcadores de solicitação e resposta: `0 → 0,86 → 0,86 → 0`. As cores do modelo de API são: REST azul, GraphQL rosa, gRPC roxo, WebSockets laranja, Webhooks vermelho, SSE ciano e MQTT verde. Webhooks percorre o conector em loop, com uma breve pausa entre eventos.
+
+## Controles do editor
+
+| Ação | Como fazer |
+| --- | --- |
+| Inserir componente | Use as bibliotecas Fluxograma, System Design ou Custom |
+| Editar texto, fonte, tamanho ou cores | Selecione o componente e use o painel direito |
+| Conectar componentes | Arraste uma porta azul até outra porta ou componente |
+| Reconectar uma linha | Selecione a linha e arraste uma das pontas |
+| Zoom suave | `Ctrl`/`Cmd` + roda do mouse |
+| Mover o canvas | Arraste o fundo, use o botão do meio ou `Espaço` + arraste |
+| Centralizar o diagrama | Use **Centralizar / Ajustar à tela** |
+| Ajustar tráfego e velocidade | Abra uma legenda pelo nome |
+| Desfazer/refazer | `Ctrl`/`Cmd` + `Z` / `Ctrl`/`Cmd` + `Shift` + `Z` |
+| Guardar o projeto | Exporte o JSON ou o SVG pelo editor |
+
+O guia detalhado está em [`docs/GUIA_DO_EDITOR.md`](docs/GUIA_DO_EDITOR.md).
+
+## Gerar um diagrama com Python
+
+Requer `uv` e Python 3.10 ou superior. O projeto não usa bibliotecas Python em tempo de execução. Para gerar os exemplos incluídos:
 
 ```bash
 uv run python example.py
 ```
 
-O comando atualiza `demo.html` e `demo.json`. Abra o HTML para assistir ou importe o JSON no editor.
+O comando atualiza `demo.html` e `demo.json`. Abra o HTML no navegador ou importe o JSON no editor.
 
-Para criar outro exemplo, salve o código abaixo em `meu_fluxo.py`, ao lado de `animated_flow.py`, e execute `uv run python meu_fluxo.py`:
+Exemplo de uso da API Python:
 
 ```python
-from animated_flow import Diagram, Node, Edge, Legend
+from animated_flow import Diagram, Edge, Legend, Node
 
 flow = Diagram("Cliente e serviço", traffic_speed=1.5)
 flow.add_legend(Legend("evento", "Evento", effect="comet", speed=2))
@@ -80,32 +110,11 @@ flow.save("meu-fluxo.html")
 flow.save_json("meu-fluxo.json")
 ```
 
-## 3. Controles principais
+Salve o código em `meu_fluxo.py`, ao lado de `animated_flow.py`, e execute `uv run python meu_fluxo.py`.
 
-| Ação | Controle |
-|---|---|
-| Inserir um componente | Biblioteca Fluxograma, System Design ou Custom |
-| Editar texto, fonte, tamanho e cores | Selecione o componente; use o painel direito |
-| Conectar | Arraste uma porta azul até outra porta ou componente |
-| Reconectar | Selecione a linha e arraste uma das pontas |
-| Zoom suave | Ctrl/Cmd + roda do mouse |
-| Mover o canvas | Arraste o fundo; ou botão do meio; ou Espaço + arraste |
-| Centralizar | Centralizar / Ajustar à tela |
-| Ajustar efeitos e velocidade | Abra uma legenda de tráfego pelo nome |
-| Desfazer/refazer | Ctrl/Cmd+Z / Ctrl/Cmd+Shift+Z |
-| Guardar o projeto | Exportar JSON ou SVG do diagrama pelo editor |
+## Desenvolvimento e testes
 
-Detalhes de tabelas, efeitos, conectores, eventos e exportações estão em [docs/GUIA_DO_EDITOR.md](docs/GUIA_DO_EDITOR.md).
-
-A arquitetura é documentada de forma leve com **C4 + fluxos + ADR + contratos + SDD**. Comece por [docs/architecture/README.md](docs/architecture/README.md); decisões ficam em [docs/adr/](docs/adr/) e specs de features em [docs/sdd/](docs/sdd/).
-
-O plano para lançamento público está em [BACKLOG.md](BACKLOG.md), com execução registrada em [TASKS.md](TASKS.md). A comparação documental de produtos, o roteiro de observação, a linha de base de qualidade e a preparação da decisão de lançamento ficam em [docs/product/](docs/product/).
-
-## 4. Desenvolvimento e testes
-
-Requer Python 3.10+ e Node.js 20+. Execute os comandos na raiz `animated_flow`.
-
-Instale `uv` seguindo a [documentação oficial](https://docs.astral.sh/uv/getting-started/installation/). `uv sync` cria o ambiente virtual e instala as ferramentas de desenvolvimento, incluindo o Ruff. O arquivo `uv.lock` fixa as versões para reproduzir esse ambiente.
+Requer Python 3.10 ou superior e Node.js 20 ou superior. Execute os comandos na raiz do projeto. Instale `uv` pela [documentação oficial](https://docs.astral.sh/uv/getting-started/installation/). `uv sync` cria o ambiente virtual e instala as ferramentas de desenvolvimento, incluindo Ruff; `uv.lock` fixa as versões desse ambiente.
 
 ### Build, lint e testes sem navegador
 
@@ -128,7 +137,7 @@ node tests/editor-browser.js
 node tests/editor-task.js
 ```
 
-`node tests/editor-task.js` executa as tarefas 4–11 em sequência, cada uma com sessão isolada. Para escolher uma ou consultar a ajuda:
+`node tests/editor-task.js` executa as tarefas 4–11 em sessões isoladas. Para executar uma tarefa específica ou consultar a ajuda:
 
 ```bash
 node tests/editor-task.js 10
@@ -136,66 +145,77 @@ node tests/editor-task.js --all
 node tests/editor-task.js --help
 ```
 
-Também há atalhos: `npm test`, `npm run test:typography`, `npm run test:browser` e `npm run test:tasks`.
+Atalhos disponíveis: `npm test`, `npm run test:typography`, `npm run test:browser` e `npm run test:tasks`.
 
-A fonte usada nos testes está incluída em `tests/fixtures/DejaVuSans.ttf`, junto da licença. **Não é necessário instalar fontes no sistema.** Opcionalmente, `AFS_TEST_FONT_PATH` seleciona outro arquivo TTF; um caminho inválido gera mensagem clara.
+A fonte usada nos testes está em `tests/fixtures/DejaVuSans.ttf`, acompanhada de sua licença. Não é necessário instalar fontes no sistema. Opcionalmente, `AFS_TEST_FONT_PATH` seleciona outro arquivo TTF; um caminho inválido gera uma mensagem clara.
 
-No CachyOS/Arch/WSL, o aviso `OS is not officially supported` informa que o Playwright escolheu uma distribuição alternativa. Se o download terminou, isso não é falha de instalação. Caso o navegador efetivamente não inicie, examine o erro de inicialização; também é possível selecionar um Chromium já instalado:
+No CachyOS, Arch ou WSL, o aviso `OS is not officially supported` indica que o Playwright selecionou uma distribuição alternativa. Se o navegador não iniciar, verifique o erro de inicialização. Também é possível selecionar um Chromium já instalado:
 
 ```bash
 AFS_BROWSER_PATH="$(command -v chromium)" node tests/editor-browser.js
 ```
 
-Use esse comando somente se `command -v chromium` retornar um executável. `AFS_BROWSER_PATH` aceita qualquer caminho absoluto válido para um Chromium compatível. Os testes são headless e não exigem abrir uma janela gráfica.
+Use esse comando somente se `command -v chromium` retornar um executável. `AFS_BROWSER_PATH` aceita um caminho absoluto para um Chromium compatível. Os testes são headless e não precisam de uma janela gráfica.
 
-Os testes de fontes usam respostas de rede controladas, incluindo bytes de fonte real; eles não verificam a disponibilidade ao vivo do Google Fonts. A validação desta entrega em Chromium não comprova compatibilidade com todo sistema operacional.
+Os testes de fontes usam respostas de rede controladas, incluindo bytes de uma fonte real; não verificam a disponibilidade ao vivo do Google Fonts. A validação em Chromium não comprova compatibilidade com todos os sistemas operacionais.
 
-## 5. Git e histórico de commits
+## Arquitetura e estrutura
 
-O ZIP de distribuição contém um repositório Git completo em **`.git/`**, com o histórico de commits. Após extrair em uma pasta nova:
-
-```bash
-cd animated_flow
-git status
-git log --oneline
-```
-
-Não é necessário `git init`, nem definir `GIT_DISCOVERY_ACROSS_FILESYSTEM`.
-
-**Se você ainda usa o pacote anterior:** ele continha somente `history.bundle`, sem `.git`. Para recuperar seu histórico em uma nova pasta, preservando a pasta atual:
-
-```bash
-# Execute dentro da pasta antiga que contém history.bundle
-git clone history.bundle ../animated-flow-recuperado
-cd ../animated-flow-recuperado
-git log --oneline
-```
-
-Esse comando recupera os arquivos commitados no bundle do pacote antigo. Alterações locais que você fez na pasta antiga devem ser copiadas depois para a nova pasta. Os pacotes atuais já incluem o histórico em `.git/` e não precisam de um bundle separado.
-
-## 6. Estrutura e extensão
+A arquitetura usa C4, fluxos, ADRs, contratos e SDD. Comece por [`docs/architecture/README.md`](docs/architecture/README.md); decisões ficam em [`docs/adr/`](docs/adr/) e especificações de funcionalidades em [`docs/sdd/`](docs/sdd/). O plano de lançamento está em [`BACKLOG.md`](BACKLOG.md), tarefas em [`TASKS.md`](TASKS.md) e materiais de produto em [`docs/product/`](docs/product/).
 
 | Caminho | Finalidade |
-|---|---|
-| `editor.html` | Editor pronto para abrir |
+| --- | --- |
+| `editor.html` | Editor pronto para abrir no navegador |
 | `animated_flow.py`, `example.py` | API e exemplo Python |
 | `src/core-engine.js`, `canvas.js`, `icons.js`, `templates.js` | Motor, geometria, ícones e modelos |
 | `src/editor-*.js`, `editor.css`, `editor-shell.html` | Interface e controles |
-| `src/traffic-runtime.js`, `font-manager.js` | Eventos e fontes |
+| `src/traffic-runtime.js`, `font-manager.js` | Eventos de tráfego e fontes |
 | `src/components/` | Formas SVG parametrizadas e manifesto |
-| `assets/flowchart/`, `assets/system-design/`, `assets/custom/` | SVGs individuais |
-| `tests/` | Testes puros e testes de navegador |
-| `examples/` | Projetos e exportações |
-| `TASKS.md` | Registro histórico das tarefas |
+| `assets/flowchart/`, `assets/system-design/`, `assets/custom/` | Arquivos SVG dos componentes |
+| `tests/` | Testes unitários e de navegador |
+| `examples/` | Projetos de exemplo e prévias exportadas |
+| `TASKS.md` | Registro de tarefas |
 
-Para adicionar uma forma SVG, siga [src/components/README.md](src/components/README.md) e execute `uv run python build.py`. `src/flow-core.js`, `src/editor.js` e `editor.html` são gerados: altere os módulos de origem.
+Para adicionar uma forma SVG, siga [`src/components/README.md`](src/components/README.md) e execute `uv run python build.py`. `src/flow-core.js`, `src/editor.js` e `editor.html` são gerados; altere os módulos de origem.
 
-Para gerar o ZIP de distribuição, com o histórico Git completo:
+Para gerar o ZIP de distribuição com o histórico Git:
 
 ```bash
 uv run python tools/package_release.py
 ```
 
-O comando requer Git, uma branch ativa e árvore de trabalho limpa; grava o pacote em `dist/animated-flow-studio.zip`. Ele empacota os arquivos commitados e não inclui `node_modules`, caches ou configurações pessoais do repositório.
+O comando requer Git, uma branch ativa e uma árvore de trabalho limpa. O pacote é salvo em `dist/animated-flow-studio.zip`; arquivos ignorados, como `node_modules`, caches e configurações pessoais, não são incluídos.
 
-Limites do editor: 500 componentes, 1000 conexões e 20 legendas; tabelas com 1–12 colunas e 0–40 linhas. Não há importação `.drawio`/Mermaid/BPMN, auto-conexões ou roteamento completo para evitar obstáculos.
+O ZIP de distribuição inclui o repositório Git completo em `.git/`. Após extrair o pacote, consulte o histórico com:
+
+```bash
+git status
+git log --oneline
+```
+
+Não é necessário executar `git init` nem definir `GIT_DISCOVERY_ACROSS_FILESYSTEM`. Para recuperar o histórico de um pacote antigo que contenha apenas `history.bundle`, execute em uma pasta nova:
+
+```bash
+git clone history.bundle ../animated-flow-recuperado
+cd ../animated-flow-recuperado
+git log --oneline
+```
+
+O comando recupera os arquivos commitados no bundle. Copie para a nova pasta eventuais alterações locais que não foram commitadas.
+
+## Limites conhecidos
+
+O editor aceita até 500 componentes, 1.000 conexões e 20 legendas. Tabelas aceitam de 1 a 12 colunas e de 0 a 40 linhas. Importação de `.drawio`, Mermaid e BPMN, auto-conexões e roteamento completo para evitar obstáculos não estão disponíveis.
+
+## Atualizações
+
+O projeto é atualizado regularmente com correções de bugs e otimização de código.
+
+## 📝 Licença e créditos
+
+O projeto está licenciado sob a GNU General Public License v3.0. Consulte [`LICENSE`](LICENSE) para os termos completos.
+
+---
+
+Desenvolvido por Welton Leite 👋 <br/>
+[LinkedIn](https://www.linkedin.com/in/welton-leite-b3492985/) · [GitHub](https://github.com/wwwwelton)
