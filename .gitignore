@@ -3,6 +3,8 @@ __pycache__/
 .venv/
 node_modules/
 .ruff_cache/
+.mypy_cache/
+.pytest_cache/
 .python-version
 .qa/
 *.bundle
