@@ -1,3 +1,30 @@
+/* Keep a portable project copy inside full-diagram SVG exports. */
+(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.ProjectSVG=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
+'use strict';
+const SVG_NAMESPACE='http://www.w3.org/2000/svg';
+const METADATA_ID='animated-flow-project';
+const FORMAT='af-json-v1';
+
+function embed(svg,project){
+ const start=svg.indexOf('>');
+ if(!svg.startsWith('<svg ')||start<0)throw Error('Exportação SVG inválida.');
+ const metadata=`<metadata id="${METADATA_ID}" data-format="${FORMAT}">${encodeURIComponent(JSON.stringify(project))}</metadata>`;
+ return svg.slice(0,start+1)+metadata+svg.slice(start+1);
+}
+
+function extract(source){
+ const document=new DOMParser().parseFromString(source,'image/svg+xml');
+ const svg=document.documentElement;
+ if(svg.localName!=='svg'||svg.namespaceURI!==SVG_NAMESPACE||document.querySelector('parsererror'))throw Error('SVG inválido.');
+ const metadata=[...svg.children].find(element=>element.localName==='metadata'&&element.id===METADATA_ID);
+ if(!metadata||metadata.getAttribute('data-format')!==FORMAT)throw Error('SVG sem projeto editável do Animated Flow Studio.');
+ try{return JSON.parse(decodeURIComponent(metadata.textContent));}
+ catch{throw Error('Dados do projeto no SVG inválidos.');}
+}
+
+return {embed,extract};
+});
+
 'use strict';
 const F=FlowCore,$=id=>document.getElementById(id),board=$('board'),viewport=$('viewport'),KEY='animated-flow-project-v2',OLD='animated-flow-project';
 let project=F.featureTemplate(),selected=null,connecting=false,connectFrom=null,gesture=null,paused=matchMedia('(prefers-reduced-motion: reduce)').matches,undoStack=[],redoStack=[],clock=0,stopTraffic=()=>{},spaceDown=false;
@@ -292,7 +319,7 @@ function runtimeScript(p,svgExpression){return $('flowCoreSource').textContent+'
 async function svgExport(staticMode=false,component=null){
  const snapshot=F.clone(project),time=currentTime();status('Preparando exportação…');
  const fonts=await FlowFonts.embed(component?{nodes:[component],edges:[]}:snapshot);
- let svg=component?F.componentSVG(component):F.render(snapshot,{static:staticMode,time:staticMode?time:0});
+ let svg=component?F.componentSVG(component):ProjectSVG.embed(F.render(snapshot,{static:staticMode,time:staticMode?time:0}),snapshot);
  if(fonts.css)svg=svg.replace('</style>',fonts.css+'</style>');
  if(!staticMode&&!component&&(snapshot.nodes.some(n=>n.type==='reactive')||svg.includes('class="packet protocol-packet"')))svg=svg.replace(/<\/svg>\s*$/,()=>'<script><![CDATA['+runtimeScript(snapshot,'document.documentElement').replace(/]]>/g,']]]]><![CDATA[>')+']]></script></svg>');
  if(fonts.warnings.length)status('Exportado com fonte local de reserva: '+fonts.warnings.join('; '));else status('Exportação pronta.');
@@ -316,7 +343,15 @@ $('htmlExport').onclick=()=>exportAction(async()=>{
 });
 $('mdExport').onclick=()=>exportAction(async()=>{const safe=s=>String(s).replace(/[\[\]<>]/g,'').replace(/\n/g,' ');const md=`# ${safe(project.title)}\n\n${project.description}\n\n![${safe(project.title)}](fluxograma.svg)\n\n## Conexões\n\n${project.edges.map(e=>'- '+safe(project.nodes.find(n=>n.id===e.source).label)+' → '+safe(project.nodes.find(n=>n.id===e.target).label)).join('\n')}\n\nAbra a exportação HTML para executar transições reativas; visualizadores de SVG podem bloquear scripts.\n`;offer('fluxograma.svg',new Blob([await svgExport()],{type:'image/svg+xml;charset=utf-8'}),false);offer('fluxograma.md',new Blob([md],{type:'text/markdown;charset=utf-8'}));});
 $('pdfExport').onclick=()=>window.print();
-$('import').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>5000000)throw Error('Arquivo acima de 5 MB.');setProject(JSON.parse(await file.text()));}catch(err){status('Importação rejeitada: '+err.message);}e.target.value='';};
+$('import').onchange=async e=>{
+ const file=e.target.files[0];if(!file)return;
+ try{
+  if(file.size>5000000)throw Error('Arquivo acima de 5 MB.');
+  const source=await file.text(),isSvg=file.name.toLowerCase().endsWith('.svg');
+  setProject(isSvg?ProjectSVG.extract(source):JSON.parse(source));
+ }catch(err){status('Importação rejeitada: '+err.message);}
+ e.target.value='';
+};
 let printClock=null;
 window.addEventListener('beforeprint',()=>{
  if(printClock===null)printClock=currentTime();

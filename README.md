@@ -35,7 +35,7 @@ Com o servidor acima em execução:
 | Catálogo System Design | Importe `examples/system-design-catalog.json` |
 | Cores personalizadas | Importe `examples/cores.json` |
 
-Os HTMLs também podem ser abertos diretamente. JSONs são projetos editáveis; SVGs e PNGs na mesma pasta são visualizações. Para animações dos protocolos e reações de texto/cor, prefira o HTML: leitores que exibem SVG como imagem podem bloquear seu JavaScript. A exportação PNG registra 300 dpi e limita a imagem a 16 megapixels; diagramas grandes mostram um aviso se a resolução precisar ser reduzida. Todos os marcadores começam em 1 rem (16 unidades SVG). O tamanho de qualquer legenda pode ser editado entre 0,1875 e 2 rem; legenda e partículas usam o mesmo valor. O JSON e a API Python preservam o campo `size` em unidades SVG para manter projetos existentes compatíveis. Os símbolos de protocolo mantêm a geometria normalizada em um viewBox 16 × 16 e usam a mesma curva de opacidade dos marcadores de solicitação e resposta: 0 → 0,86 → 0,86 → 0 ao longo do percurso. O modelo de API usa as cores Bootstrap: REST azul, GraphQL rosa, gRPC roxo, WebSockets laranja, Webhooks vermelho, SSE ciano e MQTT verde. Webhooks percorre o conector em loop, com uma pausa curta entre eventos.
+Os HTMLs também podem ser abertos diretamente. JSONs são projetos editáveis; os SVGs e PNGs incluídos em `examples/` são visualizações. Os SVGs animados e estáticos **exportados pelo editor** incluem uma cópia do projeto: abra-os em **Arquivo → Abrir projeto JSON ou SVG editável** para continuar a edição. SVGs comuns, SVGs antigos sem esses dados e SVGs de componente não são projetos importáveis. A cópia editável aumenta o arquivo e inclui os textos e configurações do diagrama. Para animações dos protocolos e reações de texto/cor, prefira o HTML: leitores que exibem SVG como imagem podem bloquear seu JavaScript. A exportação PNG registra 300 dpi e limita a imagem a 16 megapixels; diagramas grandes mostram um aviso se a resolução precisar ser reduzida. Todos os marcadores começam em 1 rem (16 unidades SVG). O tamanho de qualquer legenda pode ser editado entre 0,1875 e 2 rem; legenda e partículas usam o mesmo valor. O JSON e a API Python preservam o campo `size` em unidades SVG para manter projetos existentes compatíveis. Os símbolos de protocolo mantêm a geometria normalizada em um viewBox 16 × 16 e usam a mesma curva de opacidade dos marcadores de solicitação e resposta: 0 → 0,86 → 0,86 → 0 ao longo do percurso. O modelo de API usa as cores Bootstrap: REST azul, GraphQL rosa, gRPC roxo, WebSockets laranja, Webhooks vermelho, SSE ciano e MQTT verde. Webhooks percorre o conector em loop, com uma pausa curta entre eventos.
 
 ### Gerar um diagrama com Python
 
@@ -91,7 +91,7 @@ flow.save_json("meu-fluxo.json")
 | Centralizar | Centralizar / Ajustar à tela |
 | Ajustar efeitos e velocidade | Abra uma legenda de tráfego pelo nome |
 | Desfazer/refazer | Ctrl/Cmd+Z / Ctrl/Cmd+Shift+Z |
-| Guardar o projeto | Exportar JSON |
+| Guardar o projeto | Exportar JSON ou SVG do diagrama pelo editor |
 
 Detalhes de tabelas, efeitos, conectores, eventos e exportações estão em [docs/GUIA_DO_EDITOR.md](docs/GUIA_DO_EDITOR.md).
 

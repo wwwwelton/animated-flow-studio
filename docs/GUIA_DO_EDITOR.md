@@ -8,7 +8,7 @@ Recursos do editor distribuído na versão 3.0.1. Para instalação e testes, ve
 2. Arraste o corpo para mover; use o quadrado azul para redimensionar. Selecione para editar no painel direito.
 3. Passe o mouse sobre um componente e arraste uma porta azul até uma porta ou o corpo do destino. Também é possível usar Conectar → origem → destino.
 4. Selecione a conexão para alterar estilo, trajeto, portas, posição das âncoras, rótulo e tráfego. Arraste os círculos das pontas para reconectar.
-5. Exporte o JSON para continuar em outro navegador, ou SVG/PNG/HTML para apresentar.
+5. Exporte JSON ou SVG do diagrama para continuar em outro navegador; SVG/PNG/HTML também servem para apresentar.
 
 Os campos são aplicados ao perder o foco. Há salvamento automático no navegador e histórico de desfazer/refazer. O JSON é a cópia transferível; o armazenamento do navegador pode ser limpo pelo usuário ou pelo sistema.
 Ao inserir outro componente pelo catálogo, o editor procura espaço livre perto do componente selecionado. Se a página estiver cheia, pode ser necessário mover o novo componente manualmente.
@@ -83,8 +83,8 @@ Projetos anteriores continuam importáveis. Os antigos cartões System Design co
 | Formato | Resultado |
 |---|---|
 | JSON | Projeto completo e reimportável |
-| SVG animado | Traços e marcadores animados; runtime de estados reativos quando necessário |
-| SVG estático | Estado atual dos componentes, sem movimento |
+| SVG animado | Traços e marcadores animados; runtime de estados reativos quando necessário; projeto embutido para reimportação |
+| SVG estático | Estado atual dos componentes, sem movimento; projeto embutido para reimportação |
 | SVG do componente | Somente o bloco selecionado |
 | PNG | Imagem do estado atual, até 2×; limitada a 16 milhões de pixels |
 | HTML | Apresentação independente com pausa/reprodução e estados reativos |
@@ -92,6 +92,7 @@ Projetos anteriores continuam importáveis. Os antigos cartões System Design co
 | PDF | Impressão do navegador → Salvar como PDF |
 
 **Para compartilhar transições reativas, prefira HTML.** SVG aberto como documento no navegador executa o runtime; SVG usado em `<img>`, leitores Markdown e outros visualizadores pode ter scripts bloqueados. PNG/PDF/SVG estático não preservam movimento. A preferência de movimento reduzido é respeitada na apresentação.
+SVGs completos exportados pelo editor guardam uma cópia codificada do JSON em `<metadata>`; reabra-os pelo campo **Abrir projeto JSON ou SVG editável**. Um SVG comum ou um SVG antigo sem esses dados é apenas uma imagem e é rejeitado na importação. O SVG de um único componente também não contém o projeto. A cópia embutida aumenta o tamanho do arquivo e carrega os textos e ajustes do diagrama. O JSON continua sendo a opção direta para editar ou versionar dados; PNG e PDF permanecem imagens estáticas.
 Imprimir ou salvar PDF usa um quadro estático e, ao voltar ao editor, conserva o instante atual da animação.
 
 Em `examples/`, abra `v3-features.html` para ver tabelas e estados reativos; importe `v3-features.json` para editar. Há também exemplos de arquitetura, cores, catálogo de formas e System Design, com JSON/SVG/PNG. `editor-preview.png` mostra a interface.

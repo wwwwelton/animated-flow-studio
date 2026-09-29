@@ -1,5 +1,15 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const F=require('../src/flow-core.js');
+const ProjectSVG=require('../src/project-svg.js');
+test('SVG project metadata is encoded and preserves Unicode and markup as data',()=>{
+ const project={title:'São <script>alert(1)</script>',nodes:[],edges:[]};
+ const svg=ProjectSVG.embed('<svg xmlns="http://www.w3.org/2000/svg"><title>Prévia</title></svg>',project);
+ assert.ok(!svg.includes('<script>'));
+ const encoded=svg.match(/<metadata id="animated-flow-project" data-format="af-json-v1">([^<]+)<\/metadata>/)?.[1];
+ assert.ok(encoded);
+ assert.deepEqual(JSON.parse(decodeURIComponent(encoded)),project);
+ assert.throws(()=>ProjectSVG.embed('<html></html>',project),/SVG inválida/);
+});
 test('element colors roundtrip and old projects receive neutral defaults',()=>{
  const p=F.studioTemplate(),n=p.nodes.find(n=>n.type==='card'),e=p.edges[0];
  assert.equal(n.borderColor,'#000000');assert.equal(n.iconColor,'#333333');assert.equal(e.strokeColor,'#000000');

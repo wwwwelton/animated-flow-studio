@@ -192,13 +192,30 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  await page.evaluate(()=>board.querySelector('svg').setCurrentTime(3));await page.waitForFunction(()=>document.querySelector('[data-node="b"]').textContent.includes('Idle'));
  console.log('PASS synchronized enter/exit/idle and pause');
  async function download(button,name){const event=page.waitForEvent('download');await page.click('#'+button);const d=await event;const file=path.join(out,name);await d.saveAs(file);return file;}
- const json=await download('jsonExport','diagram.json'),svg=await download('svgExport','diagram.svg'),html=await download('htmlExport','diagram.html'),png=await download('pngExport','diagram.png');
+ const json=await download('jsonExport','diagram.json'),svg=await download('svgExport','diagram.svg'),staticSvg=await download('staticSvgExport','diagram-static.svg'),html=await download('htmlExport','diagram.html'),png=await download('pngExport','diagram.png');
  const pngBytes=fs.readFileSync(png);assert.equal(pngBytes.subarray(1,4).toString(),'PNG');const densityOffset=pngBytes.indexOf(Buffer.from('pHYs'));assert.ok(densityOffset>0);assert.equal(pngBytes.readUInt32BE(densityOffset+4),11811);assert.equal(pngBytes.readUInt32BE(densityOffset+8),11811);
- await page.setInputFiles('#import',json);assert.equal(await page.evaluate(()=>project.nodes[1].reactive.enterText),'In');
+ const roundtripProject=JSON.parse(fs.readFileSync(json,'utf8'));
+ for(const source of [json,svg,staticSvg]){
+  await page.evaluate(()=>setProject(F.studioTemplate()));
+  await page.setInputFiles('#import',source);
+  await page.waitForFunction(title=>project.title===title,roundtripProject.title);
+  assert.deepEqual(await page.evaluate(()=>project),roundtripProject);
+ }
+ await page.setInputFiles('#import',{name:'plain.svg',mimeType:'image/svg+xml',buffer:Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>')});
+ await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('SVG sem projeto editável'));
+ assert.match(await page.locator('#status').textContent(),/SVG sem projeto editável/);
+ assert.deepEqual(await page.evaluate(()=>project),roundtripProject);
+ await page.setInputFiles('#import',{name:'broken.svg',mimeType:'image/svg+xml',buffer:Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><metadata id="animated-flow-project" data-format="af-json-v1">%ZZ</metadata></svg>')});
+ await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('Dados do projeto no SVG inválidos'));
+ assert.deepEqual(await page.evaluate(()=>project),roundtripProject);
+ const svgWithScript=fs.readFileSync(staticSvg,'utf8').replace('</svg>','<script>globalThis.__importScriptRan=true</script></svg>');
+ await page.setInputFiles('#import',{name:'safe.svg',mimeType:'image/svg+xml',buffer:Buffer.from(svgWithScript)});
+ await page.waitForFunction(()=>document.querySelector('#status').textContent==='Salvo neste navegador');
+ assert.equal(await page.evaluate(()=>globalThis.__importScriptRan),undefined);
  await page.reload();assert.equal(await page.evaluate(()=>project.nodes[1].reactive.exitText),'Out');
  const exported=await browser.newPage();exported.on('pageerror',e=>errors.push(e.message));await exported.goto(require('node:url').pathToFileURL(html).href);assert.equal(await exported.locator('[data-node]').count(),3);await exported.evaluate(()=>{const s=document.querySelector('svg');s.pauseAnimations();s.setCurrentTime(2.1);});await exported.waitForFunction(()=>document.querySelector('[data-node="b"]').textContent.includes('In'));
  await exported.goto(require('node:url').pathToFileURL(svg).href);assert.equal(await exported.locator('parsererror').count(),0);await exported.evaluate(()=>{document.documentElement.pauseAnimations();document.documentElement.setCurrentTime(2.1);});await exported.waitForFunction(()=>document.querySelector('[data-node="b"]').textContent.includes('In'));
- assert.deepEqual(errors,[]);console.log('PASS JSON roundtrip/persistence, PNG 300 dpi, animated standalone SVG and HTML export; no browser errors');
+ assert.deepEqual(errors,[]);console.log('PASS JSON/SVG project roundtrip, PNG 300 dpi, animated SVG and HTML export; no browser errors');
  await page.evaluate(()=>setProject(F.featureTemplate()));await page.screenshot({path:path.join(out,'editor.png')});
  console.log('Browser artifacts:',out);
  }finally{await browser.close();}

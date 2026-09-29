@@ -51,7 +51,7 @@ function runtimeScript(p,svgExpression){return $('flowCoreSource').textContent+'
 async function svgExport(staticMode=false,component=null){
  const snapshot=F.clone(project),time=currentTime();status('Preparando exportação…');
  const fonts=await FlowFonts.embed(component?{nodes:[component],edges:[]}:snapshot);
- let svg=component?F.componentSVG(component):F.render(snapshot,{static:staticMode,time:staticMode?time:0});
+ let svg=component?F.componentSVG(component):ProjectSVG.embed(F.render(snapshot,{static:staticMode,time:staticMode?time:0}),snapshot);
  if(fonts.css)svg=svg.replace('</style>',fonts.css+'</style>');
  if(!staticMode&&!component&&(snapshot.nodes.some(n=>n.type==='reactive')||svg.includes('class="packet protocol-packet"')))svg=svg.replace(/<\/svg>\s*$/,()=>'<script><![CDATA['+runtimeScript(snapshot,'document.documentElement').replace(/]]>/g,']]]]><![CDATA[>')+']]></script></svg>');
  if(fonts.warnings.length)status('Exportado com fonte local de reserva: '+fonts.warnings.join('; '));else status('Exportação pronta.');
@@ -75,7 +75,15 @@ $('htmlExport').onclick=()=>exportAction(async()=>{
 });
 $('mdExport').onclick=()=>exportAction(async()=>{const safe=s=>String(s).replace(/[\[\]<>]/g,'').replace(/\n/g,' ');const md=`# ${safe(project.title)}\n\n${project.description}\n\n![${safe(project.title)}](fluxograma.svg)\n\n## Conexões\n\n${project.edges.map(e=>'- '+safe(project.nodes.find(n=>n.id===e.source).label)+' → '+safe(project.nodes.find(n=>n.id===e.target).label)).join('\n')}\n\nAbra a exportação HTML para executar transições reativas; visualizadores de SVG podem bloquear scripts.\n`;offer('fluxograma.svg',new Blob([await svgExport()],{type:'image/svg+xml;charset=utf-8'}),false);offer('fluxograma.md',new Blob([md],{type:'text/markdown;charset=utf-8'}));});
 $('pdfExport').onclick=()=>window.print();
-$('import').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>5000000)throw Error('Arquivo acima de 5 MB.');setProject(JSON.parse(await file.text()));}catch(err){status('Importação rejeitada: '+err.message);}e.target.value='';};
+$('import').onchange=async e=>{
+ const file=e.target.files[0];if(!file)return;
+ try{
+  if(file.size>5000000)throw Error('Arquivo acima de 5 MB.');
+  const source=await file.text(),isSvg=file.name.toLowerCase().endsWith('.svg');
+  setProject(isSvg?ProjectSVG.extract(source):JSON.parse(source));
+ }catch(err){status('Importação rejeitada: '+err.message);}
+ e.target.value='';
+};
 let printClock=null;
 window.addEventListener('beforeprint',()=>{
  if(printClock===null)printClock=currentTime();
