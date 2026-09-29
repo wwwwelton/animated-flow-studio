@@ -49,3 +49,19 @@ Validação: npm ci; 40 testes Node; 7 testes Python; editor-typography.js; edit
 
 ## 12 — Componentes e tráfego dos sete protocolos de API
 Concluída: componentes SVG REST, GraphQL, gRPC, WebSockets, Webhooks, SSE e MQTT refinados no padrão de cartão do editor, com ícone à esquerda e texto legível à direita. Efeitos próprios disponíveis nas legendas de tráfego; modelo editável e demo HTML/SVG/JSON atualizados. Build e verificações de sintaxe JavaScript concluídos.
+
+## Backlog para lançamento público
+
+Origem: [BACKLOG.md](BACKLOG.md). Este registro acompanha execução; itens condicionais só viram mudança de produto após evidência. O histórico das tarefas 1–12 acima permanece como registro das entregas anteriores.
+
+| Ordem | ID | Tarefa | Estado e próxima ação |
+|---|---|---|---|
+| 13 | B01 | Comparar criação, animação, edição e compartilhamento em produtos concorrentes. | Comparação documental concluída em `docs/product/COMPETITOR_REVIEW.md`; hipóteses de valor ainda aguardam observação de uso. |
+| 14 | B02 | Observar a jornada principal com pessoas que criam diagramas de projetos. | Roteiro pronto em `docs/product/USER_JOURNEY_STUDY.md`; o usuário enviará participantes depois. Sessões reais pendentes. |
+| 15 | B03 | Triar erros e registrar linha de base de interface, animação, salvamento e exportação. | Linha de base automatizada registrada em `docs/product/QUALITY_BASELINE.md`: 62 testes Node, 9 Python, cenário Chromium e impressão PDF passaram; falta observação manual. |
+| 16 | B04 | Corrigir falhas bloqueadoras confirmadas pela triagem. | Nenhuma falha bloqueadora confirmada na linha de base automatizada; aguarda defeito reproduzido em B03/B02. |
+| 17 | B05 | Melhorar ações repetidas de edição que apresentarem atrito. | Depende das observações de B02; comparar a mesma tarefa antes e depois. |
+| 18 | B06 | Corrigir interrupções ou saltos de animação observados. | Depende de cenários reproduzíveis em B02/B03; conferir pausa, retomada, velocidade e exportação. |
+| 19 | B07 | Conferir recuperação e apresentação por JSON e exportações. | Base automatizada de JSON, SVG, PNG, HTML e impressão PDF passou em B03; ainda conferir leitura em aplicativos externos. |
+| 20 | B08 | Adicionar componentes ou opções ausentes com utilidade demonstrada. | Hipótese; depende de B01/B02 ou pedido verificável e de critério próprio por adição. |
+| 21 | B09 | Consolidar a versão candidata e a decisão de lançamento. | Depende de B01–B04 e dos itens escolhidos em B05–B08; publicação requer decisão da pessoa responsável pelo produto. |
