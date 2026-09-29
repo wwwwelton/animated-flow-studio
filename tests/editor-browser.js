@@ -78,6 +78,22 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  });
  const tokenX=Number(tokenState.transform.match(/translate\(([^ ]+)/)[1]);
  assert.ok(Math.abs(tokenX-tokenState.point.x)<1);assert.equal(tokenState.size,true);assert.equal(tokenState.hit,'none');
+ await page.evaluate(()=>board.querySelector('svg').setCurrentTime(2));
+ await page.waitForFunction(previous=>document.querySelector('[data-stream="0-0-0"]')?.getAttribute('transform')!==previous,tokenState.transform);
+ const phaseX=await page.evaluate(()=>Number(document.querySelector('[data-stream="0-0-0"]').getAttribute('transform').match(/translate\(([^ ]+)/)[1]));
+ const samePhase=({speed,time,x})=>{
+  const svg=document.querySelector('#board svg'),token=svg?.querySelector('[data-stream="0-0-0"]');
+  const currentX=Number(token?.getAttribute('transform')?.match(/translate\(([^ ]+)/)?.[1]);
+  return Number(document.querySelector('#trafficSpeed').value)===speed&&Math.abs(svg?.getCurrentTime()-time)<.01&&Math.abs(currentX-x)<.5;
+ };
+ await page.evaluate(()=>{const control=document.querySelector('#trafficSpeed');control.value='2';control.dispatchEvent(new Event('input'));control.dispatchEvent(new Event('change'));});
+ await page.waitForFunction(samePhase,{speed:2,time:1,x:phaseX});
+ await page.locator('#undo').click();
+ await page.waitForFunction(samePhase,{speed:1,time:2,x:phaseX});
+ await page.locator('#redo').click();
+ await page.waitForFunction(samePhase,{speed:2,time:1,x:phaseX});
+ await page.locator('#undo').click();
+ await page.waitForFunction(samePhase,{speed:1,time:2,x:phaseX});
  const apiTiming=await page.evaluate(()=>{
   const svg=board.querySelector('svg'),packet=key=>svg.querySelector(`[data-stream="${key}"]`);
   const timing=key=>{const token=packet(key);return {start:Number(token.dataset.start),duration:Number(token.dataset.duration),cycle:Number(token.dataset.cycle)};};

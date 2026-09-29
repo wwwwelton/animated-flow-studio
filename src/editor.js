@@ -256,13 +256,25 @@ $('zoom').onchange=()=>{stopZoom();view.fit=$('zoom').value==='fit';if(!view.fit
 $('centerCanvas').onclick=()=>{stopZoom();centerCanvas();};$('panMode').onclick=()=>$('panMode').classList.toggle('active');
 window.addEventListener('resize',fit);
 $('trafficSpeed').oninput=()=>$('speedReadout').textContent=$('trafficSpeed').value+'×';
-$('trafficSpeed').onchange=()=>{const speed=Number($('trafficSpeed').value);checkpoint();project.trafficSpeed=speed;clock=0;stopTraffic();board.replaceChildren();save();};
+$('trafficSpeed').onchange=()=>{
+ const speed=Number($('trafficSpeed').value),previous=project.trafficSpeed;
+ if(!Number.isFinite(speed)||speed<.1||speed>8){$('trafficSpeed').value=previous;$('speedReadout').textContent=previous+'×';status('Velocidade global entre 0,1× e 8×.');return;}
+ if(speed===previous)return;
+ const time=currentTime();checkpoint();project.trafficSpeed=speed;
+ clock=time*previous/speed;stopTraffic();board.replaceChildren();save();
+};
 $('restartTraffic').onclick=()=>{clock=0;stopTraffic();board.replaceChildren();draw();};
 $('toggleTraffic').onclick=()=>{paused=!paused;$('toggleTraffic').textContent=paused?'Reproduzir':'Pausar';draw();};
 $('addLegend').onclick=()=>{if(project.legends.length>=20){status('Limite de 20 legendas.');return;}checkpoint();project.legends.push({id:uid(),label:'Novo tráfego',color:'#ffca76',shape:'square',direction:'forward',effect:'packet',speed:1,size:16,count:1});save({legend:true});};
 $('connect').onclick=()=>{connecting=!connecting;connectFrom=null;$('connect').classList.toggle('active',connecting);viewport.classList.toggle('connecting',connecting);status(connecting?'Clique na origem e no destino, ou arraste uma porta azul.':'Conexão cancelada.');};
 $('delete').onclick=remove;
-function historyStep(undo){const from=undo?undoStack:redoStack,to=undo?redoStack:undoStack;if(!from.length)return;to.push(JSON.stringify(project));project=F.normalize(JSON.parse(from.pop()));selected=null;projectFields();legendEditor();inspect();save();FlowFonts.ensure(project).then(reportFontWarnings);}
+function historyStep(undo){
+ const from=undo?undoStack:redoStack,to=undo?redoStack:undoStack;if(!from.length)return;
+ const previousSpeed=project.trafficSpeed,time=currentTime();to.push(JSON.stringify(project));
+ project=F.normalize(JSON.parse(from.pop()));selected=null;
+ if(project.trafficSpeed!==previousSpeed){clock=time*previousSpeed/project.trafficSpeed;stopTraffic();board.replaceChildren();}
+ projectFields();legendEditor();inspect();save();FlowFonts.ensure(project).then(reportFontWarnings);
+}
 $('undo').onclick=()=>historyStep(true);$('redo').onclick=()=>historyStep(false);
 $('preview').onclick=()=>{document.body.classList.add('presentation');selected=null;view.fit=true;draw();};$('previewExit').onclick=()=>{document.body.classList.remove('presentation');view.fit=true;draw();};
 document.addEventListener('keydown',e=>{

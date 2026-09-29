@@ -17,6 +17,23 @@ test('global speed and per-legend speed change actual travel durations',()=>{
  const streams=F.streams(p);assert.equal(streams.length,6);assert.equal(streams[0].duration,.25);assert.equal(streams[1].delay,1/12);
  assert.match(F.render(p),/animateMotion dur="0.25s"/);
 });
+test('global speed scales protocol timing and reactive hold without changing phase',()=>{
+ const original=F.protocolTemplate(),faster=F.clone(original);faster.trafficSpeed=2;
+ const byKey=project=>new Map(F.streams(project).map(stream=>[stream.key,stream]));
+ const first=byKey(original),second=byKey(faster);
+ for(const [key,stream]of first){
+  const scaled=second.get(key);assert.ok(scaled,key);
+  for(const field of ['duration','delay','cycle','returnDelay']){
+   if(stream[field]===undefined)continue;
+   assert.ok(Math.abs(scaled[field]*2-stream[field])<1e-9,`${key} ${field}`);
+  }
+ }
+ const a=simple(),b=F.clone(a);b.trafficSpeed=2;
+ for(let sample=0;sample<=200;sample++){
+  const time=sample/20;
+  assert.deepEqual(F.reactiveStates(a,time),F.reactiveStates(b,time/2),`reactive phase at ${time}s`);
+ }
+});
 test('reactive state follows enter, exit, timeout, filters and independent toggles',()=>{
  const p=simple(),n=p.nodes[1];
  assert.equal(F.reactiveStates(p,0).b.label,'Idle');

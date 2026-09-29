@@ -28,6 +28,7 @@ const SYMBOLS={square:'Quadrado',circle:'Círculo',diamond:'Losango',triangle:'T
 // One rem uses the browser default (16px); traffic defaults use the same SVG-unit size.
 const FLOW_TOKEN_SIZE=16,FLOW_TOKEN_VIEWBOX=16;
 const TRAFFIC_VISUAL={baseSize:8,defaultSize:FLOW_TOKEN_SIZE,protocolFlowSize:FLOW_TOKEN_SIZE,legendSize:FLOW_TOKEN_SIZE,legendGap:10,connectorArrowSize:10,connectorArrowStroke:1.15,protocolStrokeWidth:1.5,peakOpacity:.86,fadeIn:.06,fadeOut:.94};
+const PROTOCOL_RELAY_GAP=.35;
 const PROTOCOL_FLOW_STYLES={
  rest:{shape:'circle',geometry:'<circle cx="8" cy="8" r="8" fill="currentColor" stroke="none"/>',direction:'request-response',paired:true,cycle:2.2,speed:1,rotateWithPath:false},
  graphql:{shape:'diamond',geometry:'<path d="M8 0L16 8 8 16 0 8Z" fill="currentColor" stroke="none"/>',direction:'request-response',paired:true,cycle:2.2,speed:1,rotateWithPath:false},
@@ -185,7 +186,7 @@ function streams(p){
   const rate=(p.trafficSpeed??1)*(l.speed??1),duration=e.duration/rate;
   const flow=PROTOCOL_FLOW_STYLES[l.effect],baseDelay=(i*.18+j*.22)/rate;
   const arrival=flow?.relay==='broker'?arrivals.get(`${id}\0${e.source}`):undefined;
-  const delay=arrival===undefined?baseDelay:Math.max(baseDelay,arrival+.35);
+  const delay=arrival===undefined?baseDelay:Math.max(baseDelay,arrival+PROTOCOL_RELAY_GAP/rate);
   const count=l.count??1;
   for(let k=0;k<count;k++)result.push({edge:e,index:i,legend:l,duration,delay:delay+k*duration/count,particleIndex:k,key:`${i}-${j}-${k}`,source:l.direction==='reverse'?e.target:e.source,target:l.direction==='reverse'?e.source:e.target});
  }));
@@ -193,7 +194,7 @@ function streams(p){
  return result;
 }
 function scheduleProtocolRelays(p,result){
- const relayGap=.35,groups=new Map(),nodes=new Map(p.nodes.map(node=>[node.id,node]));
+ const groups=new Map(),nodes=new Map(p.nodes.map(node=>[node.id,node]));
  for(const stream of result){
   if(!PROTOCOL_FLOW_STYLES[stream.legend.effect])continue;
   let group=groups.get(stream.legend.id);
@@ -206,6 +207,8 @@ function scheduleProtocolRelays(p,result){
  for(const legend of p.legends){
   const flow=PROTOCOL_FLOW_STYLES[legend.effect],group=groups.get(legend.id);
   if(!flow||!group||legend.direction==='reverse')continue;
+  // All timing scales together so speed changes can preserve the current phase.
+  const rate=(p.trafficSpeed??1)*(legend.speed??1),relayGap=PROTOCOL_RELAY_GAP/rate;
   for(const [nodeId,incoming] of group.incoming){
    const node=nodes.get(nodeId),outgoing=group.outgoing.get(nodeId);
    if(!node||!outgoing)continue;
@@ -215,7 +218,7 @@ function scheduleProtocolRelays(p,result){
    const response=flow.direction==='request-response',bidirectional=flow.direction==='bidirectional';
    const streaming=flow.direction==='server-client-stream';
    const returnTransit=response?outDuration+relayGap+first.duration+relayGap:0;
-   const pause=streaming||bidirectional?0:flow.direction==='one-way-event'?1.25:1;
+   const pause=(streaming||bidirectional?0:flow.direction==='one-way-event'?1.25:1)/rate;
    const baseCycle=bidirectional?Math.min(first.duration,outDuration):transit+returnTransit+pause;
    const spacing=response?first.duration/(legend.count+1):baseCycle/legend.count;
    const cycle=baseCycle+(response?(legend.count-1)*spacing:0);
@@ -243,7 +246,7 @@ function reactiveStates(p,time,streamList=null){
   const at=first+Math.floor((time-first+1e-7)/stream.duration)*stream.duration;
   if(!events[id]||at>events[id].at+1e-6||(Math.abs(at-events[id].at)<1e-6&&event==='enter'))events[id]={at,event,legend:stream.legend.id};
  }
- for(const [id,e]of Object.entries(events)){const n=lookup.get(id),r=n.reactive;if(r.hold>0&&time-e.at>=r.hold)continue;result[id]={label:r.text?(e.event==='enter'?r.enterText:r.exitText):n.label,color:r.color?(e.event==='enter'?r.enterColor:r.exitColor):n.color,event:e.event,legend:e.legend};}
+ for(const [id,e]of Object.entries(events)){const n=lookup.get(id),r=n.reactive,hold=r.hold/(p.trafficSpeed??1);if(hold>0&&time-e.at>=hold)continue;result[id]={label:r.text?(e.event==='enter'?r.enterText:r.exitText):n.label,color:r.color?(e.event==='enter'?r.enterColor:r.exitColor):n.color,event:e.event,legend:e.legend};}
  return result;
 }
 function legendLayout(p){
@@ -270,13 +273,13 @@ function trafficGlyph(legend,reverse=false){
  return PROTOCOL_FLOW_STYLES[legend.effect]?createFlowToken(legend.effect,legend):symbolGlyph(legend);
 }
 function legendGlyph(legend){return symbolGlyph(legend,legend.size);}
-function motionPacket(stream,prefix){
+function motionPacket(stream,prefix,globalSpeed=1){
  const {legend:l,duration,delay,index,key}=stream,pid=`${prefix}-edge-${index}`;
  const behavior=PROTOCOL_FLOW_STYLES[l.effect]??{paired:false,reverseDelay:0},cycle=stream.cycle??duration*(behavior.cycle??1),visible=duration/cycle;
  if(PROTOCOL_FLOW_STYLES[l.effect]){
   const token=(reverse,start,streamKey)=>`<g class="packet protocol-packet" data-stream="${streamKey}" data-path="${pid}" data-edge-id="${esc(stream.edge.id)}" data-size="${l.size}" data-peak-opacity="${TRAFFIC_VISUAL.peakOpacity}" data-start="${start}" data-duration="${duration}" data-cycle="${cycle}" data-event="${behavior.direction==='one-way-event'}" data-reverse="${reverse}" data-rotate="${behavior.rotateWithPath}" opacity="0">${createFlowToken(l.effect,l)}</g>`;
   const reverse=l.direction==='reverse';
-  const returnStart=stream.returnDelay??delay+(behavior.direction==='bidirectional'?0:duration+.2);
+  const returnStart=stream.returnDelay??delay+(behavior.direction==='bidirectional'?0:duration+.2/globalSpeed);
   return token(reverse,delay,key)+(behavior.paired?token(!reverse,returnStart,`${key}-return`):'');
  }
  const motion=(lag=0,reverse=l.direction==='reverse')=>`<animateMotion dur="${duration}s" begin="${delay+lag}s" calcMode="linear" repeatCount="indefinite" rotate="${PROTOCOL_FLOW_STYLES[l.shape]&&l.shape!=='sse'?'0':'auto'}" ${reverse?'keyPoints="1;0" keyTimes="0;1"':''}><mpath href="#${pid}"/></animateMotion>`;
@@ -322,7 +325,7 @@ function render(p,options={}){
  }
  const states=reactiveStates(p,options.time??0);
  for(const n of p.nodes.filter(n=>!groups.includes(n)))body+=node(n,sel?.type==='node'&&sel.id===n.id,{interactive:options.interactive,state:states[n.id]});
- if(!staticMode)for(const s of streams(p))body+=motionPacket(s,prefix);
+ if(!staticMode)for(const s of streams(p))body+=motionPacket(s,prefix,p.trafficSpeed);
  defs+='</defs>';body+='</g>';
  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${p.width} ${height}" width="${p.width}" height="${height}" role="img" aria-label="${esc(p.title)}"><title>${esc(p.title)}</title><style>${svgStyle}</style>${defs}${body}</svg>`;
 }
@@ -800,13 +803,25 @@ $('zoom').onchange=()=>{stopZoom();view.fit=$('zoom').value==='fit';if(!view.fit
 $('centerCanvas').onclick=()=>{stopZoom();centerCanvas();};$('panMode').onclick=()=>$('panMode').classList.toggle('active');
 window.addEventListener('resize',fit);
 $('trafficSpeed').oninput=()=>$('speedReadout').textContent=$('trafficSpeed').value+'×';
-$('trafficSpeed').onchange=()=>{const speed=Number($('trafficSpeed').value);checkpoint();project.trafficSpeed=speed;clock=0;stopTraffic();board.replaceChildren();save();};
+$('trafficSpeed').onchange=()=>{
+ const speed=Number($('trafficSpeed').value),previous=project.trafficSpeed;
+ if(!Number.isFinite(speed)||speed<.1||speed>8){$('trafficSpeed').value=previous;$('speedReadout').textContent=previous+'×';status('Velocidade global entre 0,1× e 8×.');return;}
+ if(speed===previous)return;
+ const time=currentTime();checkpoint();project.trafficSpeed=speed;
+ clock=time*previous/speed;stopTraffic();board.replaceChildren();save();
+};
 $('restartTraffic').onclick=()=>{clock=0;stopTraffic();board.replaceChildren();draw();};
 $('toggleTraffic').onclick=()=>{paused=!paused;$('toggleTraffic').textContent=paused?'Reproduzir':'Pausar';draw();};
 $('addLegend').onclick=()=>{if(project.legends.length>=20){status('Limite de 20 legendas.');return;}checkpoint();project.legends.push({id:uid(),label:'Novo tráfego',color:'#ffca76',shape:'square',direction:'forward',effect:'packet',speed:1,size:16,count:1});save({legend:true});};
 $('connect').onclick=()=>{connecting=!connecting;connectFrom=null;$('connect').classList.toggle('active',connecting);viewport.classList.toggle('connecting',connecting);status(connecting?'Clique na origem e no destino, ou arraste uma porta azul.':'Conexão cancelada.');};
 $('delete').onclick=remove;
-function historyStep(undo){const from=undo?undoStack:redoStack,to=undo?redoStack:undoStack;if(!from.length)return;to.push(JSON.stringify(project));project=F.normalize(JSON.parse(from.pop()));selected=null;projectFields();legendEditor();inspect();save();FlowFonts.ensure(project).then(reportFontWarnings);}
+function historyStep(undo){
+ const from=undo?undoStack:redoStack,to=undo?redoStack:undoStack;if(!from.length)return;
+ const previousSpeed=project.trafficSpeed,time=currentTime();to.push(JSON.stringify(project));
+ project=F.normalize(JSON.parse(from.pop()));selected=null;
+ if(project.trafficSpeed!==previousSpeed){clock=time*previousSpeed/project.trafficSpeed;stopTraffic();board.replaceChildren();}
+ projectFields();legendEditor();inspect();save();FlowFonts.ensure(project).then(reportFontWarnings);
+}
 $('undo').onclick=()=>historyStep(true);$('redo').onclick=()=>historyStep(false);
 $('preview').onclick=()=>{document.body.classList.add('presentation');selected=null;view.fit=true;draw();};$('previewExit').onclick=()=>{document.body.classList.remove('presentation');view.fit=true;draw();};
 document.addEventListener('keydown',e=>{
