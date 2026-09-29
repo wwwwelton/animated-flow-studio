@@ -59,8 +59,21 @@ Este arquivo orienta alterações neste repositório. Aplique as regras ao códi
 
 ## Entrega
 
-- Faça a menor alteração que resolva a tarefa por completo. Não sobrescreva trabalho preexistente de outras pessoas.
-- Ao concluir, informe o que mudou, quais verificações foram executadas e qualquer limitação material. Se um teste não puder ser executado, explique o motivo sem declarar que passou.
+<ul>
+  <li>Faça a menor alteração que resolva a tarefa por completo. Não sobrescreva trabalho preexistente de outras pessoas.</li>
+  <li>Ao concluir, informe o que mudou, quais verificações foram executadas e qualquer limitação material. Se um teste não puder ser executado, explique o motivo sem declarar que passou.</li>
+  <li>Kaizen - melhoria contínua:
+    <ul>
+        <li>Entenda o comportamento atual e o objetivo antes de alterar o código.</li>
+        <li>Prefira a menor mudança que resolva a causa do problema ou melhore o resultado.</li>
+        <li>Preserve comportamentos e contratos existentes; atualize os testes quando a mudança alterar o comportamento.</li>
+        <li>Evite agrupar refatorações sem relação com a tarefa.</li>
+        <li>Execute as verificações relevantes e informe o que mudou e os resultados.</li>
+        <li>Registre melhorias descobertas fora do escopo como sugestões para uma próxima etapa.</li>
+        <li>Use feedback e revisões para orientar o próximo ciclo de melhoria.</li>
+    </ul>
+  </li>
+</ul>
 
 ## Contexto específico do projeto
 
