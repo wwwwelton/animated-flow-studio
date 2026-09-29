@@ -228,3 +228,19 @@ O projeto está licenciado sob a GNU General Public License v3.0. Consulte [`LIC
 
 Desenvolvido por Welton Leite 👋 <br/>
 [LinkedIn](https://www.linkedin.com/in/welton-leite-b3492985/) · [GitHub](https://github.com/wwwwelton)
+
+<!-- generated:document:start -->
+Apresentação e uso do projeto.
+
+## Contexto do projeto
+
+- Repositório: https://github.com/wwwwelton/animated-flow-studio
+- Tipo: editor web offline com API Python
+- Linguagens: Python, JavaScript, HTML, CSS
+- Ferramentas de desenvolvimento: Ruff e Playwright
+- Testes: Node.js (`node:test`), Python (`unittest`) e Playwright
+
+## Propósito
+
+- O que este projeto faz e para quem? — Editor de fluxogramas e arquiteturas com tráfego animado em SVG. O pacote descrito neste README inclui 19 componentes de fluxograma, 81 símbolos de System Design, sete protocolos de API, componentes SQL/NoSQL/Schema e um componente Custom com texto e cor reativos ao tráfego.
+<!-- generated:document:end -->
