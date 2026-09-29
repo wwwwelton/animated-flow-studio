@@ -4,6 +4,8 @@ Editor de fluxogramas e arquiteturas com tráfego animado em SVG. Possui 19 comp
 
 Este README descreve **o pacote 3.0.1**. O editor roda no navegador; Python é opcional para servir os arquivos, gerar exemplos ou reconstruir o projeto. Node.js e Playwright são usados somente no desenvolvimento e nos testes.
 
+![fluxograma.svg](public/fluxograma.svg)
+
 ## 1. Como rodar o editor
 
 Extraia o ZIP em uma pasta nova, entre em `animated_flow` e abra **`editor.html`** no navegador. Não precisa executar `npm install` para usar o editor.
