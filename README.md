@@ -207,9 +207,18 @@ O comando recupera os arquivos commitados no bundle. Copie para a nova pasta eve
 
 O editor aceita até 500 componentes, 1.000 conexões e 20 legendas. Tabelas aceitam de 1 a 12 colunas e de 0 a 40 linhas. Importação de `.drawio`, Mermaid e BPMN, auto-conexões e roteamento completo para evitar obstáculos não estão disponíveis.
 
+## Contribuindo
+
+Contribuições são bem-vindas. Para propor uma melhoria:
+
+1. Crie um fork do repositório e uma branch de trabalho.
+2. Faça uma alteração focada e atualize a documentação ou os testes quando necessário.<br/>
+~~3. Execute as verificações descritas em [Desenvolvimento e testes](#desenvolvimento-e-testes).~~
+4. Abra um [pull request](https://github.com/wwwwelton/animated-flow-studio/pulls) para a branch padrão do projeto, explicando o objetivo, as mudanças e como foram validadas. Para alterações visuais, inclua uma captura de tela quando possível.
+
 ## Atualizações
 
-O projeto é atualizado regularmente com correções de bugs e otimização de código.
+O projeto é atualizado regularmente com correções de bugs, otimizações de código e novas funcionalidades.
 
 ## 📝 Licença e créditos
 

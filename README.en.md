@@ -207,11 +207,20 @@ This recovers files committed in the bundle. Copy any uncommitted local changes 
 
 The editor supports up to 500 components, 1,000 connections, and 20 legends. Tables support 1–12 columns and 0–40 rows. Importing `.drawio`, Mermaid, or BPMN files, automatic connections, and full obstacle-avoiding routing are not available.
 
+## Contributing
+
+Contributions are welcome. To propose an improvement:
+
+1. Fork the repository and create a working branch.
+2. Make a focused change and update the documentation or tests when needed.<br/>
+~~3. Run the checks described in [Development and tests](#development-and-tests).~~
+4. Open a [pull request](https://github.com/wwwwelton/animated-flow-studio/pulls) against the project's default branch. Explain the goal, the changes, and how you validated them. For visual changes, include a screenshot when possible.
+
 ## Updates
 
-The project is updated regularly with bug fixes and code optimizations.
+The project is updated regularly with bug fixes, code optimizations and new features.
 
-## License and credits
+## 📝 License and credits
 
 This project is licensed under the GNU General Public License v3.0. See [`LICENSE`](LICENSE) for the full terms.
 
