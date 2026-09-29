@@ -99,7 +99,30 @@ viewport.addEventListener('wheel',e=>{
  function tick(){if(!zoomTarget)return;const z=zoomTarget,diff=z.scale-view.scale;view.scale=Math.abs(diff)<.0005?z.scale:view.scale+diff*.25;view.x=z.cx-z.world.x*view.scale;view.y=z.cy-z.world.y*view.scale;applyView();if(view.scale!==z.scale)zoomFrame=requestAnimationFrame(tick);else zoomTarget=null;}
  zoomFrame=requestAnimationFrame(tick);
 },{passive:false});
-function addNode(node){if(project.nodes.length>=500){status('Limite de 500 componentes.');return;}const center=position({clientX:viewport.getBoundingClientRect().left+viewport.clientWidth/2,clientY:viewport.getBoundingClientRect().top+viewport.clientHeight/2});node.x=Math.max(0,center.x-node.w/2);node.y=Math.max(0,center.y-node.h/2);node.id=uid();if(!project.autoGrow){node.w=Math.min(node.w,project.width);node.h=Math.min(node.h,project.height);node.x=Math.min(node.x,project.width-node.w);node.y=Math.min(node.y,project.height-node.h);}const clean=F.normalize({...project,nodes:[...project.nodes,node]}).nodes.at(-1);checkpoint();project.nodes.push(clean);selected={type:'node',id:clean.id};save({panel:true});}
+function openNodePosition(node,center){
+ const maxX=Math.max(0,project.width-node.w),maxY=Math.max(0,project.height-node.h);
+ const baseX=Math.min(maxX,Math.max(0,center.x-node.w/2)),baseY=Math.min(maxY,Math.max(0,center.y-node.h/2));
+ const current=selected?.type==='node'?selectedItem():null,candidates=[];
+ if(current)candidates.push([current.x+current.w+20,current.y],[current.x,current.y+current.h+20]);
+ for(let ring=0;ring<=6;ring++)for(let dy=-ring;dy<=ring;dy++)for(let dx=-ring;dx<=ring;dx++){
+  if(Math.max(Math.abs(dx),Math.abs(dy))===ring)candidates.push([baseX+dx*(node.w+16),baseY+dy*(node.h+16)]);
+ }
+ for(const [x,y] of candidates){
+  if(x<0||y<0||x>maxX||y>maxY)continue;
+  if(project.nodes.some(other=>x<other.x+other.w+12&&x+node.w+12>other.x&&y<other.y+other.h+12&&y+node.h+12>other.y))continue;
+  return {x,y};
+ }
+ return {x:baseX,y:baseY};
+}
+function addNode(node){
+ if(project.nodes.length>=500){status('Limite de 500 componentes.');return;}
+ const rect=viewport.getBoundingClientRect();
+ const center=position({clientX:rect.left+rect.width/2,clientY:rect.top+rect.height/2});
+ if(!project.autoGrow){node.w=Math.min(node.w,project.width);node.h=Math.min(node.h,project.height);}
+ Object.assign(node,openNodePosition(node,center),{id:uid()});
+ const clean=F.normalize({...project,nodes:[...project.nodes,node]}).nodes.at(-1);
+ checkpoint();project.nodes.push(clean);selected={type:'node',id:clean.id};save({panel:true});
+}
 function add(type){addNode(F.makeNode(type));}function addSystem(id){addNode(F.systemNode(id));}
 function remove(){if(!selected)return;checkpoint();if(selected.type==='node'){const ids=descendants(selected.id);project.nodes=project.nodes.filter(n=>!ids.has(n.id));project.edges=project.edges.filter(e=>!ids.has(e.source)&&!ids.has(e.target));}else project.edges=project.edges.filter(e=>e.id!==selected.id);selected=null;save({panel:true});}
 function field(parent,label,value,onchange,{type='text',options,min,max,step}={}){

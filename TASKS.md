@@ -57,11 +57,11 @@ Origem: [BACKLOG.md](BACKLOG.md). Este registro acompanha execução; itens cond
 | Ordem | ID | Tarefa | Estado e próxima ação |
 |---|---|---|---|
 | 13 | B01 | Comparar criação, animação, edição e compartilhamento em produtos concorrentes. | Comparação documental concluída em `docs/product/COMPETITOR_REVIEW.md`; hipóteses de valor ainda aguardam observação de uso. |
-| 14 | B02 | Observar a jornada principal com pessoas que criam diagramas de projetos. | Roteiro pronto em `docs/product/USER_JOURNEY_STUDY.md`; o usuário enviará participantes depois. Sessões reais pendentes. |
-| 15 | B03 | Triar erros e registrar linha de base de interface, animação, salvamento e exportação. | Linha de base automatizada registrada em `docs/product/QUALITY_BASELINE.md`: 62 testes Node, 9 Python, cenário Chromium e impressão PDF passaram; falta observação manual. |
+| 14 | B02 | Observar a jornada principal com pessoas que criam diagramas de projetos. | Roteiro e revisão interna em `docs/product/USER_JOURNEY_STUDY.md`; o usuário enviará participantes depois. Sessões reais pendentes. |
+| 15 | B03 | Triar erros e registrar linha de base de interface, animação, salvamento e exportação. | Linha de base e triagem complementar em `docs/product/QUALITY_BASELINE.md`; encontrada e corrigida uma falha de continuidade após impressão. Falta observação manual. |
 | 16 | B04 | Corrigir falhas bloqueadoras confirmadas pela triagem. | Nenhuma falha bloqueadora confirmada na linha de base automatizada; aguarda defeito reproduzido em B03/B02. |
-| 17 | B05 | Melhorar ações repetidas de edição que apresentarem atrito. | Depende das observações de B02; comparar a mesma tarefa antes e depois. |
-| 18 | B06 | Corrigir interrupções ou saltos de animação observados. | Depende de cenários reproduzíveis em B02/B03; conferir pausa, retomada, velocidade e exportação. |
-| 19 | B07 | Conferir recuperação e apresentação por JSON e exportações. | Base automatizada de JSON, SVG, PNG, HTML e impressão PDF passou em B03; ainda conferir leitura em aplicativos externos. |
-| 20 | B08 | Adicionar componentes ou opções ausentes com utilidade demonstrada. | Hipótese; depende de B01/B02 ou pedido verificável e de critério próprio por adição. |
-| 21 | B09 | Consolidar a versão candidata e a decisão de lançamento. | Depende de B01–B04 e dos itens escolhidos em B05–B08; publicação requer decisão da pessoa responsável pelo produto. |
+| 17 | B05 | Melhorar ações repetidas de edição que apresentarem atrito. | Inserção repetida melhorada: novos nós procuram espaço livre perto da seleção. Cenário em Chromium passou; outras melhorias dependem de B02. |
+| 18 | B06 | Corrigir interrupções ou saltos de animação observados. | Impressão preserva o relógio da animação (3,5 s → 3,5 s em Chromium). Novos cenários dependem de B02/B03. |
+| 19 | B07 | Conferir recuperação e apresentação por JSON e exportações. | JSON/SVG/PNG/HTML/PDF conferidos em Chromium; SVG estático também renderizou no `rsvg-convert`. A interface explica edição e animação. Outros leitores e Windows ainda pendentes. |
+| 20 | B08 | Adicionar componentes ou opções ausentes com utilidade demonstrada. | Adiado nesta candidata: a comparação B01 gerou hipóteses, mas ainda não há caso de uso verificado por B02 ou pedido específico. Reavaliar após evidência. |
+| 21 | B09 | Consolidar a versão candidata e a decisão de lançamento. | Registro preliminar em `docs/product/RELEASE_READINESS.md`; sessões B02, leitores externos e decisão humana ainda pendentes. |

@@ -11,6 +11,7 @@ Recursos do editor distribuído na versão 3.0.1. Para instalação e testes, ve
 5. Exporte o JSON para continuar em outro navegador, ou SVG/PNG/HTML para apresentar.
 
 Os campos são aplicados ao perder o foco. Há salvamento automático no navegador e histórico de desfazer/refazer. O JSON é a cópia transferível; o armazenamento do navegador pode ser limpo pelo usuário ou pelo sistema.
+Ao inserir outro componente pelo catálogo, o editor procura espaço livre perto do componente selecionado. Se a página estiver cheia, pode ser necessário mover o novo componente manualmente.
 
 ### Navegar no canvas
 
@@ -89,5 +90,6 @@ Projetos anteriores continuam importáveis. Os antigos cartões System Design co
 | PDF | Impressão do navegador → Salvar como PDF |
 
 **Para compartilhar transições reativas, prefira HTML.** SVG aberto como documento no navegador executa o runtime; SVG usado em `<img>`, leitores Markdown e outros visualizadores pode ter scripts bloqueados. PNG/PDF/SVG estático não preservam movimento. A preferência de movimento reduzido é respeitada na apresentação.
+Imprimir ou salvar PDF usa um quadro estático e, ao voltar ao editor, conserva o instante atual da animação.
 
 Em `examples/`, abra `v3-features.html` para ver tabelas e estados reativos; importe `v3-features.json` para editar. Há também exemplos de arquitetura, cores, catálogo de formas e System Design, com JSON/SVG/PNG. `editor-preview.png` mostra a interface.

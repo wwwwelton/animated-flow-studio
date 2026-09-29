@@ -64,5 +64,14 @@ $('htmlExport').onclick=()=>exportAction(async()=>{
 $('mdExport').onclick=()=>exportAction(async()=>{const safe=s=>String(s).replace(/[\[\]<>]/g,'').replace(/\n/g,' ');const md=`# ${safe(project.title)}\n\n${project.description}\n\n![${safe(project.title)}](fluxograma.svg)\n\n## Conexões\n\n${project.edges.map(e=>'- '+safe(project.nodes.find(n=>n.id===e.source).label)+' → '+safe(project.nodes.find(n=>n.id===e.target).label)).join('\n')}\n\nAbra a exportação HTML para executar transições reativas; visualizadores de SVG podem bloquear scripts.\n`;offer('fluxograma.svg',new Blob([await svgExport()],{type:'image/svg+xml;charset=utf-8'}),false);offer('fluxograma.md',new Blob([md],{type:'text/markdown;charset=utf-8'}));});
 $('pdfExport').onclick=()=>window.print();
 $('import').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>5000000)throw Error('Arquivo acima de 5 MB.');setProject(JSON.parse(await file.text()));}catch(err){status('Importação rejeitada: '+err.message);}e.target.value='';};
-window.addEventListener('beforeprint',()=>{const t=currentTime();stopTraffic();board.innerHTML=F.render(project,{static:true,time:t});});window.addEventListener('afterprint',draw);
+let printClock=null;
+window.addEventListener('beforeprint',()=>{
+ if(printClock===null)printClock=currentTime();
+ stopTraffic();board.innerHTML=F.render(project,{static:true,time:printClock});
+});
+window.addEventListener('afterprint',()=>{
+ if(printClock===null)return;
+ // The print SVG has a separate clock; remove it before draw reads the current time.
+ clock=printClock;printClock=null;board.replaceChildren();draw();
+});
 projectFields();legendEditor();inspect();draw();buttons();FlowFonts.ensure(project).then(reportFontWarnings);

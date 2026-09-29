@@ -97,7 +97,7 @@ Detalhes de tabelas, efeitos, conectores, eventos e exportações estão em [doc
 
 A arquitetura é documentada de forma leve com **C4 + fluxos + ADR + contratos + SDD**. Comece por [docs/architecture/README.md](docs/architecture/README.md); decisões ficam em [docs/adr/](docs/adr/) e specs de features em [docs/sdd/](docs/sdd/).
 
-O plano para lançamento público está em [BACKLOG.md](BACKLOG.md), com execução registrada em [TASKS.md](TASKS.md). A comparação documental de produtos, o roteiro de observação e a linha de base de qualidade ficam em [docs/product/](docs/product/).
+O plano para lançamento público está em [BACKLOG.md](BACKLOG.md), com execução registrada em [TASKS.md](TASKS.md). A comparação documental de produtos, o roteiro de observação, a linha de base de qualidade e a preparação da decisão de lançamento ficam em [docs/product/](docs/product/).
 
 ## 4. Desenvolvimento e testes
 

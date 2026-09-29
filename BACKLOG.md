@@ -36,12 +36,17 @@ A ordem abaixo é **provisória**. Valor para a jornada principal, risco para a 
 
 Uma versão menor pode seguir para decisão em M3 sem B08 se o fluxo principal estiver confiável e as lacunas adiadas estiverem registradas. Uma falha confirmada que impeça criar, recuperar ou apresentar o diagrama exige nova avaliação antes do lançamento.
 
-## Questões em aberto
+## Decisões operacionais baseadas no projeto
 
-- Quais produtos e tarefas devem compor a comparação de B01?
-- Quem fará a decisão final de prioridade e a aprovação de lançamento?
-- Quais usuários poderão participar da observação e quem executará cada item?
-- Existe uma data de lançamento ou compromisso externo?
-- Quais condições observáveis definirão “suave” para interface e animação após a linha de base?
+- B01 compara Whimsical, diagrams.net e Excalidraw/Excalidraw+ nas tarefas de criar, conectar, animar quando disponível, editar, exportar e reabrir um fluxo de três componentes. A matriz e as fontes estão em `docs/product/COMPETITOR_REVIEW.md`.
+- B02 usa a jornada Cliente → API → Banco de dados de `docs/product/USER_JOURNEY_STUDY.md`. A revisão interna do código orienta correções pequenas e reproduzíveis; ela não substitui sessões com pessoas do público prioritário.
+- Para a linha de base B03, “suave” significa que inserir componentes repetidamente evita sobreposição quando há espaço, mover/conectar/usar zoom preserva o diagrama e imprimir não reinicia o relógio de tráfego. Interrupções percebidas por usuários ainda precisam ser observadas.
+- B04–B06 podem corrigir defeitos reproduzidos internamente enquanto B02 aguarda participantes. Novas funcionalidades de B08 continuam condicionadas a um caso de uso comprovado.
+
+## Decisões ainda externas ao repositório
+
+- Participantes e registros das sessões B02; a pessoa solicitante informou que os enviará depois.
+- Responsável pela prioridade final e pela decisão de lançamento B09.
+- Data de lançamento ou compromisso externo, caso exista.
 
 Revisar este backlog ao concluir M1 e sempre que surgir um erro de alto impacto ou nova evidência de uso. Pedidos e opções de concorrentes devem permanecer identificados como **hipóteses** até receberem caso de uso, prioridade e critérios verificáveis.

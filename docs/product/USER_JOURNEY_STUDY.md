@@ -24,4 +24,15 @@ Não ensinar o caminho antes de a pessoa tentar. Se ela pedir ajuda, registrar o
 | Reprodução | Passos para repetir o problema e projeto JSON sem dados privados, se aplicável |
 | Hipótese de melhoria | Referência ao atrito; manter como hipótese até priorização |
 
-Antes de B05/B06, reunir os registros, separar defeitos reproduzíveis de dificuldade de descoberta e escolher as mudanças com maior impacto na tarefa. Nenhuma conclusão sobre usuários deve ser inferida apenas de uma revisão interna.
+Antes de priorizar outras mudanças B05/B06, reunir os registros, separar defeitos reproduzíveis de dificuldade de descoberta e escolher as mudanças com maior impacto na tarefa. Nenhuma conclusão sobre usuários deve ser inferida apenas de uma revisão interna.
+
+## Revisão interna do projeto — 28/09/2026
+
+Esta revisão não contém participantes. Dois pontos verificáveis foram selecionados para correção enquanto as sessões são organizadas:
+
+| Tarefa | Evidência interna | Resultado antes e depois |
+|---|---|---|
+| Inserir componentes repetidamente | `addNode` em `src/editor-main.js` usava sempre o centro do viewport. | Antes, cliques sucessivos no catálogo colocavam os nós sobre a mesma área. Agora o segundo nó procura espaço livre perto da seleção; em Chromium, dois processos ficaram em `(405, 188)` e `(615, 188)`, sem sobreposição. |
+| Imprimir sem perder o estado da animação | `beforeprint` substituía o SVG animado e `afterprint` chamava `draw`, que lia o relógio do SVG estático. | Antes, o tempo passou de 3,5 s a 0 s. Após o ajuste, permaneceu em 3,5 s em Chromium. |
+
+Esses resultados justificam as correções pontuais B05/B06, mas não identificam os atritos mais importantes para usuários. As sessões reais continuam necessárias para fechar B02 e priorizar outras mudanças.

@@ -26,3 +26,11 @@ Ambiente: Linux, Node.js 26.8.2, Python 3.14.7, Chromium headless fornecido pelo
 O sandbox inicial impediu processos filhos do teste de portabilidade (`EPERM`) e a inicialização do Chromium (`Operation not permitted`). A suíte Node e o cenário de navegador foram repetidos fora dessa restrição e passaram; essas falhas iniciais não foram classificadas como defeitos do produto.
 
 Nenhuma falha bloqueadora foi confirmada nos cenários automatizados acima. Ainda faltam observação de uso real e verificação manual da legibilidade de cada exportação em leitores externos. B04 não recebe correção de código sem um defeito reproduzido.
+
+## Triagem complementar — impressão e inserção
+
+Em Chromium, com animação pausada em 3,5 s, gerar PDF acionou `beforeprint` e `afterprint`; antes da correção, o SVG restaurado estava em 0 s. A causa era a leitura do relógio do SVG estático durante `draw()`. O editor agora guarda o tempo antes da impressão e recria o SVG animado a partir desse valor. A repetição do cenário terminou em 3,5 s. É uma falha de continuidade B06, sem perda do projeto.
+
+Dois cliques seguidos em Processo usavam a mesma posição central. A nova busca de espaço livre colocou os nós em `(405, 188)` e `(615, 188)` no cenário de 1000 × 600 px. Quando não houver espaço livre dentro da página, a posição central continua sendo a alternativa; essa limitação deve ser observada nas sessões B02.
+
+Após a correção, os 62 testes Node e o cenário integrado em Chromium passaram novamente. O SVG exportado nesse cenário também foi aberto pelo `rsvg-convert` e produziu uma imagem legível com três componentes e duas conexões; como esperado para um leitor de imagem, esse resultado é estático. O PNG exportado foi inspecionado visualmente e manteve texto e conexões legíveis. Outros leitores e Windows ainda não foram verificados.
