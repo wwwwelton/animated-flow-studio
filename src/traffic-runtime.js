@@ -2,18 +2,22 @@
 (function(root){
  'use strict';
  const START_PADDING=4,END_PADDING=8;
- function placeToken(token,path,length,progress,reverse,rotate,size){
+ function placeToken(token,path,length,progress,reverse,rotate,size,tail){
   const radius=size/2;
-  const start=Math.min((path.hasAttribute?.('marker-start')?END_PADDING:START_PADDING)+radius,length/2);
-  const end=Math.max(start,length-Math.min(END_PADDING+radius,length/2));
+  const startClearance=(path.hasAttribute?.('marker-start')?END_PADDING:START_PADDING)+radius;
+  const endClearance=END_PADDING+radius;
+  const tailLength=tail?Math.min(size*3,Math.max(0,(length-startClearance-endClearance)/2)):0;
+  const start=Math.min(Math.max(startClearance,tail&&!reverse?tailLength+START_PADDING:0),length/2);
+  const end=Math.max(start,length-Math.min(Math.max(endClearance,tail&&reverse?tailLength+END_PADDING:0),length/2));
   const distance=reverse?end-(end-start)*progress:start+(end-start)*progress;
   const point=path.getPointAtLength(distance);
   let angle=0;
-  if(rotate){
+  if(rotate||tail){
    const before=path.getPointAtLength(Math.max(0,distance-1)),after=path.getPointAtLength(Math.min(length,distance+1));
    angle=Math.atan2(after.y-before.y,after.x-before.x)*180/Math.PI+(reverse?180:0);
   }
   token.setAttribute('transform',`translate(${point.x} ${point.y})${rotate?` rotate(${angle})`:''}`);
+  if(tail)tail.setAttribute('transform',`${rotate?'':`rotate(${angle}) `}scale(${tailLength/(size*3)})`);
  }
  function mount(svg,project,core){
   const visual=core.TRAFFIC_VISUAL??{peakOpacity:.86,fadeIn:.06,fadeOut:.94};
@@ -21,7 +25,7 @@
   const streamList=reactiveNodes.length?core.streams(project):[];
   const tokens=Array.from(svg.querySelectorAll('.protocol-packet')).map(token=>{
    const path=svg.querySelector(`[id="${token.dataset.path}"]`);
-   return path?{token,path,length:path.getTotalLength(),size:Number(token.dataset.size)||16,peakOpacity:Number(token.dataset.peakOpacity??visual.peakOpacity),start:Number(token.dataset.start),initialStart:Number(token.dataset.start),duration:Number(token.dataset.duration),cycle:Number(token.dataset.cycle),event:token.dataset.event==='true',edgeId:token.dataset.edgeId,reverse:token.dataset.reverse==='true',rotate:token.dataset.rotate==='true'}:null;
+   return path?{token,path,length:path.getTotalLength(),size:Number(token.dataset.size)||16,peakOpacity:Number(token.dataset.peakOpacity??visual.peakOpacity),start:Number(token.dataset.start),initialStart:Number(token.dataset.start),duration:Number(token.dataset.duration),cycle:Number(token.dataset.cycle),event:token.dataset.event==='true',edgeId:token.dataset.edgeId,reverse:token.dataset.reverse==='true',rotate:token.dataset.rotate==='true',tail:token.querySelector?.('.comet-tail')}:null;
   }).filter(Boolean);
   if(!reactiveNodes.length&&!tokens.length)return ()=>{};
   let frame=0,stopped=false,previous=Object.create(null),lastTokenTime=-1;
@@ -31,14 +35,14 @@
    if(time===lastTokenTime&&!reduced.matches)return;
    lastTokenTime=time;
    for(const item of tokens){
-    if(reduced.matches){placeToken(item.token,item.path,item.length,.5,item.reverse,item.rotate,item.size);if(item.opacity!=='.5'){item.token.setAttribute('opacity','.5');item.opacity='.5';}continue;}
+    if(reduced.matches){placeToken(item.token,item.path,item.length,.5,item.reverse,item.rotate,item.size,item.tail);if(item.opacity!=='.5'){item.token.setAttribute('opacity','.5');item.opacity='.5';}continue;}
     const elapsed=((time-item.start)%item.cycle+item.cycle)%item.cycle;
     const visible=time>=item.start&&elapsed<item.duration;
     const progress=elapsed/item.duration;
     const fade=visible?Math.max(0,Math.min(1,progress/visual.fadeIn,(1-progress)/(1-visual.fadeOut))):0;
     const opacity=String(item.peakOpacity*fade);
     if(item.opacity!==opacity){item.token.setAttribute('opacity',opacity);item.opacity=opacity;}
-    if(visible)placeToken(item.token,item.path,item.length,progress,item.reverse,item.rotate,item.size);
+    if(visible)placeToken(item.token,item.path,item.length,progress,item.reverse,item.rotate,item.size,item.tail);
    }
   }
   function update(){

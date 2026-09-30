@@ -6,6 +6,8 @@ O segundo preserva a implementação que já estava em andamento quando foi soli
 ## 1 — Efeitos de tráfego
 Concluída: marcador, pulso, brilho, rastro, cometa e fluxo tracejado; seis símbolos, tamanho e quantidade ajustáveis. Cometa usa cauda afilada e rastro usa marcadores separados. Validação: duas verificações Node, incluindo todas as combinações efeito/símbolo.
 
+Extensão posterior: os sete protocolos preservam seu comportamento ao combinar marcador, pulso, brilho, rastro, cometa ou fluxo tracejado. Halo, centelhas, órbita, ondas e sinalizador também estão disponíveis para todos os fluxos. `visualEffect` usa `packet` por padrão em projetos antigos.
+
 ## 2 — Tipografia
 Concluída: tamanho, subtítulo, bold, italic, code e família Google/local em todos os componentes e rótulos de conexões. Code preserva famílias monoespaçadas selecionadas. Teste real em Chromium validou controles, renderização em todos os tipos, download/incorporação binária com respostas HTTP controladas e fallback offline. A disponibilidade ao vivo do Google não é garantida pelo teste.
 

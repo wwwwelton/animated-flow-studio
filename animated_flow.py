@@ -21,6 +21,7 @@ class Legend:
     speed: float = 1
     size: float = 16  # SVG units; the editor displays this default as 1 rem.
     count: int = 1
+    visual_effect: str = "packet"  # Appearance layered over an API protocol.
 
 
 @dataclass(frozen=True)
@@ -103,6 +104,20 @@ class Diagram:
     def add_legend(self, legend: Legend) -> Diagram:
         if not legend.id or legend.id in self.legends:
             raise ValueError("Legend ID must be unique")
+        if legend.visual_effect not in (
+            "packet",
+            "pulse",
+            "glow",
+            "trail",
+            "comet",
+            "dashed",
+            "halo",
+            "spark",
+            "orbit",
+            "ripple",
+            "beacon",
+        ):
+            raise ValueError("Invalid legend visual_effect")
         if legend.shape not in (
             "square",
             "circle",
@@ -147,13 +162,15 @@ class Diagram:
         return self
 
     def to_dict(self) -> dict:
-        legends = [asdict(v) for v in self.legends.values()]
+        legends = [self._legend_dict(v) for v in self.legends.values()]
         edges = []
         for i, e in enumerate(self.edges):
             traffic = list(e.traffic)
             if e.color != "#70a0ff":
                 lid = f"custom-{i}"
-                legends.append(asdict(Legend(lid, e.label or f"Tráfego {i + 1}", e.color)))
+                legends.append(
+                    self._legend_dict(Legend(lid, e.label or f"Tráfego {i + 1}", e.color))
+                )
                 traffic = [lid]
             source, target = (e.target, e.source) if e.reverse else (e.source, e.target)
             edges.append(
@@ -205,6 +222,13 @@ class Diagram:
             nodes=nodes,
             edges=edges,
         )
+
+    @staticmethod
+    def _legend_dict(legend: Legend) -> dict:
+        """Serialize an API legend with the editor's camelCase visual effect field."""
+        result = asdict(legend)
+        result["visualEffect"] = result.pop("visual_effect")
+        return result
 
     def render(self) -> str:
         core = (ROOT / "src" / "flow-core.js").read_text(encoding="utf-8")

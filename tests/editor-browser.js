@@ -69,6 +69,12 @@ const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir()
  for(const sizes of Object.values(measured))for(const ratio of Object.values(sizes))assert.ok(ratio>=.85&&ratio<=1.1,`proportional marker size: ${ratio}`);
 
  const savedProject=await page.evaluate(()=>F.clone(project));
+ await page.evaluate(()=>setProject(F.protocolTemplate()));
+ const restLegend=page.locator('#legendEditor details').first();await restLegend.locator('summary').click();
+ await restLegend.getByLabel('Aparência da partícula',{exact:true}).selectOption('comet');
+ assert.deepEqual(await page.evaluate(()=>({effect:project.legends[0].effect,visualEffect:project.legends[0].visualEffect,tail:!!board.querySelector('[data-stream="0-0-0"] .comet-tail'),paired:!!board.querySelector('[data-stream="0-0-0-return"]')})),{effect:'rest',visualEffect:'comet',tail:true,paired:true});
+ await restLegend.getByLabel('Aparência da partícula',{exact:true}).selectOption('halo');
+ assert.ok(await page.evaluate(()=>!!board.querySelector('[data-stream="0-0-0"] .visual-decoration')));
  await page.evaluate(()=>{setProject(F.protocolTemplate());paused=true;draw();const svg=board.querySelector('svg');svg.pauseAnimations();svg.setCurrentTime(1);});
  await page.waitForFunction(()=>document.querySelector('[data-stream="0-0-0"]')?.getAttribute('transform'));
  const tokenState=await page.evaluate(()=>{

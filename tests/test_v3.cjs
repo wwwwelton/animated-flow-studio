@@ -74,6 +74,25 @@ test('many-to-many permits shared ports and repeated node pairs with distinct ed
 test('all marker shapes and effects remain valid standalone SVG geometry',()=>{
  const p=simple();for(const effect of Object.keys(F.EFFECTS))for(const shape of Object.keys(F.SYMBOLS)){p.legends[0].effect=effect;p.legends[0].shape=shape;const svg=F.render(p);assert.ok(!/NaN|undefined/.test(svg));assert.match(svg,F.EFFECTS[effect]&&['rest','graphql','grpc','websocket','webhook','sse','mqtt'].includes(effect)?/class="packet protocol-packet"/:/animateMotion/);}
 });
+test('protocol behavior and visual appearance compose on the same path',()=>{
+ const appearances=Object.keys(F.VISUAL_EFFECTS);
+ assert.equal(appearances.length,11);
+ for(const effect of ['rest','graphql','grpc','websocket','webhook','sse','mqtt'])for(const visualEffect of appearances){
+  const p=F.protocolTemplate();p.legends.find(legend=>legend.id===effect).visualEffect=visualEffect;
+  const clean=F.normalize(JSON.parse(JSON.stringify(p))),svg=F.render(clean);
+  const legend=clean.legends.find(item=>item.id===effect);
+  assert.equal(legend.effect,effect);
+  assert.equal(legend.visualEffect,visualEffect);
+  assert.match(svg,new RegExp(`data-edge-id="${effect}-request"[^>]*data-size="16"[^>]*`));
+  assert.match(svg,new RegExp(`data-edge-id="${effect}-request"[^]*?<svg class="flow-token"[^>]*width="16" height="16" viewBox="0 0 16 16"`));
+  assert.ok(!/NaN|undefined/.test(svg),`${effect} + ${visualEffect}`);
+  if(visualEffect==='trail')assert.match(svg,/class="packet protocol-packet visual-ghost"/);
+  if(visualEffect==='comet')assert.match(svg,/class="visual-decoration comet-tail"/);
+  if(visualEffect==='halo')assert.match(svg,/class="visual-decoration" r="11"/);
+ }
+ const old=F.protocolTemplate();for(const legend of old.legends)delete legend.visualEffect;
+ assert.ok(F.normalize(old).legends.every(legend=>legend.visualEffect==='packet'));
+});
 test('protocol shapes use one centered SVG box in legends and moving tokens',()=>{
  const names=['rest','graphql','grpc','websocket','webhook','sse','mqtt'];
  assert.deepEqual(Object.keys(F.SYMBOLS).slice(-7),names);

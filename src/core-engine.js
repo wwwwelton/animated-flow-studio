@@ -1,7 +1,8 @@
 /* Pure SVG renderer and project schema. No DOM or network dependency. */
 const TYPES={...Object.fromEntries(Object.entries(COMPONENTS).map(([id,c])=>[id,c.label])),system:'System Design'};
 const LEGENDS=[{id:'request',label:'Solicitação',color:'#70a0ff',shape:'square',direction:'forward'},{id:'response',label:'Resposta',color:'#9ae8c5',shape:'circle',direction:'reverse'},{id:'cdc',label:'Alterações (CDC)',color:'#bb8ae8',shape:'diamond',direction:'forward'}];
-const EFFECTS={packet:'Marcador',pulse:'Pulso',glow:'Brilho',trail:'Rastro',comet:'Cometa',dashed:'Fluxo tracejado',rest:'REST · solicitação/resposta',graphql:'GraphQL · seleção de dados',grpc:'gRPC · quadro tipado',websocket:'WebSocket · duas vias',webhook:'Webhook · notificação',sse:'SSE · fluxo contínuo',mqtt:'MQTT · publish/subscribe'};
+const VISUAL_EFFECTS={packet:'Marcador',pulse:'Pulso',glow:'Brilho',trail:'Rastro',comet:'Cometa',dashed:'Fluxo tracejado',halo:'Halo',spark:'Centelhas',orbit:'Órbita',ripple:'Ondas',beacon:'Sinalizador'};
+const EFFECTS={...VISUAL_EFFECTS,rest:'REST · solicitação/resposta',graphql:'GraphQL · seleção de dados',grpc:'gRPC · quadro tipado',websocket:'WebSocket · duas vias',webhook:'Webhook · notificação',sse:'SSE · fluxo contínuo',mqtt:'MQTT · publish/subscribe'};
 const SYMBOLS={square:'Quadrado',circle:'Círculo',diamond:'Losango',triangle:'Triângulo',arrow:'Seta',star:'Estrela',rest:'REST · API',graphql:'GraphQL · API',grpc:'gRPC · API',websocket:'WebSockets · API',webhook:'Webhooks · API',sse:'SSE · API',mqtt:'MQTT · API'};
 // One rem uses the browser default (16px); traffic defaults use the same SVG-unit size.
 const FLOW_TOKEN_SIZE=16,FLOW_TOKEN_VIEWBOX=16;
@@ -45,7 +46,7 @@ function normalize(input){
  const ids=new Set(),lids=new Set(),eids=new Set();
  for(const l of legends){
   if(!l||typeof l.id!=='string'||!l.id||l.id.length>100||lids.has(l.id))throw Error('ID de legenda inválido ou duplicado.');lids.add(l.id);
-  p.legends.push({id:l.id,label:String(l.label??'Tráfego').slice(0,80),color:color(l.color),shape:enumValue(l.shape,SYMBOLS,'square'),direction:l.direction==='reverse'?'reverse':'forward',effect:enumValue(l.effect,EFFECTS,'packet'),speed:number(l.speed,1,.1,8,'Velocidade da legenda'),size:number(l.size,TRAFFIC_VISUAL.defaultSize,3,32,'Tamanho do marcador'),count:Math.round(number(l.count,1,1,8,'Quantidade de marcadores'))});
+  p.legends.push({id:l.id,label:String(l.label??'Tráfego').slice(0,80),color:color(l.color),shape:enumValue(l.shape,SYMBOLS,'square'),direction:l.direction==='reverse'?'reverse':'forward',effect:enumValue(l.effect,EFFECTS,'packet'),visualEffect:enumValue(l.visualEffect,VISUAL_EFFECTS,'packet'),speed:number(l.speed,1,.1,8,'Velocidade da legenda'),size:number(l.size,TRAFFIC_VISUAL.defaultSize,3,32,'Tamanho do marcador'),count:Math.round(number(l.count,1,1,8,'Quantidade de marcadores'))});
  }
  for(const n of input.nodes){
   if(!n||typeof n.id!=='string'||!n.id||ids.has(n.id)||n.id.length>100)throw Error('ID de bloco inválido ou duplicado.');ids.add(n.id);
@@ -238,7 +239,7 @@ function legendLayout(p){
  finishRow();return {items,rows,height:rowTop};
 }
 function headerHeight(p){return 130+(p.description?Math.max(0,lines(p.description,Math.floor((p.width-64)/7)).length-1)*18:0)+(p.showLegend?legendLayout(p).height:0);}
-const svgStyle=`:root{font-size:1rem}text{font-family:Arial,sans-serif;fill:#000}.kicker{font-family:monospace;font-size:10px;font-weight:600}.figure-title{font-size:21px;font-weight:700}.description{font-size:13px}.legend-label{font-size:13px}.edge-label{paint-order:stroke;stroke:white;stroke-width:4px;stroke-linejoin:round}.rail{fill:none;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round}.node-shape{stroke-linejoin:round}.selection{fill:none;stroke:#1675df;stroke-width:1.5;stroke-dasharray:4 3;pointer-events:none}.hit{stroke:transparent;stroke-width:16;fill:none;cursor:pointer}.node{cursor:move}.node text,.icon,.packet,.flow-token{pointer-events:none}.flow-token{overflow:visible}.resize{fill:white;stroke:#1675df;cursor:nwse-resize}.port{fill:white;stroke:#2563eb;stroke-width:1.5;opacity:0;cursor:crosshair}.node:hover>.port,.node.selected>.port,.connecting .port{opacity:1}.diagram-controls{cursor:pointer}@media(prefers-reduced-motion:reduce){.packet{display:none}.protocol-packet{display:inline;opacity:.5!important}}`;
+const svgStyle=`:root{font-size:1rem}text{font-family:Arial,sans-serif;fill:#000}.kicker{font-family:monospace;font-size:10px;font-weight:600}.figure-title{font-size:21px;font-weight:700}.description{font-size:13px}.legend-label{font-size:13px}.edge-label{paint-order:stroke;stroke:white;stroke-width:4px;stroke-linejoin:round}.rail{fill:none;stroke:black;stroke-width:1;stroke-linecap:round;stroke-linejoin:round}.node-shape{stroke-linejoin:round}.selection{fill:none;stroke:#1675df;stroke-width:1.5;stroke-dasharray:4 3;pointer-events:none}.hit{stroke:transparent;stroke-width:16;fill:none;cursor:pointer}.node{cursor:move}.node text,.icon,.packet,.flow-token{pointer-events:none}.flow-token{overflow:visible}.resize{fill:white;stroke:#1675df;cursor:nwse-resize}.port{fill:white;stroke:#2563eb;stroke-width:1.5;opacity:0;cursor:crosshair}.node:hover>.port,.node.selected>.port,.connecting .port{opacity:1}.diagram-controls{cursor:pointer}@media(prefers-reduced-motion:reduce){.packet{display:none}.protocol-packet:not(.visual-ghost){display:inline;opacity:.5!important}.visual-decoration,.visual-ghost{display:none!important}.visual-pulse{transform:none!important}}`;
 function createFlowToken(protocol,legend,size=legend.size??FLOW_TOKEN_SIZE){
  const flow=PROTOCOL_FLOW_STYLES[protocol],stroke=color(legend.color),origin=-size/2;
  return `<svg class="flow-token" x="${origin}" y="${origin}" width="${size}" height="${size}" viewBox="0 0 ${FLOW_TOKEN_VIEWBOX} ${FLOW_TOKEN_VIEWBOX}" aria-hidden="true" style="color:${stroke}">${flow.geometry}</svg>`;
@@ -251,14 +252,36 @@ function trafficGlyph(legend,reverse=false){
  return PROTOCOL_FLOW_STYLES[legend.effect]?createFlowToken(legend.effect,legend):symbolGlyph(legend);
 }
 function legendGlyph(legend){return symbolGlyph(legend,legend.size);}
+function visualGlyph(legend,effect,glyph,duration,delay){
+ const r=legend.size/2,ink=color(legend.color),stroke=Math.max(.8,legend.size/12);
+ if(effect==='pulse')return `<g class="visual-pulse">${glyph}<animateTransform attributeName="transform" type="scale" values=".96;1.12;.96" dur="${duration/4}s" begin="${delay}s" repeatCount="indefinite"/></g>`;
+ if(effect==='glow')return `<g class="visual-decoration"><circle r="${r}" fill="${ink}" opacity=".2"/><circle r="${r*.7}" fill="${ink}" opacity=".2"/></g>`+glyph;
+ if(effect==='comet'){
+  const tail=-legend.size*3;
+  return `<g class="visual-decoration comet-tail"><path d="M 0 ${-r*.8} Q ${tail*.45} 0 ${tail} 0 Q ${tail*.45} 0 0 ${r*.8} Z" fill="${ink}" opacity=".45"/></g>`+glyph;
+ }
+ if(effect==='dashed')return `<circle class="visual-decoration" r="${r+2}" fill="none" stroke="${ink}" stroke-width="${stroke}" stroke-dasharray="${stroke*2} ${stroke*2}" opacity=".6"/>`+glyph;
+ if(effect==='halo')return `<circle class="visual-decoration" r="${r+3}" fill="none" stroke="${ink}" stroke-width="${stroke*1.5}" opacity=".45"/>`+glyph;
+ if(effect==='spark')return `<g class="visual-decoration" fill="${ink}" opacity=".75"><path d="M0 ${-r-4}l2 2-2 2-2-2Z M0 ${r}l2 2-2 2-2-2Z M${-r-4} 0l2-2 2 2-2 2Z M${r} 0l2-2 2 2-2 2Z"/></g>`+glyph;
+ if(effect==='orbit')return `<g class="visual-decoration" fill="${ink}" opacity=".7"><circle cx="${r+3}" r="${stroke*1.5}"/><circle cx="${-r-3}" r="${stroke*1.5}"/><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="${duration}s" repeatCount="indefinite"/></g>`+glyph;
+ if(effect==='ripple')return `<g class="visual-decoration" fill="none" stroke="${ink}" stroke-width="${stroke}"><circle r="${r}"><animate attributeName="r" values="${r};${r+6}" dur="${duration/2}s" repeatCount="indefinite"/><animate attributeName="opacity" values=".65;0" dur="${duration/2}s" repeatCount="indefinite"/></circle></g>`+glyph;
+ if(effect==='beacon')return `<g class="visual-decoration" fill="none" stroke="${ink}" stroke-width="${stroke}" opacity=".7"><path d="M${-r-4} -3v-3h3 M${r+4} -3v-3h-3 M${-r-4} 3v3h3 M${r+4} 3v3h-3"/><animate attributeName="opacity" values=".35;.8;.35" dur="${duration/3}s" repeatCount="indefinite"/></g>`+glyph;
+ return glyph;
+}
 function motionPacket(stream,prefix,globalSpeed=1){
  const {legend:l,duration,delay,index,key}=stream,pid=`${prefix}-edge-${index}`;
  const behavior=PROTOCOL_FLOW_STYLES[l.effect]??{paired:false,reverseDelay:0},cycle=stream.cycle??duration*(behavior.cycle??1),visible=duration/cycle;
  if(PROTOCOL_FLOW_STYLES[l.effect]){
-  const token=(reverse,start,streamKey)=>`<g class="packet protocol-packet" data-stream="${streamKey}" data-path="${pid}" data-edge-id="${esc(stream.edge.id)}" data-size="${l.size}" data-peak-opacity="${TRAFFIC_VISUAL.peakOpacity}" data-start="${start}" data-duration="${duration}" data-cycle="${cycle}" data-event="${behavior.direction==='one-way-event'}" data-reverse="${reverse}" data-rotate="${behavior.rotateWithPath}" opacity="0">${createFlowToken(l.effect,l)}</g>`;
+  const effect=l.visualEffect??'packet';
+  const token=(reverse,start,streamKey,ghost=false,peak=TRAFFIC_VISUAL.peakOpacity)=>`<g class="packet protocol-packet${ghost?' visual-ghost':''}" data-stream="${streamKey}" data-path="${pid}" data-edge-id="${esc(stream.edge.id)}" data-size="${l.size}" data-peak-opacity="${peak}" data-start="${start}" data-duration="${duration}" data-cycle="${cycle}" data-event="${!ghost&&behavior.direction==='one-way-event'}" data-reverse="${reverse}" data-rotate="${behavior.rotateWithPath}" opacity="0">${ghost?createFlowToken(l.effect,l):visualGlyph(l,effect,createFlowToken(l.effect,l),duration,start)}</g>`;
+  const group=(reverse,start,streamKey)=>{
+   let ghosts='';
+   if(effect==='trail')for(let i=3;i>=1;i--)ghosts+=token(reverse,start+i*duration*.025,`${streamKey}-trail-${i}`,true,.13+i*.06);
+   return ghosts+token(reverse,start,streamKey);
+  };
   const reverse=l.direction==='reverse';
   const returnStart=stream.returnDelay??delay+(behavior.direction==='bidirectional'?0:duration+.2/globalSpeed);
-  return token(reverse,delay,key)+(behavior.paired?token(!reverse,returnStart,`${key}-return`):'');
+  return group(reverse,delay,key)+(behavior.paired?group(!reverse,returnStart,`${key}-return`):'');
  }
  const motion=(lag=0,reverse=l.direction==='reverse')=>`<animateMotion dur="${duration}s" begin="${delay+lag}s" calcMode="linear" repeatCount="indefinite" rotate="${PROTOCOL_FLOW_STYLES[l.shape]&&l.shape!=='sse'?'0':'auto'}" ${reverse?'keyPoints="1;0" keyTimes="0;1"':''}><mpath href="#${pid}"/></animateMotion>`;
  const content=reverse=>{
@@ -267,6 +290,7 @@ function motionPacket(stream,prefix,globalSpeed=1){
   if(l.effect==='pulse')body=`<g>${body}<animateTransform attributeName="transform" type="scale" values=".96;1;.96" dur="${duration/4}s" begin="${delay}s" repeatCount="indefinite"/></g>`;
   if(l.effect==='dashed'){const thickness=l.size/4;body=`<rect x="${-l.size/2}" y="${-thickness/2}" width="${l.size}" height="${thickness}" rx="${thickness/2}" fill="${l.color}"/>`;}
   if(l.effect==='comet'){const tail=(reverse?1:-1)*l.size*3;body=`<path class="comet-tail" d="M 0 ${-l.size*.4} Q ${tail*.45} 0 ${tail} 0 Q ${tail*.45} 0 0 ${l.size*.4} Z" fill="${l.color}" opacity=".45"/>`+body;}
+  if(['halo','spark','orbit','ripple','beacon'].includes(l.effect))body=visualGlyph(l,l.effect,body,duration,delay);
   return body;
  };
  const fade=behavior.cycle>1?`0;${TRAFFIC_VISUAL.peakOpacity};${TRAFFIC_VISUAL.peakOpacity};0;0`:`0;${TRAFFIC_VISUAL.peakOpacity};${TRAFFIC_VISUAL.peakOpacity};0`;

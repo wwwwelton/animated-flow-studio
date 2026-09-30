@@ -63,7 +63,7 @@ Protocol symbols use normalized geometry in a 16 × 16 `viewBox` and share the r
 | Smooth zoom | `Ctrl`/`Cmd` + mouse wheel |
 | Pan the canvas | Drag the background, use the middle mouse button, or `Space` + drag |
 | Center the diagram | Use **Centralizar / Ajustar à tela** (Center / Fit to screen) |
-| Adjust traffic and speed | Open a traffic legend by name |
+| Adjust traffic and speed | Open a traffic legend by name; API protocols have separate **Protocolo / comportamento** (protocol) and **Aparência da partícula** (appearance) controls |
 | Undo/redo | `Ctrl`/`Cmd` + `Z` / `Ctrl`/`Cmd` + `Shift` + `Z` |
 | Save the project | Export JSON or SVG from the editor |
 

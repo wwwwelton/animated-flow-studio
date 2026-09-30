@@ -5,9 +5,9 @@ const vm=require('node:vm');
 const path=require('node:path');
 const source=fs.readFileSync(path.join(__dirname,'../src/traffic-runtime.js'),'utf8');
 
-function runtime(pathElement,{reverse=false,rotate=false,reduced=false,event=false,size=16}={}){
- const attributes=new Map(),listeners=new Map();
- const token={dataset:{path:'rail',edgeId:'webhook-link',size:String(size),start:'0',duration:'2',cycle:'4',event:String(event),reverse:String(reverse),rotate:String(rotate)},setAttribute(name,value){attributes.set(name,value);}};
+function runtime(pathElement,{reverse=false,rotate=false,reduced=false,event=false,size=16,comet=false}={}){
+ const attributes=new Map(),tailAttributes=new Map(),listeners=new Map();
+ const token={dataset:{path:'rail',edgeId:'webhook-link',size:String(size),start:'0',duration:'2',cycle:'4',event:String(event),reverse:String(reverse),rotate:String(rotate)},setAttribute(name,value){attributes.set(name,value);},querySelector(selector){return comet&&selector==='.comet-tail'?{setAttribute(name,value){tailAttributes.set(name,value);}}:null;}};
  const media={matches:reduced,addEventListener(){},removeEventListener(){}};
  const document={visibilityState:'visible',addEventListener(name,callback){listeners.set(name,callback);},removeEventListener(name){listeners.delete(name);}};
  let time=1,nextFrame;
@@ -15,7 +15,7 @@ function runtime(pathElement,{reverse=false,rotate=false,reduced=false,event=fal
  const context={document,matchMedia:()=>media,CustomEvent:class{constructor(type,options){this.type=type;this.detail=options.detail;}},requestAnimationFrame(callback){nextFrame=callback;return 1;},cancelAnimationFrame(){}};
  vm.runInNewContext(source,context);
  const stop=context.FlowTraffic.mount(svg,{nodes:[]},{});
- return {attributes,media,document,stop,trigger:context.FlowTraffic.trigger.bind(null,svg),step(value){time=value;nextFrame();},listeners};
+ return {attributes,tailAttributes,media,document,stop,trigger:context.FlowTraffic.trigger.bind(null,svg),step(value){time=value;nextFrame();},listeners};
 }
 
 test('tokens use path arc length, respect endpoint padding and reverse on the same rail',()=>{
@@ -62,6 +62,19 @@ test('SSE follows the tangent and reduced motion keeps a still protocol marker',
  assert.equal(flow.listeners.has('visibilitychange'),true);
  flow.stop();
  assert.equal(flow.listeners.has('visibilitychange'),false);
+});
+
+test('API comet tail follows a curved path without rotating the protocol symbol',()=>{
+ const pathElement={getTotalLength:()=>100,getPointAtLength(distance){return {x:distance,y:distance};}};
+ const forward=runtime(pathElement,{comet:true}),reverse=runtime(pathElement,{comet:true,reverse:true});
+ assert.equal(forward.attributes.get('transform'),'translate(62 62)');
+ assert.equal(forward.tailAttributes.get('transform'),'rotate(45) scale(0.75)');
+ assert.equal(reverse.attributes.get('transform'),'translate(34 34)');
+ assert.equal(reverse.tailAttributes.get('transform'),'rotate(225) scale(0.75)');
+ forward.step(0);reverse.step(0);
+ assert.equal(forward.attributes.get('transform'),'translate(40 40)');
+ assert.equal(reverse.attributes.get('transform'),'translate(56 56)');
+ forward.stop();reverse.stop();
 });
 
 test('Webhook repeats on the same rail and its event restarts the loop',()=>{

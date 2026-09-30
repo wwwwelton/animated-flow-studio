@@ -35,7 +35,8 @@ Mover o canvas não altera as posições dos componentes. Largura/altura da pág
 
 Abra uma legenda pelo nome para editar efeito, símbolo, cor, sentido, velocidade, tamanho e quantidade. A conexão escolhe quais legendas percorrem seu trajeto. A direção das setas do conector e a direção do tráfego são independentes.
 
-- Efeitos: marcador, pulso, brilho, rastro de marcadores, cometa com cauda afilada e fluxo tracejado.
+- Efeitos: marcador, pulso, brilho, rastro de marcadores, cometa com cauda afilada, fluxo tracejado, halo, centelhas, órbita, ondas e sinalizador.
+- Para REST, GraphQL, gRPC, WebSockets, Webhooks, SSE e MQTT, **Protocolo / comportamento** define o fluxo e **Aparência da partícula** adiciona qualquer um dos onze efeitos sem trocá-lo. O símbolo do protocolo permanece no centro. Projetos antigos usam Marcador por padrão.
 - Símbolos: quadrado, círculo, losango, triângulo, seta e estrela.
 - Velocidades: 0,1×–8× global e por legenda; marcadores: 1–8; tamanho inicial: 1 rem, editável de 0,1875 a 2 rem. O JSON salva 16 unidades SVG para 1 rem.
 - Tempo efetivo do percurso = tempo base da conexão ÷ velocidade global ÷ velocidade da legenda.

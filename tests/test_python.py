@@ -77,6 +77,17 @@ class PythonAPI(unittest.TestCase):
         shapes = [legend["shape"] for legend in diagram.to_dict()["legends"][-len(protocols) :]]
         self.assertEqual(shapes, list(protocols))
 
+    def test_protocol_visual_effect_serializes_for_the_editor(self):
+        diagram = Diagram("API").add_legend(
+            Legend("rest", "REST", shape="rest", effect="rest", visual_effect="comet")
+        )
+        legend = diagram.to_dict()["legends"][-1]
+        self.assertEqual(legend["effect"], "rest")
+        self.assertEqual(legend["visualEffect"], "comet")
+        self.assertNotIn("visual_effect", legend)
+        with self.assertRaisesRegex(ValueError, "visual_effect"):
+            Diagram("API").add_legend(Legend("bad", "Bad", visual_effect="unknown"))
+
 
 if __name__ == "__main__":
     unittest.main()

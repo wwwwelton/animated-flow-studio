@@ -219,7 +219,8 @@ function legendEditor(){
  for(const l of project.legends){const row=document.createElement('details');row.className='legend-row';const title=document.createElement('summary');title.textContent=l.label;row.append(title);
   field(row,'Nome da legenda',l.label,v=>{l.label=v;title.textContent=v;});colorField(row,'Cor do tráfego',l,'color','#70a0ff');
   field(row,'Símbolo',l.shape,v=>l.shape=v,{options:Object.entries(F.SYMBOLS)});
-  field(row,'Efeito visual',l.effect,v=>l.effect=v,{options:Object.entries(F.EFFECTS)});
+  field(row,F.PROTOCOL_FLOW_STYLES[l.effect]?'Protocolo / comportamento':'Efeito visual',l.effect,v=>{l.effect=v;legendEditor();$('legendEditor').children[project.legends.indexOf(l)].open=true;},{options:Object.entries(F.EFFECTS)});
+  if(F.PROTOCOL_FLOW_STYLES[l.effect])field(row,'Aparência da partícula',l.visualEffect??'packet',v=>l.visualEffect=v,{options:Object.entries(F.VISUAL_EFFECTS)});
   field(row,'Sentido',l.direction,v=>l.direction=v,{options:[['forward','Origem → destino'],['reverse','Destino → origem']]});
   field(row,'Velocidade desta legenda (×)',l.speed,v=>l.speed=v,{type:'number',min:.1,max:8,step:.1});
   field(row,'Tamanho do marcador (rem)',l.size/remSize,v=>l.size=v*remSize,{type:'number',min:3/remSize,max:32/remSize,step:1/remSize});

@@ -63,7 +63,7 @@ Os símbolos de protocolo usam geometria normalizada em um `viewBox` de 16 × 16
 | Zoom suave | `Ctrl`/`Cmd` + roda do mouse |
 | Mover o canvas | Arraste o fundo, use o botão do meio ou `Espaço` + arraste |
 | Centralizar o diagrama | Use **Centralizar / Ajustar à tela** |
-| Ajustar tráfego e velocidade | Abra uma legenda pelo nome |
+| Ajustar tráfego e velocidade | Abra uma legenda pelo nome; nos protocolos de API, escolha separadamente **Protocolo / comportamento** e **Aparência da partícula** |
 | Desfazer/refazer | `Ctrl`/`Cmd` + `Z` / `Ctrl`/`Cmd` + `Shift` + `Z` |
 | Guardar o projeto | Exporte o JSON ou o SVG pelo editor |
 
