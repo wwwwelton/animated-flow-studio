@@ -226,5 +226,4 @@ This project is licensed under the GNU General Public License v3.0. See [`LICENS
 
 ---
 
-Developed by Welton Leite  👋 <br/>
-[LinkedIn](https://www.linkedin.com/in/welton-leite-b3492985/) · [GitHub](https://github.com/wwwwelton)
+Developed by: Welton Leite 👋 [See my linkedin](https://www.linkedin.com/in/welton-leite-b3492985/)
