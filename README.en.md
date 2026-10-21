@@ -220,6 +220,8 @@ Contributions are welcome. To propose an improvement:
 
 The project is updated regularly with bug fixes, code optimizations and new features.
 
+---
+
 ## 📝 License and credits
 
 This project is licensed under the GNU General Public License v3.0. See [`LICENSE`](LICENSE) for the full terms.
