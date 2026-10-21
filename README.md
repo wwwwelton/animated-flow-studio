@@ -226,5 +226,10 @@ O projeto está licenciado sob a GNU General Public License v3.0. Consulte [`LIC
 
 ---
 
-Desenvolvido por Welton Leite 👋 <br/>
-[LinkedIn](https://www.linkedin.com/in/welton-leite-b3492985/) · [GitHub](https://github.com/wwwwelton)
+## 📝 Licença e créditos
+
+O projeto está licenciado sob a GNU General Public License v3.0. Consulte [`LICENSE`](LICENSE) para os termos completos.
+
+---
+
+Made by: Welton Leite 👋 [See my linkedin](https://www.linkedin.com/in/welton-leite-b3492985/)
